@@ -7,6 +7,15 @@
 
 #include "NonMoving.h"
 
+class NonMoving
+{
+public:
+  double finalVelocity;
+private:
+  //nothing as of now
+
+};
+
 NonMoving::NonMoving()
 {
   // TODO Auto-generated constructor stub

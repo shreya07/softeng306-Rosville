@@ -7,6 +7,17 @@
 
 #include "Moving.h"
 
+class Moving
+{
+public:
+  double linear;
+  double angular(); //angular velocity
+  void move();
+private:
+  //nothing as of now
+
+};
+
 Moving::Moving()
 {
   // Constructor
