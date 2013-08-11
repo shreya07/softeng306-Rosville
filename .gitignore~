@@ -14,8 +14,3 @@
 
 #Ignore build folders
 /se306_example/build/
-
-# Ignore eclipse project files. 
-.project
-.cproject
-.pyproject
