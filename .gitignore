@@ -12,6 +12,11 @@
 *.la
 *.a
 
+#ignore build folder
+/se306_example/build/
+#ignore any binary folder in the repo
+bin/
+
 #project files
 *.cproject
 *.project
