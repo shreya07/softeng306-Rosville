@@ -11,7 +11,7 @@ class Moving
 {
 public:
   double linear;
-  double angular(); //angular velocity
+  double angular();
   void move();
 private:
   //nothing as of now

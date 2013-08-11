@@ -2,7 +2,7 @@
  * NonMoving.cpp
  * SuperClass for non-moving entities
  *  Created on: 12/08/2013
- *      Author: raoul
+ *      Author: raouldc
  */
 
 #include "NonMoving.h"

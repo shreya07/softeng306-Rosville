@@ -11,6 +11,7 @@
 class Moving
 {
 public:
+  void move();
   Moving();
   virtual ~Moving();
 };
