@@ -16,14 +16,25 @@ double px;
 double py;
 double theta;
 
+//Sheep_One Publishers
+ros::Publisher SheepOne_StageOdom_pub;//To Sheep
+ros::Publisher SheepOne_StageLaser_pub; //To Sheep
+ros::Publisher SheepOne_cmd_vel_pub; //To stage
+
+
+//Publisher Handlers
+
 void StageOdom_callback(nav_msgs::Odometry msg)
 {
   //This is the call back function to process odometry messages coming from Stage.
+
   px = 5 + msg.pose.pose.position.x;
   py = 10 + msg.pose.pose.position.y;
   ROS_INFO("Current x position is: %f", px);
   ROS_INFO("Current y position is: %f", py);
 }
+
+
 
 void StageLaser_callback(sensor_msgs::LaserScan msg)
 {
@@ -32,6 +43,40 @@ void StageLaser_callback(sensor_msgs::LaserScan msg)
 
 }
 
+//Message from stage to sheep
+void Sheep_One_StageOdom_callback(nav_msgs::Odometry msg)
+{
+  //This is the call back function to process odometry messages coming from Stage.
+//  geometry_msgs::Twist RobotNode_cmdvel;
+//
+//  px = 5 + msg.pose.pose.position.x;
+//  py = 10 + msg.pose.pose.position.y;
+//  ROS_INFO("Current x position is: %f", px);
+//  ROS_INFO("Current y position is: %f", py);
+//
+//  //messages to stage
+//      RobotNode_cmdvel.linear.x = linear_x;
+//      RobotNode_cmdvel.angular.z = angular_z;
+
+      //publish the message
+    SheepOne_StageOdom_pub.publish(msg);
+}
+
+// Message from stage to sheep
+void Sheep_One_StageLaser_callback(sensor_msgs::LaserScan msg)
+{
+  //This is the callback function to process laser scan messages
+  //you can access the range data from msg.ranges[i]. i = sample number
+  SheepOne_StageLaser_pub.publish(msg);
+
+}
+
+//Sheep_One message from sheep, sending to stage
+void Sheep_One_cmd_vel_callback (geometry_msgs::Twist msg){
+  SheepOne_cmd_vel_pub.publish(msg);
+
+
+}
 int main(int argc, char **argv)
 {
 
@@ -46,18 +91,32 @@ int main(int argc, char **argv)
   angular_z = 0.2;
 
 //You must call ros::init() first of all. ros::init() function needs to see argc and argv. The third argument is the name of the node
-  ros::init(argc, argv, "RobotNode0");
+  ros::init(argc, argv, "GodNode");
 
 //NodeHandle is the main access point to communicate with ros.
   ros::NodeHandle n;
 
 //advertise() function will tell ROS that you want to publish on a given topic_
 //to stage
-  ros::Publisher RobotNode_stage_pub = n.advertise<geometry_msgs::Twist>("robot_0/cmd_vel", 1000);
+
+  SheepOne_StageOdom_pub = n.advertise<nav_msgs::Odometry>("sheep_One/odom", 1000); //To Sheep
+  SheepOne_StageLaser_pub= n.advertise<sensor_msgs::LaserScan>("sheep_One/base_scan", 1000); //To Sheep
+  SheepOne_cmd_vel_pub=n.advertise<geometry_msgs::Twist>("robot_1/cmd_vel", 1000); //To stage
+
+
+  //ros::Publisher RobotNode_stage_pub = n.advertise<geometry_msgs::Twist>("robot_0/cmd_vel", 1000);
+  //ros::Publisher RobotNode_stage_pub = n.advertise<geometry_msgs::Twist>("robot_1/cmd_vel", 1000);
+
 
 //subscribe to listen to messages coming from stage
   ros::Subscriber StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_0/odom", 1000, StageOdom_callback);
   ros::Subscriber StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_0/base_scan", 1000, StageLaser_callback);
+
+  //sheep_one
+  ros::Subscriber Sheep_One_StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_1/odom", 1000, Sheep_One_StageOdom_callback);
+  ros::Subscriber Sheep_One_StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_1/base_scan", 1000, Sheep_One_StageLaser_callback);
+  ros::Subscriber Sheep_One_cmd_vel = n.subscribe<geometry_msgs::Twist>("sheep_One/cmd_vel", 1000,Sheep_One_cmd_vel_callback);
+
 
   ros::Rate loop_rate(10);
 
@@ -75,7 +134,7 @@ int main(int argc, char **argv)
     RobotNode_cmdvel.angular.z = angular_z;
 
     //publish the message
-    RobotNode_stage_pub.publish(RobotNode_cmdvel);
+    //RobotNode_stage_pub.publish(RobotNode_cmdvel);
 
     ros::spinOnce();
 
