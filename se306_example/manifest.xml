@@ -13,7 +13,6 @@
   <depend package="roscpp"/>
   <depend package="sensor_msgs"/>
   <depend package="geometry_msgs"/>
-
 </package>
 
 
