@@ -1,0 +1,23 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+
+#ignore build folder
+/se306_example/build/
+#ignore any binary folder in the repo
+bin/
+
+#project files
+*.cproject
+*.project
+*.pydevproject
