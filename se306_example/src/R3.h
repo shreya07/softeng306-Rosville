@@ -15,21 +15,15 @@
 
 #include <sstream>
 #include "math.h"
+#include "Robot.h"
 
-class R3
+class R3:Robot
 {
 public:
-  R3(std::string robot_name, int argc, char **argv);
-  virtual ~R3();
-  void run();
+  R3(std::string robot_name, int argc, char **argv, double px, double py,int robot_number);
+  ~R3();
+  ros::NodeHandle run();
   void stageOdom_callback (nav_msgs::Odometry msg);
-  //void stageOdom_callback(nav_msgs::Odometry& msg);
-private:
-  std::string robot_name;
-  int argc;
-  char **argv;
-  std::list<ros::Subscriber> subsList;
-  std::list<ros::Publisher> pubsList;
 };
 
 #endif /* R3_H_ */
