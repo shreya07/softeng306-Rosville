@@ -15,7 +15,7 @@
 #include <sstream>
 #include "math.h"
 #include "Robot.h"
-#include <thread>
+//#include <thread>
 
 /*Constructor
  * The :RobotRobot(robot_name,argc,argv,px,py,robot_number) part at the end
@@ -65,6 +65,7 @@ ros::NodeHandle R3::run(){
     ros::spinOnce();
     loop_rate.sleep();
   }
+  //hij
   return n;
 }
 
