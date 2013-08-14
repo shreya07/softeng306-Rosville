@@ -7,6 +7,7 @@
 
 #include "Sheep1.h"
 #include "ros/ros.h"
+#include <tf/transform_broadcaster.h>
 #include "std_msgs/String.h"
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/Odometry.h>
@@ -45,6 +46,34 @@ void Sheep1::stageOdom_callback(nav_msgs::Odometry msg){
 	//int x = msg.linear.x;
 	px = 5 + msg.pose.pose.position.x;
 	py =10 + msg.pose.pose.position.y;
+	ROS_INFO("x: %f", msg.pose.pose.orientation.x);
+	ROS_INFO("y: %f", msg.pose.pose.orientation.y);
+	ROS_INFO("W: %f", msg.pose.pose.orientation.w);
+	ROS_INFO("z: %f", msg.pose.pose.orientation.z);
+	// w = 1 robot moving -x direction
+	if(msg.pose.pose.orientation.w == 1) {
+		theta = 0;
+	} else if(msg.pose.pose.orientation.w >= 0.7 && msg.pose.pose.orientation.z >= 0.7) {
+	// w = 0.7 and z = 0.7 robot moving -y direction
+		theta = 270;
+	} else if(msg.pose.pose.orientation.z <= -0.7) {
+	// z = -0.7 robot moving +y direction
+		theta = 90;
+	} else if(msg.pose.pose.orientation.w == -1){
+	// w = -1 robot moving +x direction
+		theta = 180;
+	}
+}
+
+void Sheep1::stageOdom_callback1(nav_msgs::Odometry msg){
+	if(theta == 0) {
+		if(((10+msg.pose.pose.position.y) < (py+1)) && ((10+msg.pose.pose.position.y) > (py-1))) {
+			distance = px - (3+msg.pose.pose.position.x);
+		}
+	}
+	ROS_INFO("x: %f", (3+msg.pose.pose.position.x));
+	ROS_INFO("y: %f", (10+msg.pose.pose.position.y));
+
 }
 
 void Sheep1::StageLaser_callback(sensor_msgs::LaserScan msg)
@@ -82,7 +111,7 @@ ros::NodeHandle Sheep1::run(){
   ss<<robot_name;
   //ros::Subscriber StageOdo_sub = n.subscribe<nav_msgs::Odometry>(("robot_"+ss.str()+"/message_name"),1000, R3::stageOdom_callback);
   ros::Subscriber stageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_0/odom",1000, &Sheep1::stageOdom_callback, this);
-  ros::Subscriber stageOdo_sub1 = n.subscribe<nav_msgs::Odometry>("robot_1/odom",1000, &Sheep1::stageOdom_callback, this);
+  ros::Subscriber stageOdo_sub1 = n.subscribe<nav_msgs::Odometry>("robot_1/odom",1000, &Sheep1::stageOdom_callback1, this);
 
   ros::Subscriber StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_0/base_scan",1000, &Sheep1::StageLaser_callback, this);
 
@@ -90,8 +119,10 @@ ros::NodeHandle Sheep1::run(){
   it = subsList.end();
   subsList.insert(it,stageOdo_sub);
 
-
+  double th = 90*M_PI/2.0;
   ros::Rate loop_rate(10);
+  nav_msgs::Odometry odom;
+  geometry_msgs::Quaternion odom_quat;
 
   /*define the while loop here*/
   while (ros::ok())
@@ -102,8 +133,10 @@ ros::NodeHandle Sheep1::run(){
 
 	  if(distance <= 1.0) {
 		  RobotNode_cmdvel.linear.x = 1.0;
-	  		RobotNode_cmdvel.linear.y = -1.0;
-	  		RobotNode_cmdvel.angular.z = 3.0;
+	  		RobotNode_cmdvel.linear.y = 0.0;
+	  		RobotNode_cmdvel.angular.z = 5.0;
+	  		//odom_quat = tf::createQuaternionMsgFromYaw(th);
+	  		//odom.pose.pose.orientation = odom_quat;
 	  	} else {
 	  		RobotNode_cmdvel.linear.x = linear_x;
 	  		RobotNode_cmdvel.linear.y = 0.2;
