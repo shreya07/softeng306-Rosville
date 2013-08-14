@@ -23,6 +23,7 @@ Robot::Robot(std::string robot_name, int argc, char **argv, double px, double py
   this-> px = px;
   this->py = py;
   this->robot_number = robot_number;
+
 }
 
 Robot::~Robot()

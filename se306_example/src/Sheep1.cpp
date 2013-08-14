@@ -28,6 +28,7 @@ Sheep1::Sheep1(std::string robot_name, int argc, char **argv,double px,double py
     //can do extra stuff here if you like
 	//this-> x = px;
 	//this-> y = py;
+	distance = 30;
 }
 /*destrustor
  * I have not implemented it here but you should*/
@@ -41,6 +42,11 @@ void Sheep1::stageOdom_callback(nav_msgs::Odometry msg){
 	//int x = msg.linear.x;
 	px = 5 + msg.pose.pose.position.x;
 	py =10 + msg.pose.pose.position.y;
+}
+
+void Sheep1::StageLaser_callback(sensor_msgs::LaserScan msg)
+{
+	//distance = msg.ranges[0];
 }
 
 /*The run method that we use to run the robot*/
@@ -67,8 +73,11 @@ ros::NodeHandle Sheep1::run(){
   std::stringstream ss;
   ss<<robot_name;
   //ros::Subscriber StageOdo_sub = n.subscribe<nav_msgs::Odometry>(("robot_"+ss.str()+"/message_name"),1000, R3::stageOdom_callback);
-  ros::Subscriber stageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_0/odom",1000, &Sheep1::stageOdom_callback);
-  ros::Subscriber stageOdo_sub1 = n.subscribe<nav_msgs::Odometry>("robot_1/odom",1000, &Sheep1::stageOdom_callback);
+  ros::Subscriber stageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_0/odom",1000, &Sheep1::stageOdom_callback, this);
+  ros::Subscriber stageOdo_sub1 = n.subscribe<nav_msgs::Odometry>("robot_1/odom",1000, &Sheep1::stageOdom_callback, this);
+
+  ros::Subscriber StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_0/base_scan",1000, &Sheep1::StageLaser_callback, this);
+
   std::list<ros::Subscriber>::iterator it;
   it = subsList.end();
   subsList.insert(it,stageOdo_sub);
