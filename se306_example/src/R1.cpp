@@ -68,15 +68,9 @@ int count = 0;
 ////messages
 //velocity of this RobotNode
 geometry_msgs::Twist RobotNode_cmdvel;
-int i = 0;
+
 while (ros::ok())
 {
-        if (i%30==0)
-        {
-              linear_x = -linear_x;
-              angular_z = - angular_z;
-        }
-        i++;
 	//messages to stage
 	RobotNode_cmdvel.linear.x = linear_x;
 	RobotNode_cmdvel.angular.z = angular_z;
