@@ -92,7 +92,7 @@ int main(int argc, char **argv)
 	for(i=0; i<5; i++) {
 		std::stringstream ss;
 		ss<<i;
-		Sheep1 robot = Sheep1(("RobotNode"+ss.str()),argc,argv,0.00,0.00,i);
+		Sheep1 robot = Sheep1(("RobotNode"+ss.str()),argc,argv,(i+2),(i+2),i);
 
 		robot.run();
 	}
