@@ -2,8 +2,8 @@ define mylaser ranger
 (
   sensor(
   range [ 0.0 30.0 ] # range
-  fov 180       # field of vision
-  samples 180   # samples 
+  fov 360       # field of vision
+  samples 360   # samples 
   )
   # generic model properties
   color "black"
@@ -13,7 +13,7 @@ define mylaser ranger
 
 define myRobot position
 (
-  size [0.35 0.35 0.25]
+  size [0.35 0.7 0.25] # size of the robot
   drive "diff"
   mylaser(pose [ 0.050 0.000 0 0.000 ])
 )
@@ -62,4 +62,4 @@ myRobot( pose [ 5 10 0 0 ] name "r0" color "blue")
 myRobot( pose [ 15 20 0 0 ] name "r1" color "green")
 myRobot( pose [ 10 30 0 0 ] name "r2" color "black")
 myRobot( pose [ 25 16 0 0 ] name "r3" color "yellow")
-myRobot( pose [ 5 28 0 0 ] name "r4" color "brown")
+myRobot( pose [ 6 8 0 0 ] name "Farmer" color "red" bitmap "farmer.png")
