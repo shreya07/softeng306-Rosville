@@ -21,6 +21,10 @@ class Sheep1:Robot
 {
 public:
 	double distance;
+	geometry_msgs::Twist RobotNode_cmdvel;
+	double linear_x;
+	double angular_z;
+	double theta;
 	void StageLaser_callback(sensor_msgs::LaserScan msg);
   Sheep1(std::string robot_name, int argc, char **argv, double px, double py,int robot_number);
   ~Sheep1();

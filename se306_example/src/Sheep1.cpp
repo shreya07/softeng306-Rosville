@@ -29,6 +29,9 @@ Sheep1::Sheep1(std::string robot_name, int argc, char **argv,double px,double py
 	//this-> x = px;
 	//this-> y = py;
 	distance = 30;
+	linear_x = -0.2;
+	angular_z = 0.0;
+	theta = 120.0*M_PI/180.0;
 }
 /*destrustor
  * I have not implemented it here but you should*/
@@ -46,7 +49,12 @@ void Sheep1::stageOdom_callback(nav_msgs::Odometry msg){
 
 void Sheep1::StageLaser_callback(sensor_msgs::LaserScan msg)
 {
-	//distance = msg.ranges[0];
+	int i;
+	for(i=0; i<10; i++) {
+		distance += msg.ranges[i];
+		//ROS_INFO("distance: %f", msg.ranges[i]);
+	}
+	distance = distance/10;
 }
 
 /*The run method that we use to run the robot*/
@@ -68,7 +76,7 @@ ros::NodeHandle Sheep1::run(){
    * But you must add them to the publisherList*/
 //advertise() function will tell ROS that you want to publish on a given topic_
 		//to stage
-		ros::Publisher RobotNode_stage_pub = n.advertise<geometry_msgs::Twist>("robot_0/cmd_vel",1000);
+  ros::Publisher RobotNode_stage_pub = n.advertise<geometry_msgs::Twist>("robot_0/cmd_vel",1000);
 
   std::stringstream ss;
   ss<<robot_name;
@@ -88,6 +96,20 @@ ros::NodeHandle Sheep1::run(){
   /*define the while loop here*/
   while (ros::ok())
   {
+
+	 // RobotNode_cmdvel.angular.x = 0.2;
+	  //RobotNode_cmdvel.angular.y = 0.5;
+
+	  if(distance <= 1.0) {
+		  RobotNode_cmdvel.linear.x = 1.0;
+	  		RobotNode_cmdvel.linear.y = -1.0;
+	  		RobotNode_cmdvel.angular.z = 3.0;
+	  	} else {
+	  		RobotNode_cmdvel.linear.x = linear_x;
+	  		RobotNode_cmdvel.linear.y = 0.2;
+	  		RobotNode_cmdvel.angular.z = angular_z;
+	  	}
+	  RobotNode_stage_pub.publish(RobotNode_cmdvel);
     //ROS_INFO("OK");
     ros::spinOnce();
     loop_rate.sleep();
@@ -97,14 +119,11 @@ ros::NodeHandle Sheep1::run(){
 
 int main(int argc, char **argv)
 {
-	int i;
-	for(i=0; i<5; i++) {
-		std::stringstream ss;
-		ss<<i;
-		Sheep1 robot = Sheep1(("RobotNode"+ss.str()),argc,argv,(i+2),(i+2),i);
+		Sheep1 robot = Sheep1("RobotNode0",argc,argv,2,2,0);
 
 		robot.run();
-	}
   return 0;
 }
+
+
 
