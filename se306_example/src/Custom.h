@@ -38,11 +38,11 @@ struct Custom_ {
   typedef std::basic_string<char, std::char_traits<char>, typename ContainerAllocator::template rebind<char>::other >  _robot_name_type;
   std::basic_string<char, std::char_traits<char>, typename ContainerAllocator::template rebind<char>::other >  robot_name;
 
-  typedef int64_t _px_type;
-  int64_t px;
+  typedef double _px_type;
+  double px;
 
-  typedef int64_t _py_type;
-  int64_t py;
+  typedef double _py_type;
+  double py;
 
 
   typedef boost::shared_ptr< ::se306_example::Custom_<ContainerAllocator> > Ptr;

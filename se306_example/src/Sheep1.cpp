@@ -80,6 +80,7 @@ void Sheep1::stageOdom_callback1(se306_example::Custom grass){
 			distance = px - (grass.px);
 		}
 	}
+	ROS_INFO("name: %c", grass.robot_name.c_str());
 	ROS_INFO("x: %f", grass.px);
 	ROS_INFO("y: %f", grass.py);
 
@@ -87,12 +88,12 @@ void Sheep1::stageOdom_callback1(se306_example::Custom grass){
 
 void Sheep1::StageLaser_callback(sensor_msgs::LaserScan msg)
 {
-	int i;
+	/*int i;
 	for(i=0; i<10; i++) {
-		distance += msg.ranges[i];
+		distance = msg.ranges[0];
 		//ROS_INFO("distance: %f", msg.ranges[i]);
-	}
-	distance = distance/10;
+	}*/
+	distance = msg.ranges[0];
 }
 
 /*The run method that we use to run the robot*/

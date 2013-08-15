@@ -72,7 +72,7 @@ int count = 0;
 geometry_msgs::Twist RobotNode_cmdvel;
 nav_msgs::Odometry odom;
 se306_example::Custom grass;
-grass.robot_name = "r1";
+//grass.robot_name = "r1";
 int i = 0;
 while (ros::ok())
 {
