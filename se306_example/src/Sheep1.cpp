@@ -34,6 +34,8 @@ Sheep1::Sheep1(std::string robot_name, int argc, char **argv,double px,double py
 	linear_x = -0.2;
 	angular_z = 0.0;
 	theta = 120.0*M_PI/180.0;
+	constLinear = -0.2;
+	nodeDistance = 30;
 }
 /*destrustor
  * I have not implemented it here but you should*/
@@ -74,13 +76,34 @@ void Sheep1::stageOdom_callback1(se306_example::Custom grass){
 	}
 	ROS_INFO("x: %f", (3+msg.pose.pose.position.x));
 	ROS_INFO("y: %f", (10+msg.pose.pose.position.y));*/
+	double tempDistanceX = px - grass.px;
+	double tempDistanceY = py - grass.py;
 
-	if(theta == 0) {
-		if(((grass.py) < (py+1)) && ((grass.py) > (py-1))) {
+		/*if(((grass.py) < (py+1)) && ((grass.py) > (py-1))) {
 			distance = px - (grass.px);
+		}*/
+
+	if(tempDistanceX <= 0.5 && tempDistanceX >= -0.5) {
+		if (tempDistanceY <= 0.5 && tempDistanceY >= -0.5) {
+			nodeDistance = tempDistanceX;
+			int i;
+			RobotNode_cmdvel.angular.z = 0.0;
+			RobotNode_cmdvel.linear.x = 0.0;
+			RobotNode_stage_pub.publish(RobotNode_cmdvel);
+			while(i<10000) {
+				RobotNode_cmdvel.angular.z = 0.0;
+				RobotNode_cmdvel.linear.x = 0.0;
+				RobotNode_stage_pub.publish(RobotNode_cmdvel);
+				i++;
+			}
+			RobotNode_cmdvel.linear.x = - (constLinear - 1.5);
+			RobotNode_cmdvel.angular.z = 45.0;
+			RobotNode_stage_pub.publish(RobotNode_cmdvel);
+			return;
 		}
 	}
-	ROS_INFO("name: %c", grass.robot_name.c_str());
+	nodeDistance = tempDistanceX;
+	//ROS_INFO("name: %c", grass.robot_name.c_str());
 	ROS_INFO("x: %f", grass.px);
 	ROS_INFO("y: %f", grass.py);
 
@@ -94,6 +117,11 @@ void Sheep1::StageLaser_callback(sensor_msgs::LaserScan msg)
 		//ROS_INFO("distance: %f", msg.ranges[i]);
 	}*/
 	distance = msg.ranges[0];
+}
+
+void turnSheep(void) {
+	//RobotNode_cmdvel
+	//RobotNode_stage_pub.publish(RobotNode_cmdvel);
 }
 
 /*The run method that we use to run the robot*/
@@ -115,7 +143,7 @@ ros::NodeHandle Sheep1::run(){
    * But you must add them to the publisherList*/
 //advertise() function will tell ROS that you want to publish on a given topic_
 		//to stage
-  ros::Publisher RobotNode_stage_pub = n.advertise<geometry_msgs::Twist>("robot_0/cmd_vel",1000);
+  RobotNode_stage_pub = n.advertise<geometry_msgs::Twist>("robot_0/cmd_vel",1000);
   //ros::Publisher RobotNode_stage_pub1 = n.advertise<geometry_msgs::Twist>("grass",1000);
   ros::Publisher RobotNode_stage_pub1 = n.advertise<se306_example::Custom>("sheep", 1000);
 
@@ -144,18 +172,20 @@ ros::NodeHandle Sheep1::run(){
 
 	 // RobotNode_cmdvel.angular.x = 0.2;
 	  //RobotNode_cmdvel.angular.y = 0.5;
-
-	  if(distance <= 1.0) {
-		  RobotNode_cmdvel.linear.x = 0.5;
-	  		RobotNode_cmdvel.linear.y = 0.0;
-	  		RobotNode_cmdvel.angular.z = 18.0;
-	  		//odom_quat = tf::createQuaternionMsgFromYaw(th);
-	  		//odom.pose.pose.orientation = odom_quat;
-	  	} else {
+	  if(distance <= 1) {
+		  angular_z = 45.0;
+		  linear_x = - (constLinear - 0.5);
+	  } else if(nodeDistance <= 0.5){
+		  linear_x = - (constLinear - 1.5);
+		  angular_z = 45.0;
+	  } else {
+		  linear_x = constLinear;
+		  angular_z = 0;
+	  }
 	  		RobotNode_cmdvel.linear.x = linear_x;
 	  		RobotNode_cmdvel.linear.y = 0.2;
 	  		RobotNode_cmdvel.angular.z = angular_z;
-	  	}
+
 	  RobotNode_stage_pub.publish(RobotNode_cmdvel);
 	  //RobotNode_stage_pub.publish(grass);
     //ROS_INFO("OK");

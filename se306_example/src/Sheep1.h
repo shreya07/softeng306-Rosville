@@ -24,14 +24,18 @@ public:
 	double distance;
 	geometry_msgs::Twist RobotNode_cmdvel;
 	double linear_x;
+	double constLinear;
 	double angular_z;
 	double theta;
+	double nodeDistance;
+	ros::Publisher RobotNode_stage_pub;
 	void StageLaser_callback(sensor_msgs::LaserScan msg);
   Sheep1(std::string robot_name, int argc, char **argv, double px, double py,int robot_number);
   ~Sheep1();
   ros::NodeHandle run();
   void stageOdom_callback (nav_msgs::Odometry msg);
   void stageOdom_callback1 (se306_example::Custom grass);
+  void turnSheep(void);
 
 
   //double y;
