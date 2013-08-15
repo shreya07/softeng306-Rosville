@@ -1,0 +1,6 @@
+<launch>
+<node name="my_node_name" pkg="se306_example" type="R0" output="screen"/>
+
+<node name="Grass" pkg="se306_example" type="Grass" output="screen"/>
+
+</launch>
