@@ -16,6 +16,7 @@ define myRobot position
   size [0.35 0.7 0.25] # size of the robot
   drive "diff"
   mylaser(pose [ 0.050 0.000 0 0.000 ])
+  ranger_return 1
 )
 
 define floorplan model
@@ -58,8 +59,16 @@ floorplan
   pose [ -29.350 27.000 0 90.000 ]
 )
 # throw in a robot
+<<<<<<< HEAD
 myRobot( pose [ 5 10 0 0 ] name "r0" color "blue")
 myRobot( pose [ 15 20 0 0 ] name "r1" color "green")
 myRobot( pose [ 10 30 0 0 ] name "r2" color "black")
 myRobot( pose [ 25 16 0 0 ] name "r3" color "yellow")
 myRobot( pose [ 6 8 0 0 ] name "Farmer" color "red" bitmap "farmer.png")
+=======
+myRobot( pose [ 5 10 0 0.0 ] name "sheep1" color "blue" bitmap "sheep.png")
+myRobot( pose [ 3 10 0 0.0 ] name "R1" color "green")
+myRobot( pose [ 5 15 0 0 ] name "r2" color "black")
+myRobot( pose [ 10 10 0 180.0 ] name "r3" color "yellow")
+myRobot( pose [ 5 5 0 0 ] name "r4" color "brown")
+>>>>>>> e69fd9dfd56fa06efd925598d219d98bf9b2940b
