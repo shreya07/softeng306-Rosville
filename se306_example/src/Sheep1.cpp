@@ -132,9 +132,9 @@ ros::NodeHandle Sheep1::run(){
 	  //RobotNode_cmdvel.angular.y = 0.5;
 
 	  if(distance <= 1.0) {
-		  RobotNode_cmdvel.linear.x = 1.0;
+		  RobotNode_cmdvel.linear.x = 0.5;
 	  		RobotNode_cmdvel.linear.y = 0.0;
-	  		RobotNode_cmdvel.angular.z = 5.0;
+	  		RobotNode_cmdvel.angular.z = 180.0;
 	  		//odom_quat = tf::createQuaternionMsgFromYaw(th);
 	  		//odom.pose.pose.orientation = odom_quat;
 	  	} else {
