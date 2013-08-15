@@ -27,7 +27,7 @@ public:
 	double angular_z;
 	double theta;
 	void StageLaser_callback(sensor_msgs::LaserScan msg);
-  Sheep1(std::string robot_name, int argc, char **argv, double px, double py,int robot_number);
+  Sheep1(std::string robot_name, int argc, char **argv, double px, double py,std::string robot_number);
   ~Sheep1();
   ros::NodeHandle run();
   void stageOdom_callback (nav_msgs::Odometry msg);

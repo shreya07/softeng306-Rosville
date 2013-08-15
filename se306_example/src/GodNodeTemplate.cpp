@@ -15,6 +15,7 @@
 //subscriberCallBacksMethods
 //-----[END] Subscriber callbacks
 
+ros::Publisher Weather_publisher;//To Sheep
 
 int main(int argc, char **argv)
 {
@@ -31,6 +32,7 @@ int main(int argc, char **argv)
   //Setting up subscribers...
   //SetupSubscribers
 
+  Weather_publisher = n.advertise<std_msgs::String>("weather/status", 1000); //To SheepOne
 
   ros::Rate loop_rate(10);
 
@@ -39,13 +41,27 @@ int main(int argc, char **argv)
 
   ////messages
   //velocity of this RobotNode
-
+  std_msgs::String status;
+  status.data="Sunny";
   while (ros::ok())
   {
-    ros::spinOnce();
+    if (count%30==0)
+        {
+          status.data="Rainy";
+          Weather_publisher.publish(status);
 
-    loop_rate.sleep();
-    ++count;
+          ROS_INFO("rainy");
+        }else if (count%59){
+          status.data="Sunny";
+          ROS_INFO("sunny");
+          Weather_publisher.publish(status);
+
+        }
+
+        ros::spinOnce();
+
+        loop_rate.sleep();
+        count=count+1;
   }
 
   return 0;

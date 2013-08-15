@@ -25,7 +25,7 @@
  * if you are unsure of what that means look it up in the link provided
  * http://docs.oracle.com/javase/tutorial/java/IandI/super.html
  *  */
-Sheep1::Sheep1(std::string robot_name, int argc, char **argv,double px,double py, int robot_number):Robot(robot_name,argc,argv,px,py,robot_number)
+Sheep1::Sheep1(std::string robot_name, int argc, char **argv,double px,double py, std::string robot_number):Robot(robot_name,argc,argv,px,py,robot_number)
 {
     //can do extra stuff here if you like
 	//this-> x = px;
@@ -114,21 +114,21 @@ ros::NodeHandle Sheep1::run(){
    * But you must add them to the publisherList*/
 //advertise() function will tell ROS that you want to publish on a given topic_
 		//to stage
-  ros::Publisher RobotNode_stage_pub = n.advertise<geometry_msgs::Twist>("robot_0/cmd_vel",1000);
+  ros::Publisher RobotNode_stage_pub = n.advertise<geometry_msgs::Twist>(robot_name+robot_number+"/cmd_vel",1000);
   //ros::Publisher RobotNode_stage_pub1 = n.advertise<geometry_msgs::Twist>("grass",1000);
   ros::Publisher RobotNode_stage_pub1 = n.advertise<se306_example::Custom>("sheep", 1000);
 
   std::stringstream ss;
   ss<<robot_name;
   //ros::Subscriber StageOdo_sub = n.subscribe<nav_msgs::Odometry>(("robot_"+ss.str()+"/message_name"),1000, R3::stageOdom_callback);
-  ros::Subscriber stageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_0/odom",1000, &Sheep1::stageOdom_callback, this);
+  //ros::Subscriber stageOdo_sub = n.subscribe<nav_msgs::Odometry>(robot_name+robot_number+"/cmd_vel",1000, &Sheep1::stageOdom_callback, this);
   ros::Subscriber stageOdo_sub1 = n.subscribe<se306_example::Custom>("grass",1000, &Sheep1::stageOdom_callback1, this);
 
-  ros::Subscriber StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_0/base_scan",1000, &Sheep1::StageLaser_callback, this);
+  ros::Subscriber StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>(robot_name+robot_number+"/base_scan",1000, &Sheep1::StageLaser_callback, this);
 
-  std::list<ros::Subscriber>::iterator it;
-  it = subsList.end();
-  subsList.insert(it,stageOdo_sub);
+  //std::list<ros::Subscriber>::iterator it;
+  //it = subsList.end();
+  //subsList.insert(it,stageOdo_sub);
 
   //double th = 90*M_PI/2.0;
   ros::Rate loop_rate(10);
@@ -166,7 +166,7 @@ ros::NodeHandle Sheep1::run(){
 
 int main(int argc, char **argv)
 {
-		Sheep1 robot = Sheep1("RobotNode0",argc,argv,2,2,0);
+		Sheep1 robot = Sheep1("Sheep",argc,argv,5,10,"One");
 
 		robot.run();
   return 0;

@@ -27,7 +27,7 @@ public:
   * px, py is the original position of the robot
   * robot_number is the numebr of the robot that you created
   * for example if your robot_name ="RobotNode1" then your robot_number is 1*/
-  Robot(std::string robot_name, int argc, char **argv,double px,double py, int robot_number);
+  Robot(std::string robot_name, int argc, char **argv,double px,double py, std::string robot_number);
 
   /*destructor
    * This is to free up memory, please implement this and free up all your memory
@@ -45,7 +45,7 @@ protected:
   char **argv;
   double px;
   double py;
-  int robot_number;
+  std::string robot_number;
 
   /*lists of subscribers and publishers, please remember to add your publishers and
    * subscribers to this list*/
