@@ -1,11 +1,11 @@
 /*
- * R3.cpp
+ * Truck.cpp
  *
- *  Created on: 12/08/2013
- *      Author: wasiq
+ *  Created on: Aug 14, 2013
+ *      Author: surbhi
  */
 
-#include "R3.h"
+#include "Truck.h"
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 #include <geometry_msgs/Twist.h>
@@ -24,24 +24,24 @@
  * if you are unsure of what that means look it up in the link provided
  * http://docs.oracle.com/javase/tutorial/java/IandI/super.html
  *  */
-R3::R3(std::string robot_name, int argc, char **argv,double px,double py, int robot_number):Robot(robot_name,argc,argv,px,py,robot_number)
+Truck::Truck(std::string robot_name, int argc, char **argv,double px,double py, int robot_number):Robot(robot_name,argc,argv,px,py,robot_number)
 {
     //can do extra stuff here if you like
 }
 /*destrustor
  * I have not implemented it here but you should*/
-R3::~R3()
+Truck::~Truck()
 {
   // TODO Auto-generated destructor stub
 }
 
 /*Callback method for the robots position*/
-void R3::stageOdom_callback(nav_msgs::Odometry msg){
-  ROS_INFO("HELLO");
+void Truck::stageOdom_callback(nav_msgs::Odometry msg){
+  ROS_INFO("HELLO! TRUCK RUNNING");
 }
 
 /*The run method that we use to run the robot*/
-ros::NodeHandle R3::run(){
+ros::NodeHandle Truck::run(){
   /*always call this line it defines the Nodehandler
    * it also creates the callback for the postion message*/
   ros::NodeHandle n = Robot::run();
@@ -71,7 +71,7 @@ ros::NodeHandle R3::run(){
 
 int main(int argc, char **argv)
 {
-  R3 robot = R3("RobotNode3",argc,argv,0.00,0.00,3);
+  Truck robot = Truck("RobotTruck",argc,argv,0.00,0.00,3);
   robot.run();
   return 0;
 }

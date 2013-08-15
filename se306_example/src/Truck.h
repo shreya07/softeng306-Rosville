@@ -1,12 +1,13 @@
 /*
- * R3.h
+ * Truck.h
  *
- *  Created on: 12/08/2013
- *      Author: wasiq
+ *  Created on: Aug 14, 2013
+ *      Author: surbhi
  */
 
-#ifndef R3_H_
-#define R3_H_
+#ifndef TRUCK_H_
+#define TRUCK_H_
+
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 #include <geometry_msgs/Twist.h>
@@ -17,13 +18,13 @@
 #include "math.h"
 #include "Robot.h"
 
-class R3:Robot
+class Truck:Robot
 {
 public:
-  R3(std::string robot_name, int argc, char **argv, double px, double py,int robot_number);
-  ~R3();
+  Truck(std::string robot_name, int argc, char **argv, double px, double py,int robot_number);
+  ~Truck();
   ros::NodeHandle run();
   void stageOdom_callback (nav_msgs::Odometry msg);
 };
 
-#endif /* R3_H_ */
+#endif /* TRUCK_H_ */

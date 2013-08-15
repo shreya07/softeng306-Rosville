@@ -38,8 +38,7 @@ ros::NodeHandle Robot::run(){
 
   /*The next two lines convert an int to a String*/
   std::stringstream ss;
-  ss<<robot_name;
-
+  ss<<robot_number;
   //subscribe to the position message of this class
   ros::Subscriber StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_"+ss.str()+"/odom",1000, &Robot::stageOdom_callback,this);
 
