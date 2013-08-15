@@ -3,6 +3,7 @@
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/Odometry.h>
 #include <sensor_msgs/LaserScan.h>
+#include "Grass.h"
 
 #include <sstream>
 #include "math.h"
@@ -55,7 +56,7 @@ ros::NodeHandle n;
 //advertise() function will tell ROS that you want to publish on a given topic_
 //to stage
 ros::Publisher RobotNode_stage_pub = n.advertise<geometry_msgs::Twist>("robot_1/cmd_vel",1000); 
-ros::Publisher Rob = n.advertise<nav_msgs::Odometry>("robot_1/odom", 1000);
+ros::Publisher Rob = n.advertise<se306_example::Grass>("grass", 1000);
 
 //subscribe to listen to messages coming from stage
 ros::Subscriber StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_1/odom",1000, StageOdom_callback);
@@ -70,6 +71,8 @@ int count = 0;
 //velocity of this RobotNode
 geometry_msgs::Twist RobotNode_cmdvel;
 nav_msgs::Odometry odom;
+se306_example::Grass grass;
+grass.robot_name = "r1";
 int i = 0;
 while (ros::ok())
 {
@@ -85,9 +88,12 @@ while (ros::ok())
 
 	//odom.pose.pose.position.x = px;
 	//odom.pose.pose.position.y = py;
+
+	grass.px = px;
+	grass.py = py;
         
 	//publish the message
-	//Rob.publish(odom);
+	Rob.publish(grass);
 	//RobotNode_stage_pub.publish(RobotNode_cmdvel);
 	
 	ros::spinOnce();
