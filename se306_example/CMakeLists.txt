@@ -34,4 +34,14 @@ rosbuild_add_executable(R2 src/R2.cpp)
 rosbuild_add_executable(R3 src/R3.cpp src/Robot.cpp)
 rosbuild_add_executable(Truck src/Truck.cpp src/Robot.cpp)
 rosbuild_add_executable(Sheep1 src/Sheep1.cpp src/Robot.cpp)
-rosbuild_add_gtest(test/TestFarmer test/TestFarmer.cpp)
+
+#---------------------Add Tests------------------------------------
+
+# add the test executable, keep it from being built by "make all"
+rosbuild_add_executable(TestTruck EXCLUDE_FROM_ALL src/test/TestTruck.cpp)
+
+# Link test_mynode against gtest and add a dependency to the "test" target
+rosbuild_add_gtest_build_flags(TestTruck)
+
+# Make sure rostest launches test/mynode.test during "make test"
+rosbuild_add_rostest(test/Truck.test)
