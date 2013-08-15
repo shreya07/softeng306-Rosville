@@ -34,4 +34,4 @@ rosbuild_add_executable(R2 src/R2.cpp)
 rosbuild_add_executable(R3 src/R3.cpp src/Robot.cpp)
 rosbuild_add_executable(Truck src/Truck.cpp src/Robot.cpp)
 rosbuild_add_executable(Sheep1 src/Sheep1.cpp src/Robot.cpp)
-
+rosbuild_add_gtest(test/TestFarmer test/TestFarmer.cpp)
