@@ -12,6 +12,7 @@
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/Odometry.h>
 #include <sensor_msgs/LaserScan.h>
+#include "Custom.h"
 
 #include <sstream>
 #include "math.h"
@@ -24,7 +25,7 @@
  * if you are unsure of what that means look it up in the link provided
  * http://docs.oracle.com/javase/tutorial/java/IandI/super.html
  *  */
-Sheep1::Sheep1(std::string robot_name, int argc, char **argv,double px,double py, int robot_number):Robot(robot_name,argc,argv,px,py,robot_number)
+Sheep1::Sheep1(std::string robot_name, int argc, char **argv,double px,double py, std::string robot_number):Robot(robot_name,argc,argv,px,py,robot_number)
 {
     //can do extra stuff here if you like
 	//this-> x = px;
@@ -33,6 +34,9 @@ Sheep1::Sheep1(std::string robot_name, int argc, char **argv,double px,double py
 	linear_x = -0.2;
 	angular_z = 0.0;
 	theta = 120.0*M_PI/180.0;
+	constLinear = -0.2;
+	nodeDistance = 30;
+
 }
 /*destrustor
  * I have not implemented it here but you should*/
@@ -65,25 +69,59 @@ void Sheep1::stageOdom_callback(nav_msgs::Odometry msg){
 	}
 }
 
-void Sheep1::stageOdom_callback1(nav_msgs::Odometry msg){
-	if(theta == 0) {
-		if(((10+msg.pose.pose.position.y) < (py+1)) && ((10+msg.pose.pose.position.y) > (py-1))) {
-			distance = px - (3+msg.pose.pose.position.x);
+void Sheep1::stageOdom_callback1(se306_example::Custom grass){
+
+	double tempDistanceX = px - grass.px;
+	double tempDistanceY = py - grass.py;
+
+		/*if(((grass.py) < (py+1)) && ((grass.py) > (py-1))) {
+			distance = px - (grass.px);
+		}*/
+	nodeDistance = sqrt((tempDistanceX*tempDistanceX) + (tempDistanceY*tempDistanceY));
+	if(nodeDistance <= 0.5) {
+		int i;
+		while(i<50) {
+			RobotNode_cmdvel.linear.x = 0.0;
+			RobotNode_cmdvel.angular.z = 0.0;
+			RobotNode_stage_pub.publish(RobotNode_cmdvel);
+			i++;
 		}
 	}
-	ROS_INFO("x: %f", (3+msg.pose.pose.position.x));
-	ROS_INFO("y: %f", (10+msg.pose.pose.position.y));
+	double thetaNew = atan(grass.px/grass.py);
+	ROS_INFO("%f", thetaNew);
+	/*if(tempDistanceY <= 0) {
+		//RobotNode_cmdvel.linear.x = .0;
+		RobotNode_cmdvel.angular.z = 45.0;
+		RobotNode_stage_pub.publish(RobotNode_cmdvel);
+	}*/
+
+
+		/*if(tempDistanceX <= 0.5 && tempDistanceY <= 0.5) {
+			if(theta == 0) {
+				nodeDistance = tempDistanceX;
+			}
+		}
+		nodeDistance = tempDistanceX;*/
+
+	//ROS_INFO("name: %c", grass.robot_name.c_str());
+	ROS_INFO("x: %f", grass.px);
+	ROS_INFO("y: %f", grass.py);
 
 }
 
 void Sheep1::StageLaser_callback(sensor_msgs::LaserScan msg)
 {
-	int i;
+	/*int i;
 	for(i=0; i<10; i++) {
-		distance += msg.ranges[i];
+		distance = msg.ranges[0];
 		//ROS_INFO("distance: %f", msg.ranges[i]);
-	}
-	distance = distance/10;
+	}*/
+	distance = msg.ranges[0];
+}
+
+void turnSheep(void) {
+	//RobotNode_cmdvel
+	//RobotNode_stage_pub.publish(RobotNode_cmdvel);
 }
 
 /*The run method that we use to run the robot*/
@@ -105,24 +143,28 @@ ros::NodeHandle Sheep1::run(){
    * But you must add them to the publisherList*/
 //advertise() function will tell ROS that you want to publish on a given topic_
 		//to stage
-  ros::Publisher RobotNode_stage_pub = n.advertise<geometry_msgs::Twist>("robot_0/cmd_vel",1000);
+  ros::Publisher RobotNode_stage_pub = n.advertise<geometry_msgs::Twist>(robot_name+robot_number+"/cmd_vel",1000);
+  //ros::Publisher RobotNode_stage_pub1 = n.advertise<geometry_msgs::Twist>("grass",1000);
+  ros::Publisher RobotNode_stage_pub1 = n.advertise<se306_example::Custom>("sheep", 1000);
 
   std::stringstream ss;
   ss<<robot_name;
   //ros::Subscriber StageOdo_sub = n.subscribe<nav_msgs::Odometry>(("robot_"+ss.str()+"/message_name"),1000, R3::stageOdom_callback);
-  ros::Subscriber stageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_0/odom",1000, &Sheep1::stageOdom_callback, this);
-  ros::Subscriber stageOdo_sub1 = n.subscribe<nav_msgs::Odometry>("robot_1/odom",1000, &Sheep1::stageOdom_callback1, this);
+  //ros::Subscriber stageOdo_sub = n.subscribe<nav_msgs::Odometry>(robot_name+robot_number+"/cmd_vel",1000, &Sheep1::stageOdom_callback, this);
+  ros::Subscriber stageOdo_sub1 = n.subscribe<se306_example::Custom>("grass",1000, &Sheep1::stageOdom_callback1, this);
 
-  ros::Subscriber StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_0/base_scan",1000, &Sheep1::StageLaser_callback, this);
+  ros::Subscriber StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>(robot_name+robot_number+"/base_scan",1000, &Sheep1::StageLaser_callback, this);
 
-  std::list<ros::Subscriber>::iterator it;
-  it = subsList.end();
-  subsList.insert(it,stageOdo_sub);
+  //std::list<ros::Subscriber>::iterator it;
+  //it = subsList.end();
+  //subsList.insert(it,stageOdo_sub);
 
-  double th = 90*M_PI/2.0;
+  //double th = 90*M_PI/2.0;
   ros::Rate loop_rate(10);
   nav_msgs::Odometry odom;
   geometry_msgs::Quaternion odom_quat;
+
+  //se306_example::Grass grass;
 
   /*define the while loop here*/
   while (ros::ok())
@@ -130,19 +172,22 @@ ros::NodeHandle Sheep1::run(){
 
 	 // RobotNode_cmdvel.angular.x = 0.2;
 	  //RobotNode_cmdvel.angular.y = 0.5;
-
-	  if(distance <= 1.0) {
-		  RobotNode_cmdvel.linear.x = 1.0;
-	  		RobotNode_cmdvel.linear.y = 0.0;
-	  		RobotNode_cmdvel.angular.z = 5.0;
-	  		//odom_quat = tf::createQuaternionMsgFromYaw(th);
-	  		//odom.pose.pose.orientation = odom_quat;
-	  	} else {
+	  if(distance <= 1) {
+		  angular_z = 45.0;
+		  linear_x = - (constLinear - 0.8);
+	  } else if(nodeDistance <= 0.5){
+		  linear_x = - (constLinear - 0.8);
+		  angular_z = 45.0;
+	  } else {
+		  linear_x = constLinear;
+		  angular_z = 0.0;
+	  }
 	  		RobotNode_cmdvel.linear.x = linear_x;
-	  		RobotNode_cmdvel.linear.y = 0.2;
+	  		//RobotNode_cmdvel.linear.y = 0.2;
 	  		RobotNode_cmdvel.angular.z = angular_z;
-	  	}
+
 	  RobotNode_stage_pub.publish(RobotNode_cmdvel);
+	  //RobotNode_stage_pub.publish(grass);
     //ROS_INFO("OK");
     ros::spinOnce();
     loop_rate.sleep();
@@ -152,7 +197,7 @@ ros::NodeHandle Sheep1::run(){
 
 int main(int argc, char **argv)
 {
-		Sheep1 robot = Sheep1("RobotNode0",argc,argv,2,2,0);
+		Sheep1 robot = Sheep1("Sheep",argc,argv,5,10,"One");
 
 		robot.run();
   return 0;

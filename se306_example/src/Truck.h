@@ -21,7 +21,7 @@
 class Truck:Robot
 {
 public:
-  Truck(std::string robot_name, int argc, char **argv, double px, double py,int robot_number);
+  Truck(std::string robot_name, int argc, char **argv, double px, double py,std::string robot_number);
   ~Truck();
   ros::NodeHandle run();
   void stageOdom_callback (nav_msgs::Odometry msg);

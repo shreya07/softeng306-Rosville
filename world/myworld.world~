@@ -19,6 +19,25 @@ define myRobot position
   ranger_return 1
 )
 
+define robfield position
+(
+  #Shape of robot
+  block
+  (
+    points 4
+    point[0] [0 0]
+    point[1] [1 0]
+    point[2] [1 1]
+    point[3] [0 1]
+    z [0 1]
+  )
+  #fit shape to this size in meters
+  size [4 2 0.25]
+  drive "diff"
+  mylaser(pose [ 0.050 0.000 0 0.000 ])
+)
+
+
 define floorplan model
 (
   # sombre, sensible, artistic
@@ -35,6 +54,7 @@ define my_block model
   size [0.5 0.5 0.5]
   gui_nose 0
 )
+
 
 # set the resolution of the underlying raytrace model in meters
 
@@ -55,12 +75,23 @@ floorplan
 ( 
   name "swarm"
   bitmap "swarm_world.pgm"
-  size [54.0 58.7 0.5]
-  pose [ -29.350 27.000 0 90.000 ]
+  size [30.0 30.0 0.5]
+  pose [ 15.00 15.000 0 90.000 ]
 )
 # throw in a robot
+<<<<<<< HEAD
+myRobot( pose [ 5 10 0 0 ] name "God" color "blue")
+myRobot( pose [ 15 20 0 0 ] name "Sheep_One" color "green")
+myRobot( pose [ 10 30 0 0 ] name "Sheep_Two" color "black")
+myRobot( pose [ 1 28 0 0 ] name "truck" color "red")
+robfield( pose [ 5 5 0 0 ] name "field1" color "brown") #bitmap "soil.jpg")
+robfield( pose [ 5 7 0 0 ] name "field2" color "green") # bitmap "soil.jpg")
+robfield( pose [ 9 5 0 0 ] name "field3" color "black") # bitmap "soil.jpg")
+robfield( pose [ 9 7 0 0 ] name "field4" color "red") #bitmap "soil.jpg")
+=======
 myRobot( pose [ 5 10 0 0.0 ] name "sheep1" color "blue" bitmap "sheep.png")
-myRobot( pose [ 3 10 0 0.0 ] name "r1" color "green")
+myRobot( pose [ 3 10 0 0.0 ] name "R1" color "green")
 myRobot( pose [ 5 15 0 0 ] name "r2" color "black")
 myRobot( pose [ 10 10 0 180.0 ] name "r3" color "yellow")
 myRobot( pose [ 5 5 0 0 ] name "r4" color "brown")
+>>>>>>> sheep

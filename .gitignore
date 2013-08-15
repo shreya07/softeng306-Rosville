@@ -12,12 +12,12 @@
 *.la
 *.a
 
-#ignore build folder
-/se306_example/build/
-#ignore any binary folder in the repo
-bin/
 
-#project files
-*.cproject
-*.project
-*.pydevproject
+#Ignore build folders
+/se306_example/build/
+/se306_example/bin/
+
+# Ignore eclipse project files. 
+.project
+.cproject
+.pydevproject

@@ -24,7 +24,7 @@
  * if you are unsure of what that means look it up in the link provided
  * http://docs.oracle.com/javase/tutorial/java/IandI/super.html
  *  */
-Truck::Truck(std::string robot_name, int argc, char **argv,double px,double py, int robot_number):Robot(robot_name,argc,argv,px,py,robot_number)
+Truck::Truck(std::string robot_name, int argc, char **argv,double px,double py, std::string robot_number):Robot(robot_name,argc,argv,px,py,robot_number)
 {
     //can do extra stuff here if you like
 }
@@ -71,7 +71,7 @@ ros::NodeHandle Truck::run(){
 
 int main(int argc, char **argv)
 {
-  Truck robot = Truck("RobotTruck",argc,argv,0.00,0.00,3);
+  Truck robot = Truck("Truck",argc,argv,0.00,0.00,"One");
   robot.run();
   return 0;
 }
