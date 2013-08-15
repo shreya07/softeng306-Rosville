@@ -46,6 +46,7 @@ protected:
   double px;
   double py;
   int robot_number;
+
   /*lists of subscribers and publishers, please remember to add your publishers and
    * subscribers to this list*/
   std::list<ros::Subscriber> subsList;

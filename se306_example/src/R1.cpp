@@ -19,8 +19,8 @@ double theta;
 void StageOdom_callback(nav_msgs::Odometry msg)
 {
 	//This is the call back function to process odometry messages coming from Stage. 	
-	px = 5 + msg.pose.pose.position.x;
-	py =10 + msg.pose.pose.position.y;
+	px =  3+msg.pose.pose.position.x;
+	py = 10+msg.pose.pose.position.y;
 	ROS_INFO("Current x position is: %f", px);
 	ROS_INFO("Current y position is: %f", py);
 }
@@ -39,12 +39,12 @@ int main(int argc, char **argv)
  //initialize robot parameters
 	//Initial pose. This is same as the pose that you used in the world file to set	the robot pose.
 	theta = M_PI/2.0;
-	px = 5;
+	px = 3;
 	py = 10;
 	
 	//Initial velocity
 	linear_x = 0.2;
-	angular_z = 0.2;
+	angular_z = 0;
 	
 //You must call ros::init() first of all. ros::init() function needs to see argc and argv. The third argument is the name of the node
 ros::init(argc, argv, "RobotNode1");
@@ -55,6 +55,7 @@ ros::NodeHandle n;
 //advertise() function will tell ROS that you want to publish on a given topic_
 //to stage
 ros::Publisher RobotNode_stage_pub = n.advertise<geometry_msgs::Twist>("robot_1/cmd_vel",1000); 
+ros::Publisher Rob = n.advertise<nav_msgs::Odometry>("robot_1/odom", 1000);
 
 //subscribe to listen to messages coming from stage
 ros::Subscriber StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_1/odom",1000, StageOdom_callback);
@@ -68,21 +69,26 @@ int count = 0;
 ////messages
 //velocity of this RobotNode
 geometry_msgs::Twist RobotNode_cmdvel;
+nav_msgs::Odometry odom;
 int i = 0;
 while (ros::ok())
 {
-        if (i%30==0)
+        /*if (i%30==0)
         {
               linear_x = -linear_x;
               angular_z = - angular_z;
         }
-        i++;
+        i++;*/
 	//messages to stage
 	RobotNode_cmdvel.linear.x = linear_x;
 	RobotNode_cmdvel.angular.z = angular_z;
+
+	//odom.pose.pose.position.x = px;
+	//odom.pose.pose.position.y = py;
         
 	//publish the message
-	RobotNode_stage_pub.publish(RobotNode_cmdvel);
+	//Rob.publish(odom);
+	//RobotNode_stage_pub.publish(RobotNode_cmdvel);
 	
 	ros::spinOnce();
 
