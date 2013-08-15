@@ -12,6 +12,7 @@
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/Odometry.h>
 #include <sensor_msgs/LaserScan.h>
+#include "Custom.h"
 
 #include <sstream>
 #include "math.h"
@@ -46,10 +47,10 @@ void Sheep1::stageOdom_callback(nav_msgs::Odometry msg){
 	//int x = msg.linear.x;
 	px = 5 + msg.pose.pose.position.x;
 	py =10 + msg.pose.pose.position.y;
-	ROS_INFO("x: %f", msg.pose.pose.orientation.x);
-	ROS_INFO("y: %f", msg.pose.pose.orientation.y);
-	ROS_INFO("W: %f", msg.pose.pose.orientation.w);
-	ROS_INFO("z: %f", msg.pose.pose.orientation.z);
+	//ROS_INFO("x: %f", msg.pose.pose.orientation.x);
+	//ROS_INFO("y: %f", msg.pose.pose.orientation.y);
+	//ROS_INFO("W: %f", msg.pose.pose.orientation.w);
+	//ROS_INFO("z: %f", msg.pose.pose.orientation.z);
 	// w = 1 robot moving -x direction
 	if(msg.pose.pose.orientation.w == 1) {
 		theta = 0;
@@ -65,14 +66,22 @@ void Sheep1::stageOdom_callback(nav_msgs::Odometry msg){
 	}
 }
 
-void Sheep1::stageOdom_callback1(nav_msgs::Odometry msg){
-	if(theta == 0) {
+void Sheep1::stageOdom_callback1(se306_example::Custom grass){
+	/*if(theta == 0) {
 		if(((10+msg.pose.pose.position.y) < (py+1)) && ((10+msg.pose.pose.position.y) > (py-1))) {
 			distance = px - (3+msg.pose.pose.position.x);
 		}
 	}
 	ROS_INFO("x: %f", (3+msg.pose.pose.position.x));
-	ROS_INFO("y: %f", (10+msg.pose.pose.position.y));
+	ROS_INFO("y: %f", (10+msg.pose.pose.position.y));*/
+
+	if(theta == 0) {
+		if(((grass.py) < (py+1)) && ((grass.py) > (py-1))) {
+			distance = px - (grass.px);
+		}
+	}
+	ROS_INFO("x: %f", grass.px);
+	ROS_INFO("y: %f", grass.py);
 
 }
 
@@ -106,12 +115,14 @@ ros::NodeHandle Sheep1::run(){
 //advertise() function will tell ROS that you want to publish on a given topic_
 		//to stage
   ros::Publisher RobotNode_stage_pub = n.advertise<geometry_msgs::Twist>("robot_0/cmd_vel",1000);
+  //ros::Publisher RobotNode_stage_pub1 = n.advertise<geometry_msgs::Twist>("grass",1000);
+  ros::Publisher RobotNode_stage_pub1 = n.advertise<se306_example::Custom>("sheep", 1000);
 
   std::stringstream ss;
   ss<<robot_name;
   //ros::Subscriber StageOdo_sub = n.subscribe<nav_msgs::Odometry>(("robot_"+ss.str()+"/message_name"),1000, R3::stageOdom_callback);
   ros::Subscriber stageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_0/odom",1000, &Sheep1::stageOdom_callback, this);
-  ros::Subscriber stageOdo_sub1 = n.subscribe<nav_msgs::Odometry>("robot_1/odom",1000, &Sheep1::stageOdom_callback1, this);
+  ros::Subscriber stageOdo_sub1 = n.subscribe<se306_example::Custom>("grass",1000, &Sheep1::stageOdom_callback1, this);
 
   ros::Subscriber StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_0/base_scan",1000, &Sheep1::StageLaser_callback, this);
 
@@ -119,10 +130,12 @@ ros::NodeHandle Sheep1::run(){
   it = subsList.end();
   subsList.insert(it,stageOdo_sub);
 
-  double th = 90*M_PI/2.0;
+  //double th = 90*M_PI/2.0;
   ros::Rate loop_rate(10);
   nav_msgs::Odometry odom;
   geometry_msgs::Quaternion odom_quat;
+
+  //se306_example::Grass grass;
 
   /*define the while loop here*/
   while (ros::ok())
@@ -132,9 +145,9 @@ ros::NodeHandle Sheep1::run(){
 	  //RobotNode_cmdvel.angular.y = 0.5;
 
 	  if(distance <= 1.0) {
-		  RobotNode_cmdvel.linear.x = 1.0;
+		  RobotNode_cmdvel.linear.x = 0.5;
 	  		RobotNode_cmdvel.linear.y = 0.0;
-	  		RobotNode_cmdvel.angular.z = 5.0;
+	  		RobotNode_cmdvel.angular.z = 18.0;
 	  		//odom_quat = tf::createQuaternionMsgFromYaw(th);
 	  		//odom.pose.pose.orientation = odom_quat;
 	  	} else {
@@ -143,6 +156,7 @@ ros::NodeHandle Sheep1::run(){
 	  		RobotNode_cmdvel.angular.z = angular_z;
 	  	}
 	  RobotNode_stage_pub.publish(RobotNode_cmdvel);
+	  //RobotNode_stage_pub.publish(grass);
     //ROS_INFO("OK");
     ros::spinOnce();
     loop_rate.sleep();
