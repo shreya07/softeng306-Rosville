@@ -12,7 +12,7 @@
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/Odometry.h>
 #include <sensor_msgs/LaserScan.h>
-#include "Grass.h"
+#include "Custom.h"
 
 #include <sstream>
 #include "math.h"
@@ -66,7 +66,7 @@ void Sheep1::stageOdom_callback(nav_msgs::Odometry msg){
 	}
 }
 
-void Sheep1::stageOdom_callback1(se306_example::Grass grass){
+void Sheep1::stageOdom_callback1(se306_example::Custom grass){
 	/*if(theta == 0) {
 		if(((10+msg.pose.pose.position.y) < (py+1)) && ((10+msg.pose.pose.position.y) > (py-1))) {
 			distance = px - (3+msg.pose.pose.position.x);
@@ -116,12 +116,13 @@ ros::NodeHandle Sheep1::run(){
 		//to stage
   ros::Publisher RobotNode_stage_pub = n.advertise<geometry_msgs::Twist>("robot_0/cmd_vel",1000);
   //ros::Publisher RobotNode_stage_pub1 = n.advertise<geometry_msgs::Twist>("grass",1000);
+  ros::Publisher RobotNode_stage_pub1 = n.advertise<se306_example::Custom>("sheep", 1000);
 
   std::stringstream ss;
   ss<<robot_name;
   //ros::Subscriber StageOdo_sub = n.subscribe<nav_msgs::Odometry>(("robot_"+ss.str()+"/message_name"),1000, R3::stageOdom_callback);
   ros::Subscriber stageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_0/odom",1000, &Sheep1::stageOdom_callback, this);
-  ros::Subscriber stageOdo_sub1 = n.subscribe<se306_example::Grass>("grass",1000, &Sheep1::stageOdom_callback1, this);
+  ros::Subscriber stageOdo_sub1 = n.subscribe<se306_example::Custom>("grass",1000, &Sheep1::stageOdom_callback1, this);
 
   ros::Subscriber StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_0/base_scan",1000, &Sheep1::StageLaser_callback, this);
 
@@ -134,7 +135,7 @@ ros::NodeHandle Sheep1::run(){
   nav_msgs::Odometry odom;
   geometry_msgs::Quaternion odom_quat;
 
-  se306_example::Grass grass;
+  //se306_example::Grass grass;
 
   /*define the while loop here*/
   while (ros::ok())

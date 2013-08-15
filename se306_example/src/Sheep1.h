@@ -16,7 +16,7 @@
 #include <sstream>
 #include "math.h"
 #include "Robot.h"
-#include "Grass.h"
+#include "Custom.h"
 
 class Sheep1:Robot
 {
@@ -31,7 +31,7 @@ public:
   ~Sheep1();
   ros::NodeHandle run();
   void stageOdom_callback (nav_msgs::Odometry msg);
-  void stageOdom_callback1 (se306_example::Grass grass);
+  void stageOdom_callback1 (se306_example::Custom grass);
 
 
   //double y;
