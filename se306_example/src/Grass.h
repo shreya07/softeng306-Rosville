@@ -17,6 +17,7 @@
 #include <iostream>
 #include "stdio.h"
 #include "string.h"
+#include "Custom.h"
 
 #include <sstream>
 #include "math.h"
@@ -30,6 +31,7 @@ class Grass:Robot
 		ros::NodeHandle run();
 		void stageOdom_callback (nav_msgs::Odometry msg);
 		void rainfall_callback (const std_msgs::String::ConstPtr& msg);
+		void spinCallback(se306_example::Custom msg);
 		void grow(double moisture);
 	protected:
 		double angular_z;
