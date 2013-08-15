@@ -50,10 +50,10 @@ void Sheep1::stageOdom_callback(nav_msgs::Odometry msg){
 	//int x = msg.linear.x;
 	px = 5 + msg.pose.pose.position.x;
 	py =10 + msg.pose.pose.position.y;
-	//ROS_INFO("x: %f", msg.pose.pose.orientation.x);
-	//ROS_INFO("y: %f", msg.pose.pose.orientation.y);
-	//ROS_INFO("W: %f", msg.pose.pose.orientation.w);
-	//ROS_INFO("z: %f", msg.pose.pose.orientation.z);
+	ROS_INFO("x: %f", msg.pose.pose.orientation.x);
+	ROS_INFO("y: %f", msg.pose.pose.orientation.y);
+	ROS_INFO("W: %f", msg.pose.pose.orientation.w);
+	ROS_INFO("z: %f", msg.pose.pose.orientation.z);
 	// w = 1 robot moving -x direction
 	if(msg.pose.pose.orientation.w == 1) {
 		theta = 0;
@@ -70,48 +70,14 @@ void Sheep1::stageOdom_callback(nav_msgs::Odometry msg){
 }
 
 void Sheep1::stageOdom_callback1(se306_example::Custom grass){
-	/*if(theta == 0) {
-		if(((10+msg.pose.pose.position.y) < (py+1)) && ((10+msg.pose.pose.position.y) > (py-1))) {
-			distance = px - (3+msg.pose.pose.position.x);
-		}
-	}
-	ROS_INFO("x: %f", (3+msg.pose.pose.position.x));
-	ROS_INFO("y: %f", (10+msg.pose.pose.position.y));*/
+
 	double tempDistanceX = px - grass.px;
 	double tempDistanceY = py - grass.py;
 
 		/*if(((grass.py) < (py+1)) && ((grass.py) > (py-1))) {
 			distance = px - (grass.px);
 		}*/
-
-	/*if(tempDistanceX <= 0.5 && tempDistanceX >= -0.5) {
-		if (tempDistanceY <= 0.5 && tempDistanceY >= -0.5) {
-			nodeDistance = tempDistanceY;
-			int i;
-			RobotNode_cmdvel.angular.z = 0.0;
-			RobotNode_cmdvel.linear.x = 0.0;
-			RobotNode_stage_pub.publish(RobotNode_cmdvel);
-			while(i<10000) {
-				RobotNode_cmdvel.angular.z = 0.0;
-				RobotNode_cmdvel.linear.x = 0.0;
-				RobotNode_stage_pub.publish(RobotNode_cmdvel);
-				i++;
-			}
-			RobotNode_cmdvel.linear.x = - (constLinear - 1.5);
-			RobotNode_cmdvel.angular.z = 45.0;
-			RobotNode_stage_pub.publish(RobotNode_cmdvel);
-			return;
-		}
-	}*/
-
 	nodeDistance = sqrt((tempDistanceX*tempDistanceX) + (tempDistanceY*tempDistanceY));
-
-		/*if(tempDistanceX <= 0.5 && tempDistanceY <= 0.5) {
-			if(theta == 0) {
-				nodeDistance = tempDistanceX;
-			}
-		}
-		nodeDistance = tempDistanceX;*/
 	if(nodeDistance <= 0.5) {
 		int i;
 		while(i<50) {
@@ -121,6 +87,22 @@ void Sheep1::stageOdom_callback1(se306_example::Custom grass){
 			i++;
 		}
 	}
+	double thetaNew = atan(grass.px/grass.py);
+	ROS_INFO("%f", thetaNew);
+	/*if(tempDistanceY <= 0) {
+		//RobotNode_cmdvel.linear.x = .0;
+		RobotNode_cmdvel.angular.z = 45.0;
+		RobotNode_stage_pub.publish(RobotNode_cmdvel);
+	}*/
+
+
+		/*if(tempDistanceX <= 0.5 && tempDistanceY <= 0.5) {
+			if(theta == 0) {
+				nodeDistance = tempDistanceX;
+			}
+		}
+		nodeDistance = tempDistanceX;*/
+
 	//ROS_INFO("name: %c", grass.robot_name.c_str());
 	ROS_INFO("x: %f", grass.px);
 	ROS_INFO("y: %f", grass.py);
