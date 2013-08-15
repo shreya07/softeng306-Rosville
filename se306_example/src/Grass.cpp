@@ -24,7 +24,7 @@
 Grass::Grass(std::string robot_name, int argc, char **argv,double px,double py, int robot_number):Robot(robot_name,argc,argv,px,py,robot_number) {
   moistCont = 0;
   height = 0;
-  angular_z = 0;
+  angular_z = 0.2;
 }
 
 Grass::~Grass()
