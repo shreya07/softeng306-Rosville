@@ -89,11 +89,11 @@ void Sheep1::stageOdom_callback1(se306_example::Custom grass){
 	}
 	double thetaNew = atan(grass.px/grass.py);
 	ROS_INFO("%f", thetaNew);
-	if(tempDistanceY <= 0) {
+	/*if(tempDistanceY <= 0) {
 		//RobotNode_cmdvel.linear.x = .0;
 		RobotNode_cmdvel.angular.z = 45.0;
 		RobotNode_stage_pub.publish(RobotNode_cmdvel);
-	}
+	}*/
 
 
 		/*if(tempDistanceX <= 0.5 && tempDistanceY <= 0.5) {
