@@ -60,7 +60,7 @@ floorplan
 )
 # throw in a robot
 myRobot( pose [ 5 10 0 0.0 ] name "sheep1" color "blue" bitmap "sheep.png")
-myRobot( pose [ 3 10 0 0.0 ] name "R1" color "green")
+myRobot( pose [ 3 13 0 0.0 ] name "R1" color "green")
 myRobot( pose [ 5 15 0 0 ] name "r2" color "black")
 myRobot( pose [ 10 10 0 180.0 ] name "r3" color "yellow")
 myRobot( pose [ 5 5 0 0 ] name "r4" color "brown")
