@@ -83,9 +83,9 @@ void Sheep1::stageOdom_callback1(se306_example::Custom grass){
 			distance = px - (grass.px);
 		}*/
 
-	if(tempDistanceX <= 0.5 && tempDistanceX >= -0.5) {
+	/*if(tempDistanceX <= 0.5 && tempDistanceX >= -0.5) {
 		if (tempDistanceY <= 0.5 && tempDistanceY >= -0.5) {
-			nodeDistance = tempDistanceX;
+			nodeDistance = tempDistanceY;
 			int i;
 			RobotNode_cmdvel.angular.z = 0.0;
 			RobotNode_cmdvel.linear.x = 0.0;
@@ -101,8 +101,16 @@ void Sheep1::stageOdom_callback1(se306_example::Custom grass){
 			RobotNode_stage_pub.publish(RobotNode_cmdvel);
 			return;
 		}
-	}
-	nodeDistance = tempDistanceX;
+	}*/
+
+	nodeDistance = sqrt((tempDistanceX*tempDistanceX) + (tempDistanceY*tempDistanceY));
+
+		/*if(tempDistanceX <= 0.5 && tempDistanceY <= 0.5) {
+			if(theta == 0) {
+				nodeDistance = tempDistanceX;
+			}
+		}
+		nodeDistance = tempDistanceX;*/
 	//ROS_INFO("name: %c", grass.robot_name.c_str());
 	ROS_INFO("x: %f", grass.px);
 	ROS_INFO("y: %f", grass.py);
@@ -174,16 +182,16 @@ ros::NodeHandle Sheep1::run(){
 	  //RobotNode_cmdvel.angular.y = 0.5;
 	  if(distance <= 1) {
 		  angular_z = 45.0;
-		  linear_x = - (constLinear - 0.5);
+		  linear_x = - (constLinear - 0.8);
 	  } else if(nodeDistance <= 0.5){
-		  linear_x = - (constLinear - 1.5);
+		  linear_x = - (constLinear - 0.8);
 		  angular_z = 45.0;
 	  } else {
 		  linear_x = constLinear;
-		  angular_z = 0;
+		  angular_z = 0.0;
 	  }
 	  		RobotNode_cmdvel.linear.x = linear_x;
-	  		RobotNode_cmdvel.linear.y = 0.2;
+	  		//RobotNode_cmdvel.linear.y = 0.2;
 	  		RobotNode_cmdvel.angular.z = angular_z;
 
 	  RobotNode_stage_pub.publish(RobotNode_cmdvel);
