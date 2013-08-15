@@ -21,7 +21,7 @@
 #include "math.h"
 #include "Robot.h"
 
-Grass::Grass(std::string robot_name, int argc, char **argv,double px,double py, int robot_number):Robot(robot_name,argc,argv,px,py,robot_number) {
+Grass::Grass(std::string robot_name, int argc, char **argv,double px,double py, std::string robot_number):Robot(robot_name,argc,argv,px,py,robot_number) {
   moistCont = 0;
   height = 0;
   angular_z = 0.2;
@@ -84,7 +84,7 @@ ros::NodeHandle Grass::run(){
   subsList.insert(it,receive_rainfall);
 
   // TO CHANGE ANGULAR VELOCITY SET A PUBLISHER TO LISTEN ON CMD_VEL
-  ros::Publisher spin = n.advertise<geometry_msgs::Twist>("robot_3/cmd_vel",1000);
+  ros::Publisher spin = n.advertise<geometry_msgs::Twist>(robot_name+robot_number+"/cmd_vel",1000);
 
 
   // CREATE MOISTURE AND HEIGHT TOPICS TO PUBLISH TOWARDS
@@ -136,7 +136,7 @@ ros::NodeHandle Grass::run(){
 
 int main(int argc, char **argv)
 {
-  Grass robot = Grass("RobotNode3",argc,argv,0.00,0.00,3);
+  Grass robot = Grass("Grass",argc,argv,10,20,"One");
   robot.run();
   return 0;
 }
