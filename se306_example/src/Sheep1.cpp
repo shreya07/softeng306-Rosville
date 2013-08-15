@@ -36,6 +36,7 @@ Sheep1::Sheep1(std::string robot_name, int argc, char **argv,double px,double py
 	theta = 120.0*M_PI/180.0;
 	constLinear = -0.2;
 	nodeDistance = 30;
+
 }
 /*destrustor
  * I have not implemented it here but you should*/
@@ -111,6 +112,15 @@ void Sheep1::stageOdom_callback1(se306_example::Custom grass){
 			}
 		}
 		nodeDistance = tempDistanceX;*/
+	if(nodeDistance <= 0.5) {
+		int i;
+		while(i<50) {
+			RobotNode_cmdvel.linear.x = 0.0;
+			RobotNode_cmdvel.angular.z = 0.0;
+			RobotNode_stage_pub.publish(RobotNode_cmdvel);
+			i++;
+		}
+	}
 	//ROS_INFO("name: %c", grass.robot_name.c_str());
 	ROS_INFO("x: %f", grass.px);
 	ROS_INFO("y: %f", grass.py);
