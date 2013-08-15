@@ -25,7 +25,6 @@
 
 
 // INITIALIZE ANGULAR Z
-double angular_z;
 
 
 Grass::Grass(std::string robot_name, int argc, char **argv,double px,double py, int robot_number):Robot(robot_name,argc,argv,px,py,robot_number) {
@@ -103,23 +102,18 @@ ros::NodeHandle Grass::run(){
 	std_msgs::String heightOfGrass;
 	std_msgs::String moisture;
 	geometry_msgs::Twist angular;
+	 this->angular_z = 0.2;
 
 
 	while (ros::ok())
 	{
 	        grow(this->moistCont);
+	        angular.angular.z = angular_z;
 		ROS_INFO("Value is [%lf]", angular.angular.z);
-		// SET ANGULAR VELOCITY
-		angular.angular.z = angular_z;
-
-		// CHANGE TYPE TO STRING TO MATCH REQUIREMENTS
-		//heightOfGrass = boost::lexical_cast<std_msgs::String>(height);
-		//moisture = boost::lexical_cast<std_msgs::String>(moistCont);
 
 		// PUBLISH
+
 		spin.publish(angular);
-		//grassHeight.publish(heightOfGrass);
-		//moistureContent.publish(moisture);
 		ROS_INFO("Current value of Moisture is %f",this->moistCont);
 		ROS_INFO("Current value of Height is %f",this->height);
 
@@ -131,7 +125,6 @@ ros::NodeHandle Grass::run(){
 
 int main(int argc, char **argv)
 {
-	angular_z = 0.2;
 	Grass robot = Grass("RobotNode4",argc,argv,0.00,0.00,3);
 	robot.run();
 	return 0;
