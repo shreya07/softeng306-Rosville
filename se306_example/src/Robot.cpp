@@ -23,7 +23,6 @@ Robot::Robot(std::string robot_name, int argc, char **argv, double px, double py
   this-> px = px;
   this->py = py;
   this->robot_number = robot_number;
-  //d
 }
 
 Robot::~Robot()
@@ -39,10 +38,9 @@ ros::NodeHandle Robot::run(){
 
   /*The next two lines convert an int to a String*/
   std::stringstream ss;
-  ss<<robot_name;
-
+  ss<<robot_number;
   //subscribe to the position message of this class
-  ros::Subscriber StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_3/odom",1000, &Robot::stageOdom_callback,this);
+  ros::Subscriber StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_"+ss.str()+"/odom",1000, &Robot::stageOdom_callback,this);
 
   /*add the subscriber to the subscriber list
    * use the iterator to move to the back of the list and add to it
