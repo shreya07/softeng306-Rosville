@@ -26,8 +26,8 @@ bool border = false;
 
 void StageOdom_callback(nav_msgs::Odometry msg) {
 	//This is the call back function to process odometry messages coming from Stage.
-	px = -5.0 + msg.pose.pose.position.x;
-	py = 48.0 + msg.pose.pose.position.y;
+	px = -35.0 + msg.pose.pose.position.x;
+	py = 40.0 + msg.pose.pose.position.y;
 	//ROS_INFO("Current x position is: %f", px);
 	//ROS_INFO("Current y position is: %f", py);
 
@@ -120,8 +120,8 @@ int main(int argc, char **argv) {
 //			count = 0;
 			// farmer see the wall and avoid the wall
 			if (minDistance <= 15.0) {
-				RobotNode_cmdvel.linear.x = 3;
-				RobotNode_cmdvel.angular.z = 20;
+				RobotNode_cmdvel.linear.x = -3;
+				RobotNode_cmdvel.angular.z = -20;
 
 				// no wall in sight , farmer keep walking
 			} else {
