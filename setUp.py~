@@ -8,6 +8,13 @@ import sys
 
 pids = []
 
+def callRosMake()
+    terminal4 = ['gnome-terminal']
+    terminal4.extend(['-x', 'sh', '-c', 'rosmake ~/groovy_workspace/sandbox/se306_example'])
+    pid1 = subprocess.call(terminal4)
+    print "success1"
+    pids.append(pid1)
+
 def callRoscore():
     terminal1 = ['gnome-terminal']
     terminal1.extend(['-x', 'sh', '-c', '"roscore"'])
@@ -33,6 +40,7 @@ def callLaunch():
     pids.append(pid3)
     print "success3"
 
+callRosMake()
 callRoscore()
 
 

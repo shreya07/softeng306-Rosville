@@ -79,10 +79,12 @@ floorplan
   pose [ 15.00 15.000 0 90.000 ]
 )
 # throw in a robot
-myRobot( pose [ 5 10 0 0 ] name "God" color "blue" bitmap "cross.png")
+myRobot( pose [ -5 10 0 0 ] name "God" color "blue" bitmap "cross.png")
 myRobot( pose [ 15 20 0 0 ] name "SheepOne" color "black" bitmap "sheep1.png")
 myRobot( pose [ 10 20 0 0 ] name "GrassOne" color "green" bitmap "grass.png")
-myRobot( pose [ 11 28 0 0 ] name "truck" color "red" bitmap "truck.png")
+myRobot( pose [ 5.5 15 0 0 ] name "truck" color "red" bitmap "truck.png")
+myRobot( pose [ 10 15 0 0 ] name "Farmer" color "black" bitmap "farmer.png")
+
 robfield( pose [ 5 5 0 0 ] name "field1" color "brown") #bitmap "soil.jpg")
 robfield( pose [ 5 7 0 0 ] name "field2" color "green") # bitmap "soil.jpg")
 robfield( pose [ 9 5 0 0 ] name "field3" color "black") # bitmap "soil.jpg")
