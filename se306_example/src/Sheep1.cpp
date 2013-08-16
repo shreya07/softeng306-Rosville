@@ -174,7 +174,7 @@ ros::NodeHandle Sheep1::run(){
 
          // RobotNode_cmdvel.angular.x = 0.2;
           //RobotNode_cmdvel.angular.y = 0.5;
-          if(distance <= 1) {
+          if(distance <= 3.0) {
                   angular_z = 45.0;
                   linear_x = - (constLinear - 0.8);
           } else if(nodeDistance <= 0.5){
