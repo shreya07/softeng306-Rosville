@@ -67,6 +67,8 @@ void Grass::spinCallback(se306_example::Custom msg) {
     if ((this->py-msg.py) <= 1) {
       this->angular_z = 0.5;
     }
+  } else {
+    this->angular_z = 0;
   }
 }
 
