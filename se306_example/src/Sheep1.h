@@ -28,7 +28,9 @@ public:
 	double angular_z;
 	double theta;
 	double nodeDistance;
+	double targetTheta;
 	ros::Publisher RobotNode_stage_pub;
+
 	void StageLaser_callback(sensor_msgs::LaserScan msg);
   Sheep1(std::string robot_name, int argc, char **argv, double px, double py,std::string robot_number);
   ~Sheep1();
@@ -36,7 +38,7 @@ public:
   void stageOdom_callback (nav_msgs::Odometry msg);
   void stageOdom_callback1 (se306_example::Custom grass);
   void turnSheep(void);
-
+  double computeTheta(double x, double y);
 
   //double y;
 };

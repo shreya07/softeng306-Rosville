@@ -21,9 +21,9 @@ void StageOdom_callback(nav_msgs::Odometry msg)
 {
 	//This is the call back function to process odometry messages coming from Stage. 	
 	px =  10+msg.pose.pose.position.x;
-	py = 20+msg.pose.pose.position.y;
-	ROS_INFO("Current x position is: %f", px);
-	ROS_INFO("Current y position is: %f", py);
+	py = 30+msg.pose.pose.position.y;
+	//ROS_INFO("Current x position is: %f", px);
+	//ROS_INFO("Current y position is: %f", py);
 }
 
 
@@ -62,7 +62,7 @@ ros::Publisher Rob = n.advertise<se306_example::Custom>("grass", 1000);
 ros::Subscriber StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_2/odom",1000, StageOdom_callback);
 ros::Subscriber StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_2/base_scan",1000,StageLaser_callback);
 
-ros::Rate loop_rate(10);
+ros::Rate loop_rate(1);
 
 //a count of howmany messages we have sent
 int count = 0;

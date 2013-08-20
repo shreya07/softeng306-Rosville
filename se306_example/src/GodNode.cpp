@@ -74,10 +74,10 @@ int main(int argc, char **argv)
       status.data="Rainy";
       Weather_publisher.publish(status);
 
-      ROS_INFO("rainy");
+      //ROS_INFO("rainy");
     }else if (count%59){
       status.data="Sunny";
-      ROS_INFO("sunny");
+      //ROS_INFO("sunny");
       Weather_publisher.publish(status);
 
     }else{
