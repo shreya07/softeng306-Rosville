@@ -17,7 +17,8 @@
 #include <sstream>
 #include "math.h"
 #include "Robot.h"
-#include "Custom.h"
+#include "IdentityRequest.h"
+#include "IdentityReply.h"
 
 class Sheep1:Robot
 {
@@ -30,6 +31,8 @@ public:
 	double theta;
 	double nodeDistance;
 	double targetTheta;
+	int width;
+	int length;
 	ros::Publisher RobotNode_stage_pub;
 
 	void StageLaser_callback(sensor_msgs::LaserScan msg);
@@ -37,9 +40,9 @@ public:
   ~Sheep1();
   ros::NodeHandle run();
   void stageOdom_callback (nav_msgs::Odometry msg);
-  void stageOdom_callback1 (se306_example::Custom grass);
-  void turnSheep(void);
-  double computeTheta(double x, double y);
+  void identityReply_callBack(se306_example::IdentityReply reply);
+  void identityRequest_callBack(se306_example::IdentityRequest request);
+  bool doesIntersect(int x, int y);
 
   //double y;
 };
