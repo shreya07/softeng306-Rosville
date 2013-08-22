@@ -30,7 +30,7 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 #target_link_libraries(example ${PROJECT_NAME})
 
 rosbuild_add_executable(GodNode src/GodNode.cpp)
-#rosbuild_add_executable(SheepOne src/Sheep1.cpp src/Robot.cpp)
+rosbuild_add_executable(SheepOne src/Sheep1.cpp src/Robot.cpp)
 #rosbuild_add_executable(GrassOne src/Grass.cpp)
 #rosbuild_add_executable(GrassOne src/Grass.cpp src/Robot.cpp)
 #rosbuild_add_executable(Farmer src/FarmerWithoutTruck.cpp)
