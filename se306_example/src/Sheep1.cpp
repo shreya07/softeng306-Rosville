@@ -18,8 +18,8 @@
 #include "math.h"
 #include "Robot.h"
 
-#include "IdentityRequest.h"
-#include "IdentityReply.h"
+#include "../msg_gen/cpp/include/se306_example/IdentityRequest.h"
+#include "../msg_gen/cpp/include/se306_example/IdentityReply.h"
 
 /*Constructor
  * The :RobotRobot(robot_name,argc,argv,px,py,robot_number) part at the end
@@ -62,30 +62,58 @@ void Sheep1::stageOdom_callback(nav_msgs::Odometry msg){
 
 void Sheep1::StageLaser_callback(sensor_msgs::LaserScan msg)
 {
-	distance = msg.ranges[0];
+	distance = msg.ranges[10];
+	se306_example::IdentityRequest request;
+	ROS_INFO("distance: %f", distance);
+	if(distance <= 10) {
+		request.sender = robot_name;
+		request.px = this->px+distance+(width/2.0);
+		request.py = py;
+		Request_pub.publish(request);
+		ROS_INFO("Request sent");
+	}
+
 
 }
 
-void Sheep1::identityReply_callBack(se306_example::IdentityReply)
+void Sheep1::identityReply_callBack(se306_example::IdentityReply reply)
 {
 	ROS_INFO("reply received");
+	if(reply.destination.compare(robot_name)) {
+		if(reply.type.compare("grass")) {
+			ROS_INFO("Grass detected");
+		} else  {
+			ROS_INFO("Don't know what it is");
+		}
+	}
+
 }
 
 void Sheep1::identityRequest_callBack(se306_example::IdentityRequest request)
 {
 	ROS_INFO("Request received");
+	se306_example::IdentityReply reply;
 	bool result = doesIntersect(request.px, request.py);
-	ROS_INFO("does intersect?"+result);
+	if(result) {
+		reply.sender = robot_name;
+		reply.destination = request.sender;
+		reply.type = "sheep";
+		Reply_pub.publish(reply);
+		ROS_INFO("reply sent");
+	}
+
+	ROS_INFO("does intersect? %d ", result);
 
 }
 
-bool Sheep1::doesIntersect(int x, int y) {
-	int leftX = px-(width/2.0);
-	int rightX = px+(width/2.0);
-	int top = py+(length/2.0);
-	int bottom = py-(length/2.0);
-	if(leftX >= x && rightX <= x) {
-		if(top <= y && bottom >= y) {
+bool Sheep1::doesIntersect(float x, float y) {
+	double leftX = px-(width/2.0);
+	double rightX = px+(width/2.0);
+	double top = py+(length/2.0);
+	double bottom = py-(length/2.0);
+
+	if(leftX <= x && rightX >= x) {
+		if(top >= y && bottom <= y) {
 			ROS_INFO("Whithin bounds");
 			return true;
 		}
@@ -114,8 +142,8 @@ ros::NodeHandle Sheep1::run(){
 	//to stage
 	RobotNode_stage_pub = n.advertise<geometry_msgs::Twist>(robot_name+robot_number+"/cmd_vel",1000);
 	//ros::Publisher RobotNode_stage_pub1 = n.advertise<geometry_msgs::Twist>("grass",1000);
-	ros::Publisher RobotNode_stage_pub1 = n.advertise<se306_example::IdentityRequest>("identityRequest", 1000);
-	ros::Publisher RobotNode_stage_pub2 = n.advertise<se306_example::IdentityReply>("identityReply", 1000);
+	Request_pub = n.advertise<se306_example::IdentityRequest>("identityRequest", 1000);
+	Reply_pub = n.advertise<se306_example::IdentityReply>("identityReply", 1000);
 
 	std::stringstream ss;
 	ss<<robot_name;

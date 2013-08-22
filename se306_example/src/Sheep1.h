@@ -17,8 +17,8 @@
 #include <sstream>
 #include "math.h"
 #include "Robot.h"
-#include "IdentityRequest.h"
-#include "IdentityReply.h"
+#include "../msg_gen/cpp/include/se306_example/IdentityRequest.h"
+#include "../msg_gen/cpp/include/se306_example/IdentityReply.h"
 
 class Sheep1:Robot
 {
@@ -34,6 +34,8 @@ public:
 	int width;
 	int length;
 	ros::Publisher RobotNode_stage_pub;
+	ros::Publisher Request_pub;
+	ros::Publisher Reply_pub;
 
 	void StageLaser_callback(sensor_msgs::LaserScan msg);
   Sheep1(std::string robot_name, int argc, char **argv, double px, double py,std::string robot_number);
@@ -42,7 +44,7 @@ public:
   void stageOdom_callback (nav_msgs::Odometry msg);
   void identityReply_callBack(se306_example::IdentityReply reply);
   void identityRequest_callBack(se306_example::IdentityRequest request);
-  bool doesIntersect(int x, int y);
+  bool doesIntersect(float x, float y);
 
   //double y;
 };

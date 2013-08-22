@@ -1,3 +1,3 @@
 string sender
-int32 px
-int32 py
+float32 px
+float32 py
