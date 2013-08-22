@@ -34,7 +34,7 @@ Sheep1::Sheep1(std::string robot_name, int argc, char **argv,double px,double py
 	//this-> x = px;
 	//this-> y = py;
 	distance = 15;
-	linear_x = 0.2;
+	linear_x = 0.0;
 	angular_z = 0.0;
 	theta = 120.0*M_PI/180.0;
 	constLinear = -0.2;
@@ -42,6 +42,7 @@ Sheep1::Sheep1(std::string robot_name, int argc, char **argv,double px,double py
 	targetTheta = 0;
 	width = 1;
 	length = 2;
+
 
 }
 /*destrustor
@@ -115,8 +116,10 @@ ros::NodeHandle Sheep1::run(){
 	//ros::Publisher RobotNode_stage_pub1 = n.advertise<geometry_msgs::Twist>("grass",1000);
 	ros::Publisher RobotNode_stage_pub1 = n.advertise<se306_example::IdentityRequest>("identityRequest", 1000);
 	ros::Publisher RobotNode_stage_pub2 = n.advertise<se306_example::IdentityReply>("identityReply", 1000);
+
 	std::stringstream ss;
 	ss<<robot_name;
+
 	ros::Subscriber stageOdo_sub = n.subscribe<nav_msgs::Odometry>(robot_name+robot_number+"/odom",1000, &Sheep1::stageOdom_callback, this);
 	ros::Subscriber stageOdo_sub1 = n.subscribe<se306_example::IdentityRequest>("identityRequest",1000, &Sheep1::identityRequest_callBack, this);
 	ros::Subscriber StageOdo_sub2 = n.subscribe<se306_example::IdentityReply>("identityReply",1000, &Sheep1::identityReply_callBack,this);
