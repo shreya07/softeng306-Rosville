@@ -112,7 +112,10 @@ floorplan
 )
 # throw in a robot
 myRobot( pose [ 10 10 20 0 ] name "God" color "black")
-mySheep( pose [ 15 20 0 0 ] name "SheepOne" color "blue")
-mySheep( pose [ 17 20 0 0 ] name "SheepTwo" color "blue")
+mySheep( pose [ 10 20 0 0 ] name "SheepOne" color "blue")
+
+#mySheep( pose [ 17 20 0 0 ] name "SheepTwo" color "blue")
+#mySheep( pose [ 18 25 0 0 ] name "GrassOne" color "red")
+
 #myRobot( pose [ 10 10 20 0 ] name "God" color "blue")
 #myRobot( pose [ 20 10 0 0 ] name "TheOtherNOde" color "blue")

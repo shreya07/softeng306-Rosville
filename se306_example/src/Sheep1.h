@@ -23,21 +23,20 @@
 class Sheep1:Robot
 {
 public:
-	double distance;
-	geometry_msgs::Twist RobotNode_cmdvel;
-	double linear_x;
-	double constLinear;
-	double angular_z;
-	double theta;
-	double nodeDistance;
-	double targetTheta;
-	int width;
-	int length;
-	ros::Publisher RobotNode_stage_pub;
-	ros::Publisher Request_pub;
-	ros::Publisher Reply_pub;
-
-	void StageLaser_callback(sensor_msgs::LaserScan msg);
+  double distance;
+  geometry_msgs::Twist RobotNode_cmdvel;
+  double linear_x;
+  double constLinear;
+  double angular_z;
+  double theta;
+  double nodeDistance;
+  double targetTheta;
+  int width;
+  int length;
+  ros::Publisher RobotNode_stage_pub;
+  ros::Publisher Request_pub;
+  ros::Publisher Reply_pub;
+  void StageLaser_callback(sensor_msgs::LaserScan msg);
   Sheep1(std::string robot_name, int argc, char **argv, double px, double py,std::string robot_number);
   ~Sheep1();
   ros::NodeHandle run();
