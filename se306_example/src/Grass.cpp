@@ -20,7 +20,6 @@
 #include <sstream>
 #include "math.h"
 #include "Robot.h"
-<<<<<<< HEAD
 #include "../msg_gen/cpp/include/se306_example/IdentityRequest.h"
 #include "../msg_gen/cpp/include/se306_example/IdentityReply.h"
 
@@ -31,13 +30,6 @@ Grass::Grass(std::string robot_name, int argc, char **argv,double px,double py, 
   angular_z = 0;
   width = 1;
   length = 2;
-=======
-
-Grass::Grass(std::string robot_name, int argc, char **argv,double px,double py, int robot_number):Robot(robot_name,argc,argv,px,py,robot_number) {
-  moistCont = 0;
-  height = 0;
-  angular_z = 0.2;
->>>>>>> 0498468de2cc94a1e8a8ebf96325be88663aae09
 }
 
 Grass::~Grass()
@@ -45,7 +37,6 @@ Grass::~Grass()
   // TODO Auto-generated destructor stub
 }
 
-<<<<<<< HEAD
 void Grass::identityReply_callBack(se306_example::IdentityReply reply)
 {
   // if we are the destination then process
@@ -98,12 +89,6 @@ bool Grass::doesIntersect(float x, float y) {
 void Grass::stageOdom_callback(nav_msgs::Odometry msg){
   this->px = this->px+msg.pose.pose.position.x;
   this->py = this->py+msg.pose.pose.position.y;
-=======
-// CALL BACK METHOD TO DELEGATE ITS POSITION
-void Grass::stageOdom_callback(nav_msgs::Odometry msg){
-   this->px = this->px+msg.pose.pose.position.x;
-   this->py = this->py+msg.pose.pose.position.y;
->>>>>>> 0498468de2cc94a1e8a8ebf96325be88663aae09
 }
 
 // CHECKS RAINFALL AND INCREMENTS/DECREMENTS MOISTURE LEVEL
@@ -112,7 +97,6 @@ void Grass::rainfall_callback(const std_msgs::String::ConstPtr& rainfall) {
   //ROS_INFO("I heard: [%s]", rainfall->data.c_str());
 
   if (rainfall->data.compare("Sunny")==0) {
-<<<<<<< HEAD
     moistCont = moistCont - 20;
   } else if (rainfall->data.compare("Raining")==0) {
     moistCont = moistCont + 50;
@@ -126,14 +110,6 @@ void Grass::rainfall_callback(const std_msgs::String::ConstPtr& rainfall) {
   }
 
   grow(moistCont);
-=======
-    moistCont = moistCont + 1;
-  } else if (rainfall->data.compare("Raining")==0) {
-    moistCont = moistCont - 1;
-  }
-
-  //grow(moistCont);
->>>>>>> 0498468de2cc94a1e8a8ebf96325be88663aae09
 }
 
 // INCREASES AND DECREASES HEIGHT DEPENDING ON MOISTURE
@@ -142,7 +118,6 @@ void Grass::grow(double moisture) {
   if (moisture > 0) {
     height = height+moisture/100;
   } else if (moisture < 5 && height != 0) {
-<<<<<<< HEAD
     height = height-abs(moisture)/10;
   }
   if (height < 0) {
@@ -170,18 +145,6 @@ void Grass::eatenCallback(const std_msgs::String::ConstPtr& msg) {
     Eaten_pub.publish(message);
   }
   ROS_INFO("New height is: %f", this->height);
-=======
-    height = height-moisture/10;
-  }
-}
-
-void Grass::spinCallback(se306_example::Custom msg) {
-  if ((this->px-msg.px) <= 1) {
-    if ((this->py-msg.py) <= 1) {
-      this->angular_z = 0.5;
-    }
-  }
->>>>>>> 0498468de2cc94a1e8a8ebf96325be88663aae09
 }
 
 ros::NodeHandle Grass::run(){
@@ -190,19 +153,14 @@ ros::NodeHandle Grass::run(){
 
   // LISTEN
   ros::Subscriber receive_rainfall = n.subscribe<std_msgs::String>("weather/status",1000, &Grass::rainfall_callback, this);
-<<<<<<< HEAD
   ros::Subscriber requestPos = n.subscribe<se306_example::IdentityRequest>("identityRequest",1000, &Grass::identityRequest_callBack, this);
   ros::Subscriber replyPos = n.subscribe<se306_example::IdentityReply>("identityReply",1000, &Grass::identityReply_callBack,this);
   ros::Subscriber eatSub = n.subscribe<std_msgs::String>(robot_name+robot_number+"/eat",1000, &Grass::eatenCallback,this);
-=======
-  ros::Subscriber sheepPos = n.subscribe<se306_example::Custom>("sheep",1000, &Grass::spinCallback, this);
->>>>>>> 0498468de2cc94a1e8a8ebf96325be88663aae09
 
   // ADD SUBSCRIBERS TO LIST
   std::list<ros::Subscriber>::iterator it;
   it = subsList.end();
   subsList.insert(it,receive_rainfall);
-<<<<<<< HEAD
   subsList.insert(it,requestPos);
   subsList.insert(it,replyPos);
   subsList.insert(it,eatSub);
@@ -216,16 +174,6 @@ ros::NodeHandle Grass::run(){
   Request_pub = n.advertise<se306_example::IdentityRequest>("identityRequest", 1000);
   Reply_pub = n.advertise<se306_example::IdentityReply>("identityReply", 1000);
   Eaten_pub = n.advertise<std_msgs::String>(robot_name+robot_number+"/eaten", 1000);
-=======
-
-  // TO CHANGE ANGULAR VELOCITY SET A PUBLISHER TO LISTEN ON CMD_VEL
-  ros::Publisher spin = n.advertise<geometry_msgs::Twist>("robot_3/cmd_vel",1000);
-
-
-  // CREATE MOISTURE AND HEIGHT TOPICS TO PUBLISH TOWARDS
-  ros::Publisher grassPos = n.advertise<se306_example::Custom>("grass",1000);
-  ros::Publisher grassHeight = n.advertise<std_msgs::String>("grass/height", 1000);
->>>>>>> 0498468de2cc94a1e8a8ebf96325be88663aae09
 
 
 
@@ -240,7 +188,6 @@ ros::NodeHandle Grass::run(){
 
 
   // INITIALIZE VARIABLES TO PUBLISH
-<<<<<<< HEAD
   std_msgs::String moisture;
   geometry_msgs::Twist angular;
   //se306_example::Custom grass;
@@ -263,31 +210,6 @@ ros::NodeHandle Grass::run(){
 
     //ROS_INFO("Current value of Moisture is %f",this->moistCont);
     //ROS_INFO("Current value of Height is %f",this->height);
-=======
-  std_msgs::String heightOfGrass;
-  std_msgs::String moisture;
-  geometry_msgs::Twist angular;
-  se306_example::Custom grass;
-
-//  // SET ANGULAR VELOV
-//  this->angular_z = 0.2;
-
-  grass.px = this->px;
-  grass.py = this->py;
-  while (ros::ok())
-  {
-    grow(this->moistCont);
-    angular.angular.z = angular_z;
-    ROS_INFO("Value is [%lf]", angular.angular.z);
-
-    // PUBLISH
-    grassPos.publish(grass);
-    spin.publish(angular);
-
-
-    ROS_INFO("Current value of Moisture is %f",this->moistCont);
-    ROS_INFO("Current value of Height is %f",this->height);
->>>>>>> 0498468de2cc94a1e8a8ebf96325be88663aae09
 
     ros::spinOnce();
     loop_rate.sleep();
@@ -297,11 +219,7 @@ ros::NodeHandle Grass::run(){
 
 int main(int argc, char **argv)
 {
-<<<<<<< HEAD
   Grass robot = Grass("Grass",argc,argv,10,20,"One");
-=======
-  Grass robot = Grass("RobotNode3",argc,argv,0.00,0.00,3);
->>>>>>> 0498468de2cc94a1e8a8ebf96325be88663aae09
   robot.run();
   return 0;
 }
