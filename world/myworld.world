@@ -32,7 +32,7 @@ define robfield position
     z [0 1]
   )
   #fit shape to this size in meters
-  size [4 2 0.25]
+  size [15 15 0.25]
   drive "diff"
   mylaser(pose [ 0.050 0.000 0 0.000 ])
 )
@@ -89,4 +89,9 @@ myRobot( pose [ 15 20 0 0 ] name "SheepOne" color "black" bitmap "sheep1.png")
 myRobot( pose [ 10 20 0 0 ] name "GrassOne" color "green" bitmap "grass.png")
 myRobot( pose [ 5.5 15 0 0 ] name "truck" color "red" bitmap "truck.png")
 myRobot( pose [ 10 15 0 0 ] name "Farmer" color "black" bitmap "farmer.png")
+
+robfield( pose [ 7.5 7.5 0 0 ] name "field1" color "white") #bitmap "soil.jpg")
+robfield( pose [ 22.5 7.5 0 0 ] name "field2" color "white") # bitmap "soil.jpg")
+robfield( pose [ 22.5 22.5 0 0 ] name "field3" color "white") # bitmap "soil.jpg")
+robfield( pose [ 7.5 22.5 0 0 ] name "field4" color "white") #bitmap "soil.jpg")
 
