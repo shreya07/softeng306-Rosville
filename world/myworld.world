@@ -111,6 +111,7 @@ floorplan
   pose [ 15.00 15.000 0 90.000 ]
 )
 # throw in a robot
+<<<<<<< HEAD
 myRobot( pose [ 10 10 20 0 ] name "God" color "black")
 mySheep( pose [ 10 20 0 0 ] name "SheepOne" color "blue")
 
@@ -119,3 +120,13 @@ mySheep( pose [ 10 20 0 0 ] name "SheepOne" color "blue")
 
 #myRobot( pose [ 10 10 20 0 ] name "God" color "blue")
 #myRobot( pose [ 20 10 0 0 ] name "TheOtherNOde" color "blue")
+=======
+myRobot( pose [ 5 10 0 0 ] name "God" color "blue")
+myRobot( pose [ 15 20 0 0 ] name "SheepOne" color "green")
+myRobot( pose [ 10 30 0 0 ] name "SheepTwo" color "black")
+#myRobot( pose [ 1 28 0 0 ] name "truck" color "red")
+robfield( pose [ 5 5 0 0 ] name "field1" color "brown") #bitmap "soil.jpg")
+robfield( pose [ 5 7 0 0 ] name "field2" color "green") # bitmap "soil.jpg")
+robfield( pose [ 9 5 0 0 ] name "field3" color "black") # bitmap "soil.jpg")
+robfield( pose [ 9 7 0 0 ] name "field4" color "red") #bitmap "soil.jpg")
+>>>>>>> 0498468de2cc94a1e8a8ebf96325be88663aae09
