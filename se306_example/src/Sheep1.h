@@ -31,6 +31,7 @@ public:
 	double theta;
 	double nodeDistance;
 	double targetTheta;
+	bool followGhost;
 	int width;
 	int length;
 	ros::Publisher RobotNode_stage_pub;
@@ -46,6 +47,8 @@ public:
 	void identityReply_callBack(se306_example::IdentityReply reply);
 	void identityRequest_callBack(se306_example::IdentityRequest request);
 	bool doesIntersect(float x, float y);
+	void stageFollow_callback(std_msgs::String msg);
+	void ghostcmd(geometry_msgs::Twist msg);
 
   //double y;
 };

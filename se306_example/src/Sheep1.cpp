@@ -42,6 +42,7 @@ Sheep1::Sheep1(std::string robot_name, int argc, char **argv,double px,double py
 	targetTheta = 0;
 	width = 1;
 	length = 2;
+	followGhost = false;
 
 
 }
@@ -109,6 +110,22 @@ void Sheep1::identityRequest_callBack(se306_example::IdentityRequest request)
 
 }
 
+void Sheep1::stageFollow_callback(std_msgs::String msg)
+{
+	if(msg.data.compare("follow") == 0) {
+		followGhost = true;
+	}
+}
+
+void Sheep1::ghostcmd(geometry_msgs::Twist msg){
+	//int x = msg.linear.x;
+	if(followGhost) {
+		linear_x = msg.linear.x;
+		angular_z = msg.angular.z;
+	}
+
+}
+
 bool Sheep1::doesIntersect(float x, float y) {
 	float leftX = px-(width/2.0);
 	float rightX = px+(width/2.0);
@@ -156,6 +173,8 @@ ros::NodeHandle Sheep1::run(){
 	ros::Subscriber stageOdo_sub1 = n.subscribe<se306_example::IdentityRequest>("identityRequest",1000, &Sheep1::identityRequest_callBack, this);
 	ros::Subscriber StageOdo_sub2 = n.subscribe<se306_example::IdentityReply>("identityReply",1000, &Sheep1::identityReply_callBack,this);
 	ros::Subscriber StageLaser_sub3 = n.subscribe<sensor_msgs::LaserScan>(robot_name+robot_number+"/base_scan",1000, &Sheep1::StageLaser_callback, this);
+	ros::Subscriber stageOdo_sub4 = n.subscribe<std_msgs::String>(robot_name+robot_number+"/follow",1000, &Sheep1::stageFollow_callback, this);
+	ros::Subscriber stagecmd = n.subscribe<geometry_msgs::Twist>("GhostSheep/cmd_vel",1000, &Sheep1::ghostcmd, this);
 
 	std::list<ros::Subscriber>::iterator it;
 	it = subsList.end();
