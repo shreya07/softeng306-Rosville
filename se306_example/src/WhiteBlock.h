@@ -20,7 +20,7 @@
 #include "../msg_gen/cpp/include/se306_example/IdentityRequest.h"
 #include "../msg_gen/cpp/include/se306_example/IdentityReply.h"
 
-class Sheep1:Robot
+class WhiteBlock:Robot
 {
 public:
 	double distance;
@@ -36,16 +36,18 @@ public:
 	ros::Publisher RobotNode_stage_pub;
 	ros::Publisher Request_pub;
 	ros::Publisher Reply_pub;
-	ros::Publisher Stop_pub;
+	bool doStop;
 
 	void StageLaser_callback(sensor_msgs::LaserScan msg);
-	Sheep1(std::string robot_name, int argc, char **argv, double px, double py,std::string robot_number);
-	~Sheep1();
-	ros::NodeHandle run();
-	void stageOdom_callback (nav_msgs::Odometry msg);
-	void identityReply_callBack(se306_example::IdentityReply reply);
-	void identityRequest_callBack(se306_example::IdentityRequest request);
-	bool doesIntersect(float x, float y);
+  WhiteBlock(std::string robot_name, int argc, char **argv, double px, double py,std::string robot_number);
+  ~WhiteBlock();
+  ros::NodeHandle run();
+  void stageOdom_callback (nav_msgs::Odometry msg);
+  void stagecmd_callback (geometry_msgs::Twist msg);
+  void stageStop_callback (std_msgs::String msg);
+  void identityReply_callBack(se306_example::IdentityReply reply);
+  void identityRequest_callBack(se306_example::IdentityRequest request);
+  bool doesIntersect(float x, float y);
 
   //double y;
 };
