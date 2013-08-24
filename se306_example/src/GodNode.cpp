@@ -20,7 +20,7 @@ ros::Publisher BlockOne_StageOdom_pub;//To Sheep
 ros::Publisher BlockOne_StageLaser_pub; //To Sheep
 ros::Publisher BlockOne_cmd_vel_pub; //To stage
 
-    
+
 //-----[END]Publisher variables
 
 //-----Subscriber callbacks
@@ -36,7 +36,7 @@ void BlockOne_StageOdom_callback(nav_msgs::Odometry msg){ BlockOne_StageOdom_pub
 void BlockOne_StageLaser_callback(sensor_msgs::LaserScan msg){BlockOne_StageLaser_pub.publish(msg);}
 void BlockOne_cmd_vel_callback (geometry_msgs::Twist msg){BlockOne_cmd_vel_pub.publish(msg);}
 
-    
+
 //-----[END] Subscriber callbacks
 
 ros::Publisher Weather_publisher;//To Sheep
@@ -77,8 +77,8 @@ int main(int argc, char **argv)
     ros::Subscriber BlockOne_StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_2/odom", 1000, BlockOne_StageOdom_callback);
     ros::Subscriber BlockOne_StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_2/base_scan", 1000, BlockOne_StageLaser_callback);
     ros::Subscriber BlockOne_cmd_vel = n.subscribe<geometry_msgs::Twist>("BlockOne/cmd_vel", 1000,BlockOne_cmd_vel_callback);
-    
-    
+
+
 
   Weather_publisher = n.advertise<std_msgs::String>("weather/status", 1000); //To SheepOne
 

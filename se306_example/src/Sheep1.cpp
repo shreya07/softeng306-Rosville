@@ -51,7 +51,7 @@ Sheep1::Sheep1(std::string robot_name, int argc, char **argv,double px,double py
  * I have not implemented it here but you should*/
 Sheep1::~Sheep1()
 {
-	// TODO Auto-generated destructor stub
+  // TODO Auto-generated destructor stub
 }
 
 /*Callback method for the robots position*/
@@ -111,32 +111,30 @@ void Sheep1::StageLaser_callback(sensor_msgs::LaserScan msg)
 
 void Sheep1::identityReply_callBack(se306_example::IdentityReply reply)
 {
-	ROS_INFO("reply received");
-	if(reply.destination.compare(robot_name)) {
-		if(reply.type.compare("grass")) {
-			ROS_INFO("Grass detected");
-		} else  {
-			ROS_INFO("Don't know what it is");
-		}
-	}
+  ROS_INFO("reply received");
+  if(reply.destination.compare(robot_name)) {
+    if(reply.type.compare("grass")) {
+      ROS_INFO("Grass detected");
+    } else  {
+      ROS_INFO("Don't know what it is");
+    }
+  }
 
 }
 
 void Sheep1::identityRequest_callBack(se306_example::IdentityRequest request)
 {
-	ROS_INFO("Request received");
-	se306_example::IdentityReply reply;
-	bool result = doesIntersect(request.px, request.py);
-	if(result) {
-		reply.sender = robot_name;
-		reply.destination = request.sender;
-		reply.type = "sheep";
-		Reply_pub.publish(reply);
-		ROS_INFO("reply sent");
-	}
-
-	ROS_INFO("does intersect? %d ", result);
-
+  ROS_INFO("Request received");
+  se306_example::IdentityReply reply;
+  bool result = doesIntersect(request.px, request.py);
+  if(result) {
+    reply.sender = robot_name;
+    reply.destination = request.sender;
+    reply.type = "sheep";
+    Reply_pub.publish(reply);
+    ROS_INFO("reply sent");
+  }
+  ROS_INFO("does intersect? %d ", result);
 }
 /*this function returns a double array depending on the theta
  * the double array shows the distance from you to the object in the x direction
