@@ -52,16 +52,24 @@ void Grass::identityRequest_callBack(se306_example::IdentityRequest request)
   if (request.sender.compare(this->robot_name) != 0) {
     ROS_INFO("Request received");
     se306_example::IdentityReply reply;
+    geometry_msgs::Twist angular;
 
     bool result = doesIntersect(request.px, request.py);
     if (result) {
+      angular.angular.z = 1;
       reply.height = this->height;
       reply.sender = robot_name;
       reply.destination = request.sender;
       reply.type = "Grass";
       Reply_pub.publish(reply);
       ROS_INFO("reply sent");
+      spin.publish(angular);
+      ROS_INFO("SUCCESS");
+    } else {
+      angular.angular.z = 0.5;
+      spin.publish(angular);
     }
+
   }
 }
 
@@ -82,6 +90,8 @@ bool Grass::doesIntersect(float x, float y) {
     matchesInY=true;
     //ROS_INFO("Matching in Y direction");
   }
+
+
   return matchesInY && matchesInX;
 }
 
@@ -117,30 +127,28 @@ void Grass::grow(double moisture) {
 
   if (moisture > 0) {
     height = height+moisture/100;
-  } else if (moisture < 5 && height != 0) {
+  } else if (moisture < 20 && height != 0) {
     height = height-abs(moisture)/10;
   }
   if (height < 0) {
     height = 0;
+
+  }
+
+  // moistCont to 0, to stop growth
+  if (height > maxHeight) {
+    height = maxHeight;
+    moistCont = 0;
   }
 }
 
-//void Grass::spinCallback(se306_example::Custom msg) {
-//  if ((this->px-msg.px) <= 1) {
-//    if ((this->py-msg.py) <= 1) {
-//      this->angular_z = 0.5;
-//    }
-//  } else {
-//    this->angular_z = 0;
-//  }
-//}
 
 void Grass::eatenCallback(const std_msgs::String::ConstPtr& msg) {
-  this->height = this->height-1;
+  this->height = this->height-5;
   if (this->height < 0) {
     this->height = 0;
   }
-  if (this->height < 2) {
+  if (this->height < 5) {
     message = robot_name+robot_number+": Stop";
     Eaten_pub.publish(message);
   }
@@ -199,12 +207,10 @@ ros::NodeHandle Grass::run(){
   //grass.py = this->py;
   while (ros::ok())
   {
-    angular.angular.z = angular_z;
     //ROS_INFO("Value is [%lf]", angular.angular.z);
 
     // PUBLISH
     //grassPos.publish(grass);
-    spin.publish(angular);
     //grassHeight.publish(heightOfGrass);
 
 

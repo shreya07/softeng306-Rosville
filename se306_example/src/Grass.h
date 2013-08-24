@@ -48,11 +48,12 @@ class Grass:Robot
 		int maxHeight;
 		int length;
 		ros::Subscriber laser;
-		double height = 0.0;
-		double moistCont = 0.0;
+		double height;
+		double moistCont;
 		ros::Publisher Request_pub;
 		ros::Publisher Eaten_pub;
 		ros::Publisher Reply_pub;
+		ros::Publisher spin;
 	};
 
 
