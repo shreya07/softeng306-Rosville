@@ -103,7 +103,12 @@ void Sheep1::identityReply_callBack(se306_example::IdentityReply reply)
 	if(reply.destination.compare(robot_name)) {
 		if(reply.type.compare("grass")) {
 			ROS_INFO("Grass detected");
-		} else  {
+		}else if(reply.type.compare("sheep")){
+		        ROS_INFO("Swarm starting");
+		        //from here we need to grab another custom message
+
+		}
+		else  {
 			ROS_INFO("Don't know what it is");
 		}
 	}
@@ -119,6 +124,9 @@ void Sheep1::identityRequest_callBack(se306_example::IdentityRequest request)
 		reply.sender = robot_name;
 		reply.destination = request.sender;
 		reply.type = "sheep";
+		/*this needs to be changed a bit to reflect actual velocity*/
+		reply.abs_cmd_vel_angular_z = angular_z;
+		reply.abs_cmd_vel_linear_x = linear_x;
 		Reply_pub.publish(reply);
 		ROS_INFO("reply sent");
 	}

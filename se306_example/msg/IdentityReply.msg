@@ -1,3 +1,5 @@
 string sender
 string destination
 string type
+float32 abs_cmd_vel_linear_x
+float32 abs_cmd_vel_angular_z
