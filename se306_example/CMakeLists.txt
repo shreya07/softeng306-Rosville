@@ -17,7 +17,7 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 #uncomment if you have defined messages
-#rosbuild_genmsg()
+rosbuild_genmsg()
 #uncomment if you have defined services
 #rosbuild_gensrv()
 
@@ -31,6 +31,7 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 rosbuild_add_executable(GodNode src/GodNode.cpp)
 rosbuild_add_executable(SheepOne src/Sheep1.cpp src/Robot.cpp)
+#rosbuild_add_executable(SheepTwo src/TestSheep.cpp src/Robot.cpp)
+#rosbuild_add_executable(white src/WhiteBlock.cpp src/Robot.cpp)
 #rosbuild_add_executable(GrassOne src/Grass.cpp)
-rosbuild_add_executable(GrassOne src/Grass.cpp src/Robot.cpp)
-rosbuild_add_executable(Farmer src/FarmerWithoutTruck.cpp)
+#rosbuild_add_executable(GrassOne src/Grass.cpp src/Robot.cpp)
