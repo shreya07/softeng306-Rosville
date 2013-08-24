@@ -17,6 +17,7 @@
 #include <sstream>
 #include "math.h"
 #include "Robot.h"
+#include <array>
 
 #include "../msg_gen/cpp/include/se306_example/IdentityRequest.h"
 #include "../msg_gen/cpp/include/se306_example/IdentityReply.h"
@@ -125,11 +126,75 @@ void Sheep1::identityRequest_callBack(se306_example::IdentityRequest request)
 	ROS_INFO("does intersect? %d ", result);
 
 }
+/*this function returns a double array depending on the theta
+ * the double array shows the distance from you to the object in the x direction
+ * and the y direction
+ * The first element is the x direction and the second is the y.
+ * The distances calculated are the distances from you to the next robot
+ * so if the x value is negative for instance, you know that the object is on your left
+ * if the y value is negatice the object is below you
+ * etc
+ * */
+double* Sheep1::calculateTheta(double theta, double distance)
+{
+        int result = new double[2];
+        double calcualted_theta;
+        /*there are 4 cases in which differing methods have to be used
+         * case 1 : when theta is between 0 and 90
+         * case 2 : when theta is between 90 and 180
+         * case 3 : when theta is between 180 and 270
+         * case 4 : when theta is between 270 and 360
+         * then there are the obvious cases that sin and cos and stuff will
+         * not work for when theta == 0 or 90 or 270 or 360*/
 
-int[] Sheep1::calculateTheta(double theta, double distance) {
-	int[] result = {0, 0};
-	// Write code here
-	return result;
+        /*easy cases*/
+        if (theta==0){
+          result[0]=distance;
+          result[1]=0;
+        }else if(theta == 90){
+          result[0]=0;
+          result[1]=distance;
+        }else if (theta==180){
+          result[0]=-distance;
+          result[1]=0;
+        }else if (theta == 270){
+          result[0]=0;
+          result[1]=-distance;
+        }
+        /*case 1 : if theta is between 0 and 90 then the theta of the triangle that
+         * we made will be the same theta as what is given to us*/
+        else if ((theta>0)&&(theta<90)){
+          calcualted_theta = theta;
+          //x value is dist*cos(calculated_theta)
+          //y value is dist*sin(calculated_theta)d
+          result[0] = distance * cos(calcualted_theta);
+          result[1] = distance * sin(calcualted_theta);
+
+        }
+        /*case 2: if the theta is between 90 and 180, then the theta of the triangle is 180-theta*/
+        else if((theta>90)&&(theta<180)){
+          calcualted_theta = 180 - theta;
+          result[0] = -distance * cos(calcualted_theta);
+          result[1] = distance * sin(calcualted_theta);
+
+        }
+        /*case 3 : if the theta value is between 180 and 270*/
+        else if ((theta>180)&&(theta<270)){
+          /*calulated theta must be theta - 180*/
+          calcualted_theta = theta - 180;
+          result[0]=-distance * cos(calcualted_theta);
+          result[1] = -distance * sin(calcualted_theta);
+        }
+        /*case 4 : when theta is between 270 and 360*/
+        else {
+          /*calculated theta must be 360-theta*/
+          calcualted_theta = 360 - theta;
+          result[0]=distance * cos(calcualted_theta);
+          result[1] = -distance * sin(calcualted_theta);
+        }
+
+	//return result;
+        return result;
 }
 
 void Sheep1::stageFollow_callback(std_msgs::String msg)
