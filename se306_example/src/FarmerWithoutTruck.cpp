@@ -32,7 +32,10 @@ void StageLaser_callback(sensor_msgs::LaserScan msg) {
 }
 
 void Teleop_callback(geometry_msgs::Twist msg) {
-        double x = msg.linear.x;
+        linear_x = linear_x+msg.linear.x;
+        angular_z = angular_z+ msg.angular.z;
+        ROS_INFO("Linear x is: %f", linear_x);
+        ROS_INFO("Angular z is: %f", angular_z);
 
 }
 
