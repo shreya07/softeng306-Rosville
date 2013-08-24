@@ -17,7 +17,7 @@
 #include <sstream>
 #include "math.h"
 #include "Robot.h"
-#include <array>
+#include <vector>
 
 #include "../msg_gen/cpp/include/se306_example/IdentityRequest.h"
 #include "../msg_gen/cpp/include/se306_example/IdentityReply.h"
@@ -135,9 +135,10 @@ void Sheep1::identityRequest_callBack(se306_example::IdentityRequest request)
  * if the y value is negatice the object is below you
  * etc
  * */
-double* Sheep1::calculateTheta(double theta, double distance)
+std::list<double> Sheep1::calculateTheta(double theta, double distance)
 {
-        int result = new double[2];
+
+        std::list<double> result;
         double calcualted_theta;
         /*there are 4 cases in which differing methods have to be used
          * case 1 : when theta is between 0 and 90
@@ -148,18 +149,19 @@ double* Sheep1::calculateTheta(double theta, double distance)
          * not work for when theta == 0 or 90 or 270 or 360*/
 
         /*easy cases*/
+        result.clear();
         if (theta==0){
-          result[0]=distance;
-          result[1]=0;
+          result.push_back(distance);
+          result.push_back(0.00);
         }else if(theta == 90){
-          result[0]=0;
-          result[1]=distance;
+          result.push_back(0.00);
+          result.push_back(distance);
         }else if (theta==180){
-          result[0]=-distance;
-          result[1]=0;
+          result.push_back(-distance);
+          result.push_back(0.00);
         }else if (theta == 270){
-          result[0]=0;
-          result[1]=-distance;
+          result.push_back(0.00);
+          result.push_back(-distance);
         }
         /*case 1 : if theta is between 0 and 90 then the theta of the triangle that
          * we made will be the same theta as what is given to us*/
@@ -167,30 +169,30 @@ double* Sheep1::calculateTheta(double theta, double distance)
           calcualted_theta = theta;
           //x value is dist*cos(calculated_theta)
           //y value is dist*sin(calculated_theta)d
-          result[0] = distance * cos(calcualted_theta);
-          result[1] = distance * sin(calcualted_theta);
+          result.push_back(distance * cos(calcualted_theta));
+          result.push_back(distance * sin(calcualted_theta));
 
         }
         /*case 2: if the theta is between 90 and 180, then the theta of the triangle is 180-theta*/
         else if((theta>90)&&(theta<180)){
           calcualted_theta = 180 - theta;
-          result[0] = -distance * cos(calcualted_theta);
-          result[1] = distance * sin(calcualted_theta);
+          result.push_back(-distance * cos(calcualted_theta));
+          result.push_back(distance * sin(calcualted_theta));
 
         }
         /*case 3 : if the theta value is between 180 and 270*/
         else if ((theta>180)&&(theta<270)){
           /*calulated theta must be theta - 180*/
           calcualted_theta = theta - 180;
-          result[0]=-distance * cos(calcualted_theta);
-          result[1] = -distance * sin(calcualted_theta);
+          result.push_back(-distance * cos(calcualted_theta));
+          result.push_back(-distance * sin(calcualted_theta));
         }
         /*case 4 : when theta is between 270 and 360*/
         else {
           /*calculated theta must be 360-theta*/
           calcualted_theta = 360 - theta;
-          result[0]=distance * cos(calcualted_theta);
-          result[1] = -distance * sin(calcualted_theta);
+          result.push_back(distance * cos(calcualted_theta));
+          result.push_back(distance * sin(calcualted_theta));
         }
 
 	//return result;

@@ -49,7 +49,7 @@ public:
 	bool doesIntersect(float x, float y);
 	void stageFollow_callback(std_msgs::String msg);
 	void ghostcmd(geometry_msgs::Twist msg);
-	double* calculateTheta(double theta, double distance);
+	std::list<double> calculateTheta(double theta, double distance);
 
   //double y;
 };
