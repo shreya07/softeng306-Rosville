@@ -12,7 +12,6 @@ class IdentityRequest(genpy.Message):
   _full_text = """string sender
 float32 px
 float32 py
-
 """
   __slots__ = ['sender','px','py']
   _slot_types = ['string','float32','float32']
