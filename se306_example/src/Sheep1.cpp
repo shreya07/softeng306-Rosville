@@ -105,7 +105,20 @@ void Sheep1::identityReply_callBack(se306_example::IdentityReply reply)
 			ROS_INFO("Grass detected");
 		}else if(reply.type.compare("sheep")){
 		        ROS_INFO("Swarm starting");
-		        //from here we need to grab another custom message
+		        /*to get swarm:
+		         * calculate the distance between you and the sheep
+		         * if he is travelling the same direction as you
+		         * then
+		         * make sure you stay some distance from the sheep at all times
+		         * set your angular_z to be his angular_z and the same with
+		         * linear_x
+		         * if he is not travelling the same direction as you
+		         * then pick the one with the greatest x value
+		         * if this doesnt work then pick the one with the greates y value
+		         * set this angular_z and linear_x to be yours
+		         * end
+		         * swarm should work.
+		         * */
 
 		}
 		else  {
