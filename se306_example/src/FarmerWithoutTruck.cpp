@@ -31,6 +31,11 @@ void StageLaser_callback(sensor_msgs::LaserScan msg) {
 	minDistance = msg.ranges[0];
 }
 
+void Teleop_callback(geometry_msgs::Twist msg) {
+        double x = msg.linear.x;
+
+}
+
 int main(int argc, char **argv) {
 
 	//initialize robot parameters
@@ -59,6 +64,9 @@ int main(int argc, char **argv) {
 			"robot_4/odom", 1000, StageOdom_callback);
 	ros::Subscriber StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>(
 			"robot_4/base_scan", 1000, StageLaser_callback);
+
+        ros::Subscriber Teleop_sub = n.subscribe<geometry_msgs::Twist>("/base_controller/command",1000, Teleop_callback);
+
 
 	ros::Rate loop_rate(10);
 
