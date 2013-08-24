@@ -126,6 +126,12 @@ void Sheep1::identityRequest_callBack(se306_example::IdentityRequest request)
 
 }
 
+int[] Sheep1::calculateTheta(double theta, double distance) {
+	int[] result = {0, 0};
+	// Write code here
+	return result;
+}
+
 void Sheep1::stageFollow_callback(std_msgs::String msg)
 {
 	if(msg.data.compare("follow") == 0) {
