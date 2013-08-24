@@ -57,8 +57,8 @@ Sheep1::~Sheep1()
 /*Callback method for the robots position*/
 void Sheep1::stageOdom_callback(nav_msgs::Odometry msg){
 	//int x = msg.linear.x;
-	px = 15 + msg.pose.pose.position.x;
-	py =20 + msg.pose.pose.position.y;
+	px = 5 + msg.pose.pose.position.x;
+	py =10 + msg.pose.pose.position.y;
 	ROS_INFO("w: %f", msg.pose.pose.orientation.w);
 	ROS_INFO("theta: %f", theta);
 	if(msg.pose.pose.orientation.w == 1.0 && msg.pose.pose.orientation.z == 0.0) {
@@ -82,9 +82,21 @@ void Sheep1::StageLaser_callback(sensor_msgs::LaserScan msg)
 		RobotNode_cmdvel.linear.x = linear_x;
 		RobotNode_cmdvel.angular.z = angular_z;
 		RobotNode_stage_pub.publish(RobotNode_cmdvel);
+
 		request.sender = robot_name;
-		request.px = this->px+distance+(width/2.0);
-		request.py = py;
+
+		std::list<double> pose = calculateTheta(theta, distance);
+		double x = pose.front();
+		double y = pose.back();
+
+		request.px = this->px+x+(width/2.0);
+		//pose.pop_front();
+		request.py = py+y+(length/2.0);
+		//pose.pop_front();
+
+		ROS_INFO("x: %f", request.px);
+		ROS_INFO("y: %f", request.py);
+
 		Request_pub.publish(request);
 		std_msgs::String status;
 		status.data = "stop";
@@ -153,7 +165,8 @@ std::list<double> Sheep1::calculateTheta(double theta, double distance)
         if (theta==0){
           result.push_back(distance);
           result.push_back(0.00);
-        }else if(theta == 90){
+        }else if(theta == 90.00){
+        	ROS_INFO("theta is 90");
           result.push_back(0.00);
           result.push_back(distance);
         }else if (theta==180){
@@ -166,7 +179,7 @@ std::list<double> Sheep1::calculateTheta(double theta, double distance)
         /*case 1 : if theta is between 0 and 90 then the theta of the triangle that
          * we made will be the same theta as what is given to us*/
         else if ((theta>0)&&(theta<90)){
-          calcualted_theta = theta;
+          calcualted_theta = theta * (M_PI/180.0);
           //x value is dist*cos(calculated_theta)
           //y value is dist*sin(calculated_theta)d
           result.push_back(distance * cos(calcualted_theta));
