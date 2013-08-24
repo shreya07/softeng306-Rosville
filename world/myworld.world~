@@ -3,7 +3,7 @@ define mylaser ranger
   sensor(
   range [ 15.0 15.0 ] # range
   fov 45       # field of vision
-  samples 40   # samples 
+  samples 41   # samples 
   )
   # generic model properties
   color "black"
@@ -141,10 +141,10 @@ floorplan
   pose [ 15.00 15.000 0 90.000 ]
 )
 # throw in a robot
-myRobot( pose [ 10 10 20 0 ] name "God" color "black")
-mySheep( pose [ 15 20 2 0 ] name "SheepOne" color "blue")
+myRobot( pose [ 10 15 2 0 ] name "God" color "black")
+mySheep( pose [ 5 10 2 0 ] name "SheepOne" color "blue")
 
-mySheep( pose [ 15 20 0 0 ] name "BlockOne" color "blue")
-mySheep( pose [ 19 20 2 0 ] name "SheepOne" color "blue")
+#mySheep( pose [ 15 20 0 0 ] name "BlockOne" color "blue")
+#mySheep( pose [ 19 20 2 0 ] name "SheepOne" color "blue")
 #myRobot( pose [ 10 10 20 0 ] name "God" color "blue")
 #myRobot( pose [ 20 10 0 0 ] name "TheOtherNOde" color "blue")

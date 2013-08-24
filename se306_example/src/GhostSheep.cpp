@@ -37,7 +37,7 @@ GhostSheep::GhostSheep(std::string robot_name, int argc, char **argv,double px,d
 	distance = 15;
 	linear_x = 0.0;
 	angular_z = 0.0;
-	theta = 120.0*M_PI/180.0;
+	theta = 0.0;
 	constLinear = -0.2;
 	nodeDistance = 30;
 	targetTheta = 0;
@@ -116,18 +116,6 @@ void GhostSheep::identityReply_callBack(se306_example::IdentityReply reply)
 }
 
 
-void GhostSheep::stageStop_callback(std_msgs::String msg)
-{
-	if(msg.data.compare("follow") == 0) {
-		if(!followSheep) {
-			followSheep = true;
-		}
-	}
-
-
-}
-
-
 /*The run method that we use to run the robot*/
 ros::NodeHandle GhostSheep::run(){
 	/*always call this line it defines the Nodehandler
@@ -151,13 +139,13 @@ ros::NodeHandle GhostSheep::run(){
 	//ros::Publisher RobotNode_stage_pub1 = n.advertise<geometry_msgs::Twist>("grass",1000);
 	Request_pub = n.advertise<se306_example::IdentityRequest>("identityRequest", 1000);
 	Reply_pub = n.advertise<se306_example::IdentityReply>("identityReply", 1000);
-	Follow_pub = n.advertise<std_msgs::String>("SheepOne/follow", 1000);
+	Follow_pub = n.advertise<std_msgs::String>("Sheep"+robot_number+"/follow", 1000);
 
 	std::stringstream ss;
 	ss<<robot_name;
 
 	ros::Subscriber stageOdo_sub = n.subscribe<nav_msgs::Odometry>(robot_name+robot_number+"/odom",1000, &GhostSheep::stageOdom_callback, this);
-	ros::Subscriber stageOdo_sub1 = n.subscribe<geometry_msgs::Twist>("SheepOne/cmd_vel",1000, &GhostSheep::stagecmd_callback, this);
+	ros::Subscriber stageOdo_sub1 = n.subscribe<geometry_msgs::Twist>("Sheep"+robot_number+"/cmd_vel",1000, &GhostSheep::stagecmd_callback, this);
 	ros::Subscriber StageLaser_sub3 = n.subscribe<sensor_msgs::LaserScan>(robot_name+robot_number+"/base_scan",1000, &GhostSheep::StageLaser_callback, this);
 	ros::Subscriber StageOdo_sub4 = n.subscribe<se306_example::IdentityReply>("identityReply",1000, &GhostSheep::identityReply_callBack,this);
 
@@ -182,6 +170,8 @@ ros::NodeHandle GhostSheep::run(){
 		RobotNode_cmdvel.linear.x = linear_x;
 		//RobotNode_cmdvel.linear.y = 0.2;
 		RobotNode_cmdvel.angular.z = angular_z;
+
+		theta += angular_z*9.0;
 
 		RobotNode_stage_pub.publish(RobotNode_cmdvel);
 		//RobotNode_stage_pub.publish(grass);

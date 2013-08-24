@@ -34,9 +34,9 @@ Sheep1::Sheep1(std::string robot_name, int argc, char **argv,double px,double py
 	//this-> x = px;
 	//this-> y = py;
 	distance = 15;
-	linear_x = 0.2;
-	angular_z = 0.0;
-	theta = 120.0*M_PI/180.0;
+	linear_x = 0.0;
+	angular_z = 2.0;
+	theta = 0.0;
 	constLinear = -0.2;
 	nodeDistance = 30;
 	targetTheta = 0;
@@ -58,15 +58,29 @@ void Sheep1::stageOdom_callback(nav_msgs::Odometry msg){
 	//int x = msg.linear.x;
 	px = 15 + msg.pose.pose.position.x;
 	py =20 + msg.pose.pose.position.y;
+	ROS_INFO("w: %f", msg.pose.pose.orientation.w);
+	ROS_INFO("theta: %f", theta);
+	if(msg.pose.pose.orientation.w == 1.0 && msg.pose.pose.orientation.z == 0.0) {
+		theta = 0;
+	}
 }
 
 
 void Sheep1::StageLaser_callback(sensor_msgs::LaserScan msg)
 {
-	distance = msg.ranges[10];
+	distance = msg.ranges[20];
 	se306_example::IdentityRequest request;
 	ROS_INFO("distance: %f", distance);
 	if(distance <= 10) {
+		theta += angular_z*9.0;
+				if(theta >= 360) {
+					theta = theta - 360;
+				}
+		linear_x = 0.0;
+		angular_z = 0.0;
+		RobotNode_cmdvel.linear.x = linear_x;
+		RobotNode_cmdvel.angular.z = angular_z;
+		RobotNode_stage_pub.publish(RobotNode_cmdvel);
 		request.sender = robot_name;
 		request.px = this->px+distance+(width/2.0);
 		request.py = py;
@@ -75,6 +89,8 @@ void Sheep1::StageLaser_callback(sensor_msgs::LaserScan msg)
 		status.data = "stop";
 		Stop_pub.publish(status);
 		ROS_INFO("Request sent");
+
+		ROS_INFO("theta: %f", theta);
 	}
 
 
@@ -181,9 +197,10 @@ ros::NodeHandle Sheep1::run(){
 	subsList.insert(it,stageOdo_sub);
 
 	//double th = 90*M_PI/2.0;
-	ros::Rate loop_rate(10);
+	ros::Rate loop_rate(2);
 	nav_msgs::Odometry odom;
 	geometry_msgs::Quaternion odom_quat;
+	int counter = 0;
 
 	//se306_example::Grass grass;
 
@@ -197,6 +214,11 @@ ros::NodeHandle Sheep1::run(){
 		RobotNode_cmdvel.linear.x = linear_x;
 		//RobotNode_cmdvel.linear.y = 0.2;
 		RobotNode_cmdvel.angular.z = angular_z;
+		counter++;
+		theta += angular_z*9.0;
+		if(theta >= 360) {
+			theta = theta - 360;
+		}
 
 		RobotNode_stage_pub.publish(RobotNode_cmdvel);
 		//RobotNode_stage_pub.publish(grass);
