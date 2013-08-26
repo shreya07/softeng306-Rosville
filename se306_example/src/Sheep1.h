@@ -34,6 +34,10 @@ public:
 	bool followGhost;
 	int width;
 	int length;
+	double abs_cmd_vel_linear_x;
+	double abs_cmd_vel_angular_z;
+	double prevpx;
+	double prevpy;
 	ros::Publisher RobotNode_stage_pub;
 	ros::Publisher Request_pub;
 	ros::Publisher Reply_pub;

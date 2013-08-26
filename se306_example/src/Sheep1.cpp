@@ -44,6 +44,10 @@ Sheep1::Sheep1(std::string robot_name, int argc, char **argv,double px,double py
 	width = 1;
 	length = 2;
 	followGhost = false;
+	abs_cmd_vel_linear_x=0;
+	abs_cmd_vel_angular_z=0;
+	prevpx=0;
+	prevpy=0;
 
 
 }
@@ -57,6 +61,8 @@ Sheep1::~Sheep1()
 /*Callback method for the robots position*/
 void Sheep1::stageOdom_callback(nav_msgs::Odometry msg){
 	//int x = msg.linear.x;
+        prevpx = px;
+        prevpy = py;
 	px = 5 + msg.pose.pose.position.x;
 	py =10 + msg.pose.pose.position.y;
 	ROS_INFO("w: %f", msg.pose.pose.orientation.w);
@@ -117,20 +123,37 @@ void Sheep1::identityReply_callBack(se306_example::IdentityReply reply)
 			ROS_INFO("Grass detected");
 		}else if(reply.type.compare("sheep")){
 		        ROS_INFO("Swarm starting");
-		        /*to get swarm:
-		         * calculate the distance between you and the sheep
-		         * if he is travelling the same direction as you
-		         * then
-		         * make sure you stay some distance from the sheep at all times
-		         * set your angular_z to be his angular_z and the same with
-		         * linear_x
-		         * if he is not travelling the same direction as you
-		         * then pick the one with the greatest x value
-		         * if this doesnt work then pick the one with the greates y value
-		         * set this angular_z and linear_x to be yours
-		         * end
-		         * swarm should work.
-		         * */
+		        //calculate the distance between you and the sheep
+		        //this is the distance variable
+		        //make sure that this distance is more than 2
+		        if (distance < 2.0){
+		          //move back and avoid
+		          //shall implement this later
+		        }else{
+		          //if he is travelling the same direction as you
+		          if (((reply.abs_cmd_vel_linear_x>0)&&(this->abs_cmd_vel_linear_x>0))||((reply.abs_cmd_vel_linear_x<0)&&(this->abs_cmd_vel_linear_x<0))){
+		            //set your angular z and linear_x to the sheeps linear x
+		            this->linear_x = reply.abs_cmd_vel_linear_x;
+		            this->angular_z = reply.abs_cmd_vel_angular_z;
+		          }else{
+		           //if you are not travelling the same direction as the othersheep
+		            std::list<double> pose = calculateTheta(theta, distance);
+		            //get the x and y values of the
+		            double x = pose.front();
+		            double y = pose.back();
+		            //pick the one that is the graetest xvalue first
+		            if((px<x)||(py<y)){
+		              //set your linear_x to be the same as the otherpersomes linear x
+		              //need to rotate the sheep twice
+
+		              this->angular_z = reply.abs_cmd_vel_angular_z;
+		              this->linear_x = reply.abs_cmd_vel_linear_x;
+		              //need to set the command velocity again?
+		            }
+		          }
+		        }
+		        //swarm completed
+		        ROS_INFO("Swarm Completed");
 
 		}
 		else  {
@@ -152,6 +175,15 @@ void Sheep1::identityRequest_callBack(se306_example::IdentityRequest request)
 		/*this needs to be changed a bit to reflect actual velocity*/
 		reply.abs_cmd_vel_angular_z = angular_z;
 		reply.abs_cmd_vel_linear_x = linear_x;
+		if(prevpx > px){
+		  abs_cmd_vel_linear_x = - linear_x;
+		  reply.abs_cmd_vel_linear_x= abs_cmd_vel_linear_x;
+		}
+		if (prevpy > py){
+		  abs_cmd_vel_angular_z = -angular_z;
+		  reply.abs_cmd_vel_angular_z = abs_cmd_vel_angular_z;
+		}
+
 		Reply_pub.publish(reply);
 		ROS_INFO("reply sent");
 	}
