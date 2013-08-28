@@ -64,12 +64,12 @@ void Grass::identityRequest_callBack(se306_example::IdentityRequest request)
       Reply_pub.publish(reply);
       ROS_INFO("reply sent");
       spin.publish(angular);
+      ROS_INFO("angular is %f", angular.angular.z);
       ROS_INFO("SUCCESS");
     } else {
       angular.angular.z = 0.5;
       spin.publish(angular);
     }
-
   }
 }
 
@@ -203,20 +203,8 @@ ros::NodeHandle Grass::run(){
   //  // SET ANGULAR VELOV
   //  this->angular_z = 0.2;
 
-  //grass.px = this->px;
-  //grass.py = this->py;
   while (ros::ok())
   {
-    //ROS_INFO("Value is [%lf]", angular.angular.z);
-
-    // PUBLISH
-    //grassPos.publish(grass);
-    //grassHeight.publish(heightOfGrass);
-
-
-    //ROS_INFO("Current value of Moisture is %f",this->moistCont);
-    //ROS_INFO("Current value of Height is %f",this->height);
-
     ros::spinOnce();
     loop_rate.sleep();
   }
