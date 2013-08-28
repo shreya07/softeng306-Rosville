@@ -56,6 +56,7 @@ public:
 	void stageFollow_callback(std_msgs::String msg);
 	void ghostcmd(geometry_msgs::Twist msg);
 	std::list<double> calculateTheta(double theta, double distance);
+	double yawFromQuaternion(double x, double y, double z, double w);
 
   //double y;
 };
