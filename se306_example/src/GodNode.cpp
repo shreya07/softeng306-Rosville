@@ -69,23 +69,20 @@ int main(int argc, char **argv)
   status.data="Sunny";
   while (ros::ok())
   {
-    if (count%30==0)
-        {
-          status.data="Rainy";
-          Weather_publisher.publish(status);
+    if (count%5 == 0) {
+      if (status.data.compare("Sunny") == 0) {
+        status.data = "Raining";
+        ROS_INFO("rainy");
+      } else {
+        status.data = "Sunny";
+        ROS_INFO("sunny");
+      }
+    }
 
-          //ROS_INFO("rainy");
-        }else if (count%59){
-          status.data="Sunny";
-          //ROS_INFO("sunny");
-          Weather_publisher.publish(status);
+    ros::spinOnce();
 
-        }
-
-        ros::spinOnce();
-
-        loop_rate.sleep();
-        count=count+1;
+    loop_rate.sleep();
+    count=count+1;
   }
 
   return 0;
