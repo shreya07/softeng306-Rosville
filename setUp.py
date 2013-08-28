@@ -32,7 +32,7 @@ def callTele():
     pid3 = subprocess.call(terminal3)
     time.sleep(3)
     print "success3"
-    pids.append(pid2)
+    pids.append(pid3)
     callLaunch()
      
 def callLaunch():

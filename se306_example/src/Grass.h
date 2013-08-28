@@ -36,12 +36,14 @@ class Grass:Robot
 		void rainfall_callback (const std_msgs::String::ConstPtr& msg);
 		void spinCallback(se306_example::Custom msg);
 		void grow(double moisture);
-
 		void identityReply_callBack(se306_example::IdentityReply reply);
 		void identityRequest_callBack(se306_example::IdentityRequest request);
 		bool doesIntersect(float x, float y);
 		void eatenCallback(const std_msgs::String::ConstPtr& msg);
 	protected:
+		double soilQual;
+		double maxSoilQuality;
+		double maxMoistCont;
 		double angular_z;
 		std::string message;
 		int width;

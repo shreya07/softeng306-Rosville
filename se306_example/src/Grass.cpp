@@ -25,11 +25,14 @@
 
 Grass::Grass(std::string robot_name, int argc, char **argv,double px,double py, std::string robot_number):Robot(robot_name,argc,argv,px,py,robot_number) {
   moistCont = 0;
+  maxMoistCont = 0;
   height = 5;
   maxHeight = 20;
   angular_z = 0;
   width = 1;
   length = 2;
+  soilQual = 0;
+  maxSoilQuality = 10;
 }
 
 Grass::~Grass()
@@ -52,23 +55,16 @@ void Grass::identityRequest_callBack(se306_example::IdentityRequest request)
   if (request.sender.compare(this->robot_name) != 0) {
     ROS_INFO("Request received");
     se306_example::IdentityReply reply;
-    geometry_msgs::Twist angular;
 
     bool result = doesIntersect(request.px, request.py);
     if (result) {
-      angular.angular.z = 1;
       reply.height = this->height;
       reply.sender = robot_name;
       reply.destination = request.sender;
       reply.type = "Grass";
       Reply_pub.publish(reply);
       ROS_INFO("reply sent");
-      spin.publish(angular);
-      ROS_INFO("angular is %f", angular.angular.z);
       ROS_INFO("SUCCESS");
-    } else {
-      angular.angular.z = 0.5;
-      spin.publish(angular);
     }
   }
 }
@@ -78,6 +74,7 @@ bool Grass::doesIntersect(float x, float y) {
   double rightX = px+(width/2.0);
   double top = py+(length/2.0);
   double bottom = py-(length/2.0);
+  geometry_msgs::Twist angular;
 
   bool matchesInX=false;
   bool matchesInY=false;
@@ -90,7 +87,11 @@ bool Grass::doesIntersect(float x, float y) {
     matchesInY=true;
     //ROS_INFO("Matching in Y direction");
   }
-
+  if (matchesInY && matchesInX) {
+    angular.angular.z = 1;
+    ROS_INFO("angular is %f", angular.angular.z);
+    spin.publish(angular);
+  }
 
   return matchesInY && matchesInX;
 }
@@ -104,19 +105,21 @@ void Grass::stageOdom_callback(nav_msgs::Odometry msg){
 // CHECKS RAINFALL AND INCREMENTS/DECREMENTS MOISTURE LEVEL
 void Grass::rainfall_callback(const std_msgs::String::ConstPtr& rainfall) {
 
-  //ROS_INFO("I heard: [%s]", rainfall->data.c_str());
-
   if (rainfall->data.compare("Sunny")==0) {
     moistCont = moistCont - 20;
+    soilQual = soilQual - 1;
   } else if (rainfall->data.compare("Raining")==0) {
     moistCont = moistCont + 50;
+    soilQual = soilQual + 1;
   }
 
-  if (moistCont > 100) {
+  if (moistCont > 100 || soilQual > 10) {
     moistCont = 100;
+    soilQual = 10;
   }
-  if(moistCont < 0) {
+  if(moistCont < 0 || soilQual < 0) {
     moistCont = 0;
+    soilQual = 0;
   }
 
   grow(moistCont);
@@ -125,20 +128,20 @@ void Grass::rainfall_callback(const std_msgs::String::ConstPtr& rainfall) {
 // INCREASES AND DECREASES HEIGHT DEPENDING ON MOISTURE
 void Grass::grow(double moisture) {
 
-  if (moisture > 0) {
-    height = height+moisture/100;
+  if (moisture > 0 && soilQual > 0) {
+    height = height+((moisture+soilQual))/100;
   } else if (moisture < 20 && height != 0) {
-    height = height-abs(moisture)/10;
+    height = height-abs((moisture+soilQual))/10;
   }
   if (height < 0) {
     height = 0;
 
   }
-
   // moistCont to 0, to stop growth
   if (height > maxHeight) {
     height = maxHeight;
     moistCont = 0;
+    soilQual = 0;
   }
 }
 
@@ -175,7 +178,7 @@ ros::NodeHandle Grass::run(){
 
 
   // TO CHANGE ANGULAR VELOCITY SET A PUBLISHER TO LISTEN ON CMD_VEL
-  ros::Publisher spin = n.advertise<geometry_msgs::Twist>(robot_name+robot_number+"/cmd_vel",1000);
+  spin = n.advertise<geometry_msgs::Twist>(robot_name+robot_number+"/cmd_vel",1000);
 
 
   // CREATE MOISTURE AND HEIGHT TOPICS TO PUBLISH TOWARDS
