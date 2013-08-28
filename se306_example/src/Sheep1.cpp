@@ -67,11 +67,8 @@ void Sheep1::stageOdom_callback(nav_msgs::Odometry msg){
 	//int x = msg.linear.x;
         prevpx = px;
         prevpy = py;
-        /*
-         * px = PX_INIT + msg.pose.pose.position.x;
-         * py = PY_INIT + msg.pose.pose.position.y;*/
-	px = 5 + msg.pose.pose.position.x;
-	py =10 + msg.pose.pose.position.y;
+        px = PX_INIT + msg.pose.pose.position.x;
+        py = PY_INIT + msg.pose.pose.position.y;
 	ROS_INFO("w: %f", msg.pose.pose.orientation.w);
 	ROS_INFO("theta: %f", theta);
 	if(msg.pose.pose.orientation.w == 1.0 && msg.pose.pose.orientation.z == 0.0) {
