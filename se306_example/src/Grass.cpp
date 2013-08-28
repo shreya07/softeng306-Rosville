@@ -78,17 +78,18 @@ bool Grass::doesIntersect(float x, float y) {
 
   bool matchesInX=false;
   bool matchesInY=false;
-  //ROS_INFO("leftX: %f, rightX: %f, top: %f, bottom: %f , currentX:%f, currentY:%f", leftX, rightX, top, bottom,px,py);
   if(leftX <= x && rightX >= x) {
     matchesInX=true;
-    //ROS_INFO("Matching in X direction");
   }
   if(top >= y && bottom <= y) {
     matchesInY=true;
-    //ROS_INFO("Matching in Y direction");
   }
   if (matchesInY && matchesInX) {
     angular.angular.z = 1;
+    ROS_INFO("angular is %f", angular.angular.z);
+    spin.publish(angular);
+  } else {
+    angular.angular.z = 0;
     ROS_INFO("angular is %f", angular.angular.z);
     spin.publish(angular);
   }
@@ -192,6 +193,9 @@ ros::NodeHandle Grass::run(){
   std::list<ros::Publisher>::iterator iter;
   iter = pubsList.end();
   pubsList.insert(iter, spin);
+  pubsList.insert(iter, Request_pub);
+  pubsList.insert(iter, Reply_pub);
+  pubsList.insert(iter, Eaten_pub);
 
 
   // SENDING AT 10 MESSAGES A SECOND
@@ -201,10 +205,6 @@ ros::NodeHandle Grass::run(){
   // INITIALIZE VARIABLES TO PUBLISH
   std_msgs::String moisture;
   geometry_msgs::Twist angular;
-  //se306_example::Custom grass;
-
-  //  // SET ANGULAR VELOV
-  //  this->angular_z = 0.2;
 
   while (ros::ok())
   {
