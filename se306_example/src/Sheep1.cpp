@@ -142,13 +142,8 @@ void Sheep1::identityReply_callBack(se306_example::IdentityReply reply)
         ROS_INFO("%f is the abs_x of the sheep and %f is your abs angular z", reply.abs_cmd_vel_angular_z, this-> abs_cmd_vel_angular_z);
         //if (((reply.abs_cmd_vel_linear_x>0)&&(this->abs_cmd_vel_linear_x>0))||((reply.abs_cmd_vel_linear_x<0)&&(this->abs_cmd_vel_linear_x<0))){
         //pick the one thats ordered the best
-        if(reply.sender.compare(robot_name)>0){
-        //set your angular z and linear_x to the sheeps linear x
-          //this->linear_x = reply.abs_cmd_vel_linear_x;
-          //this->angular_z = reply.abs_cmd_vel_angular_z;
-          this->angular_z = 0;
+                 this->angular_z = 0;
           this->linear_x = 0;
-        }
 //        }else{
 //          //if you are not travelling the same direction as the othersheep
 //          std::list<double> pose = calculateTheta(theta, distance);
@@ -199,13 +194,8 @@ void Sheep1::identityRequest_callBack(se306_example::IdentityRequest request)
     abs_cmd_vel_angular_z = angular_z;
     abs_cmd_vel_linear_x = linear_x;
 
-    if(prevpx > px){
-      abs_cmd_vel_linear_x = - linear_x;
-    }
+    /*need to figure out a way to get actual linear and anglualar x*/
     reply.abs_cmd_vel_linear_x= abs_cmd_vel_linear_x;
-    if (prevpy > py){
-      abs_cmd_vel_angular_z = -angular_z;
-    }
     reply.abs_cmd_vel_angular_z = abs_cmd_vel_angular_z;
 
     ROS_INFO("sent linear x = %f and sent angular z = %f",abs_cmd_vel_linear_x,abs_cmd_vel_angular_z);
@@ -396,7 +386,12 @@ ros::NodeHandle Sheep1::run(){
 
 double Sheep1::yawFromQuaternion(double x, double y, double z,double w){
   double a = atan2((2.0*(w*z + x*y)),(1.0-2.0*(y*y+z*z)));
-  return a *180/M_PI;
+  a = a *180/M_PI;
+  if (a < 0){
+    a = 360 + a;
+  }
+  ROS_INFO("%f",a);
+  return a;
 }
 //int main(int argc, char **argv)
 //{
