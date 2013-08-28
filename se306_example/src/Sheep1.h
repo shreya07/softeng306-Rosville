@@ -38,6 +38,8 @@ public:
 	double abs_cmd_vel_angular_z;
 	double prevpx;
 	double prevpy;
+	double PX_INIT;
+	double PY_INIT;
 	ros::Publisher RobotNode_stage_pub;
 	ros::Publisher Request_pub;
 	ros::Publisher Reply_pub;

@@ -34,6 +34,7 @@ Sheep1::Sheep1(std::string robot_name, int argc, char **argv,double px,double py
 	//can do extra stuff here if you like
 	//this-> x = px;
 	//this-> y = py;
+
 	distance = 15;
 	linear_x = 0.0;
 	angular_z = 2.0;
@@ -48,6 +49,9 @@ Sheep1::Sheep1(std::string robot_name, int argc, char **argv,double px,double py
 	abs_cmd_vel_angular_z=0;
 	prevpx=0;
 	prevpy=0;
+	//is this correct?
+	PX_INIT = px;
+	PY_INIT = py;
 
 
 }
@@ -63,6 +67,9 @@ void Sheep1::stageOdom_callback(nav_msgs::Odometry msg){
 	//int x = msg.linear.x;
         prevpx = px;
         prevpy = py;
+        /*
+         * px = PX_INIT + msg.pose.pose.position.x;
+         * py = PY_INIT + msg.pose.pose.position.y;*/
 	px = 5 + msg.pose.pose.position.x;
 	py =10 + msg.pose.pose.position.y;
 	ROS_INFO("w: %f", msg.pose.pose.orientation.w);
@@ -149,6 +156,7 @@ void Sheep1::identityReply_callBack(se306_example::IdentityReply reply)
 		              this->angular_z = reply.abs_cmd_vel_angular_z;
 		              this->linear_x = reply.abs_cmd_vel_linear_x;
 		              //need to set the command velocity again?
+		              //is it overriden by anything
 		            }
 		          }
 		        }
