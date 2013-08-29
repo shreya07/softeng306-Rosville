@@ -149,7 +149,7 @@ void Grass::eatenCallback(const std_msgs::String::ConstPtr& msg) {
     this->height = 0;
   }
   if (this->height < 5) {
-    message = robot_name+robot_number+": Stop";
+    message.data = robot_name+robot_number+": Stop";
     Eaten_pub.publish(message);
   }
   ROS_INFO("New height is: %f", this->height);

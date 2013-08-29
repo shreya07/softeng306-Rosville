@@ -21,6 +21,7 @@
 
 #include "../msg_gen/cpp/include/se306_example/IdentityRequest.h"
 #include "../msg_gen/cpp/include/se306_example/IdentityReply.h"
+#include "../msg_gen/cpp/include/se306_example/FollowSheep.h"
 
 /*Constructor
  * The :RobotRobot(robot_name,argc,argv,px,py,robot_number) part at the end
@@ -43,8 +44,8 @@ GhostSheep::GhostSheep(std::string robot_name, int argc, char **argv,double px,d
 	targetTheta = 0;
 	width = 1;
 	length = 2;
+	doStop = false;
 	followSheep = true;
-
 
 }
 /*destrustor
@@ -57,25 +58,33 @@ GhostSheep::~GhostSheep()
 /*Callback method for the robots position*/
 void GhostSheep::stageOdom_callback(nav_msgs::Odometry msg){
 	//int x = msg.linear.x;
-	px = 15 + msg.pose.pose.position.x;
-	py =20 + msg.pose.pose.position.y;
+	px = 5 + msg.pose.pose.position.x;
+	py =10 + msg.pose.pose.position.y;
+
+	double theCorrectTheta = yawFromQuaternion(msg.pose.pose.orientation.x, msg.pose.pose.orientation.y,msg.pose.pose.orientation.z,msg.pose.pose.orientation.w);
+		theta = theCorrectTheta;
 }
+
+double GhostSheep::yawFromQuaternion(double x, double y, double z, double w) {
+		double a = atan2((2.0*(w*z + x*y)),(1.0-2.0*(y*y+z*z)));
+		a = a * 180/M_PI;
+		if(a<0) {
+			a = 360 +a;
+		}
+		return a;
+}
+
 
 void GhostSheep::stagecmd_callback(geometry_msgs::Twist msg){
 	//int x = msg.linear.x;
-	if(followSheep) {
+	if(!followSheep) {
+		linear_x = 0;
+		angular_z = 0;
+	} else {
 		linear_x = msg.linear.x;
 		angular_z = msg.angular.z;
-	} else {
-		if(distance <= 1) {
-			linear_x = 0.2;
-			angular_z = 0;
-		} else {
-			linear_x = 0;
-			angular_z = 0;
-		}
-
 	}
+
 
 }
 
@@ -83,36 +92,126 @@ void GhostSheep::StageLaser_callback(sensor_msgs::LaserScan msg)
 {
 	distance = msg.ranges[20];
 	se306_example::IdentityRequest request;
-	ROS_INFO("distance: %f", distance);
+	//ROS_INFO("distance: %f", distance);
 	if(distance <= 10) {
+		linear_x = 0.0;
+		angular_z = 0.0;
+		changeFollow(true);
+		RobotNode_cmdvel.linear.x = linear_x;
+				RobotNode_cmdvel.angular.z = angular_z;
+
+				RobotNode_stage_pub.publish(RobotNode_cmdvel);
+
 		request.sender = robot_name;
-		request.px = this->px+distance+(width/2.0);
-		request.py = py;
+
+		std::list<double> pose = calculateTheta(theta, distance);
+		double x = pose.front();
+		double y = pose.back();
+
+		request.px = this->px+x+(width/2.0);
+		//pose.pop_front();
+		request.py = py+y+(length/2.0);
+		//pose.pop_front();
+
+		//ROS_INFO("x: %f", request.px);
+		//ROS_INFO("y: %f", request.py);
+
 		Request_pub.publish(request);
+
 		//std_msgs::String status;
 		//status.data = "stop";
 		//Stop_pub.publish(status);
 		ROS_INFO("Request sent");
+
+		//ROS_INFO("theta: %f", theta);
 	}
 
 
 }
 
-void GhostSheep::identityReply_callBack(se306_example::IdentityReply reply)
-{
-	ROS_INFO("reply received");
-	if(reply.destination.compare(robot_name)==0) {
-		if(reply.type.compare("grass")==0) {
-			ROS_INFO("Grass detected");
-			followSheep = false;
-			std_msgs::String status;
-			status.data = "follow";
-			Follow_pub.publish(status);
-		} else  {
-			ROS_INFO("Don't know what it is");
-		}
+void GhostSheep::changeFollow(bool follow) {
+	se306_example::FollowSheep status;
+	if(follow) {
+		followSheep = follow;
+
+		status.follow = "follow";
+		status.linear_x = linear_x;
+		status.angular_z = angular_z;
+		status.theta = theta;
+		ROS_INFO("theta: %f", theta);
+		Follow_pub.publish(status);
+		ROS_INFO("follow sent");
+	} else {
+		followSheep = follow;
+		status.follow = "Don't follow";
+		Follow_pub.publish(status);
 	}
 
+}
+
+std::list<double> GhostSheep::calculateTheta(double theta, double distance)
+{
+
+        std::list<double> result;
+        double calcualted_theta;
+        /*there are 4 cases in which differing methods have to be used
+         * case 1 : when theta is between 0 and 90
+         * case 2 : when theta is between 90 and 180
+         * case 3 : when theta is between 180 and 270
+         * case 4 : when theta is between 270 and 360
+         * then there are the obvious cases that sin and cos and stuff will
+         * not work for when theta == 0 or 90 or 270 or 360*/
+
+        /*easy cases*/
+        result.clear();
+        if (theta==0){
+          result.push_back(distance);
+          result.push_back(0.00);
+        }else if(theta == 90.00){
+        	//ROS_INFO("theta is 90");
+          result.push_back(0.00);
+          result.push_back(distance);
+        }else if (theta==180){
+          result.push_back(-distance);
+          result.push_back(0.00);
+        }else if (theta == 270){
+          result.push_back(0.00);
+          result.push_back(-distance);
+        }
+        /*case 1 : if theta is between 0 and 90 then the theta of the triangle that
+         * we made will be the same theta as what is given to us*/
+        else if ((theta>0)&&(theta<90)){
+          calcualted_theta = theta * (M_PI/180.0);
+          //x value is dist*cos(calculated_theta)
+          //y value is dist*sin(calculated_theta)d
+          result.push_back(distance * cos(calcualted_theta));
+          result.push_back(distance * sin(calcualted_theta));
+
+        }
+        /*case 2: if the theta is between 90 and 180, then the theta of the triangle is 180-theta*/
+        else if((theta>90)&&(theta<180)){
+          calcualted_theta = 180 - theta;
+          result.push_back(-distance * cos(calcualted_theta));
+          result.push_back(distance * sin(calcualted_theta));
+
+        }
+        /*case 3 : if the theta value is between 180 and 270*/
+        else if ((theta>180)&&(theta<270)){
+          /*calulated theta must be theta - 180*/
+          calcualted_theta = theta - 180;
+          result.push_back(-distance * cos(calcualted_theta));
+          result.push_back(-distance * sin(calcualted_theta));
+        }
+        /*case 4 : when theta is between 270 and 360*/
+        else {
+          /*calculated theta must be 360-theta*/
+          calcualted_theta = 360 - theta;
+          result.push_back(distance * cos(calcualted_theta));
+          result.push_back(distance * sin(calcualted_theta));
+        }
+
+	//return result;
+        return result;
 }
 
 
@@ -139,15 +238,15 @@ ros::NodeHandle GhostSheep::run(){
 	//ros::Publisher RobotNode_stage_pub1 = n.advertise<geometry_msgs::Twist>("grass",1000);
 	Request_pub = n.advertise<se306_example::IdentityRequest>("identityRequest", 1000);
 	Reply_pub = n.advertise<se306_example::IdentityReply>("identityReply", 1000);
-	Follow_pub = n.advertise<std_msgs::String>("Sheep"+robot_number+"/follow", 1000);
+	Follow_pub = n.advertise<se306_example::FollowSheep>("SheepOne/follow", 1000);
 
 	std::stringstream ss;
 	ss<<robot_name;
 
 	ros::Subscriber stageOdo_sub = n.subscribe<nav_msgs::Odometry>(robot_name+robot_number+"/odom",1000, &GhostSheep::stageOdom_callback, this);
-	ros::Subscriber stageOdo_sub1 = n.subscribe<geometry_msgs::Twist>("Sheep"+robot_number+"/cmd_vel",1000, &GhostSheep::stagecmd_callback, this);
+	ros::Subscriber stageOdo_sub1 = n.subscribe<geometry_msgs::Twist>("SheepOne/cmd_vel",1000, &GhostSheep::stagecmd_callback, this);
+	//ros::Subscriber stageOdo_sub2 = n.subscribe<std_msgs::String>("SheepOne/stop",1000, &GhostSheep::stageStop_callback, this);
 	ros::Subscriber StageLaser_sub3 = n.subscribe<sensor_msgs::LaserScan>(robot_name+robot_number+"/base_scan",1000, &GhostSheep::StageLaser_callback, this);
-	ros::Subscriber StageOdo_sub4 = n.subscribe<se306_example::IdentityReply>("identityReply",1000, &GhostSheep::identityReply_callBack,this);
 
 	std::list<ros::Subscriber>::iterator it;
 	it = subsList.end();
@@ -158,7 +257,7 @@ ros::NodeHandle GhostSheep::run(){
 	nav_msgs::Odometry odom;
 	geometry_msgs::Quaternion odom_quat;
 
-	//se306_example::Grass grass;
+	//se306_example::Grass gras2
 
 	/*define the while loop here*/
 	while (ros::ok())
@@ -167,11 +266,10 @@ ros::NodeHandle GhostSheep::run(){
 		// RobotNode_cmdvel.angular.x = 0.2;
 		//RobotNode_cmdvel.angular.y = 0.5;
 
+
 		RobotNode_cmdvel.linear.x = linear_x;
 		//RobotNode_cmdvel.linear.y = 0.2;
 		RobotNode_cmdvel.angular.z = angular_z;
-
-		theta += angular_z*9.0;
 
 		RobotNode_stage_pub.publish(RobotNode_cmdvel);
 		//RobotNode_stage_pub.publish(grass);
@@ -185,7 +283,7 @@ ros::NodeHandle GhostSheep::run(){
 
 int main(int argc, char **argv)
 {
-	GhostSheep robot = GhostSheep("Block",argc,argv,15,20,"One");
+	GhostSheep robot = GhostSheep("GhostSheep",argc,argv,15,20,"One");
 	robot.run();
 	return 0;
 }

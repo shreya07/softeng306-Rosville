@@ -19,6 +19,7 @@
 #include "Robot.h"
 #include "../msg_gen/cpp/include/se306_example/IdentityRequest.h"
 #include "../msg_gen/cpp/include/se306_example/IdentityReply.h"
+#include "../msg_gen/cpp/include/se306_example/FollowSheep.h"
 
 class Sheep1:Robot
 {
@@ -38,6 +39,7 @@ public:
 	ros::Publisher Request_pub;
 	ros::Publisher Reply_pub;
 	ros::Publisher Stop_pub;
+	int count;
 
 	void StageLaser_callback(sensor_msgs::LaserScan msg);
 	Sheep1(std::string robot_name, int argc, char **argv, double px, double py,std::string robot_number);
@@ -47,9 +49,10 @@ public:
 	void identityReply_callBack(se306_example::IdentityReply reply);
 	void identityRequest_callBack(se306_example::IdentityRequest request);
 	bool doesIntersect(float x, float y);
-	void stageFollow_callback(std_msgs::String msg);
+	void stageFollow_callback(se306_example::FollowSheep msg);
 	void ghostcmd(geometry_msgs::Twist msg);
 	std::list<double> calculateTheta(double theta, double distance);
+	double yawFromQuaternion(double x, double y, double z, double w);
 
   //double y;
 };

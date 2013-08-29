@@ -43,7 +43,7 @@ class Grass:Robot
 		void eatenCallback(const std_msgs::String::ConstPtr& msg);
 	protected:
 		double angular_z;
-		std::string message;
+		std_msgs::String message;
 		int width;
 		int maxHeight;
 		int length;

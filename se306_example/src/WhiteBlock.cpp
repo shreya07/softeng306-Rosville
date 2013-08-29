@@ -122,7 +122,7 @@ ros::NodeHandle WhiteBlock::run(){
 	subsList.insert(it,stageOdo_sub);
 
 	//double th = 90*M_PI/2.0;
-	ros::Rate loop_rate(10);
+	ros::Rate loop_rate(2);
 	nav_msgs::Odometry odom;
 	geometry_msgs::Quaternion odom_quat;
 

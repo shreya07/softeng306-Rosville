@@ -21,6 +21,7 @@
 
 #include "../msg_gen/cpp/include/se306_example/IdentityRequest.h"
 #include "../msg_gen/cpp/include/se306_example/IdentityReply.h"
+#include "../msg_gen/cpp/include/se306_example/FollowSheep.h"
 
 /*Constructor
  * The :RobotRobot(robot_name,argc,argv,px,py,robot_number) part at the end
@@ -44,6 +45,7 @@ Sheep1::Sheep1(std::string robot_name, int argc, char **argv,double px,double py
 	width = 1;
 	length = 2;
 	followGhost = false;
+	count = 0;
 
 
 }
@@ -59,11 +61,20 @@ void Sheep1::stageOdom_callback(nav_msgs::Odometry msg){
 	//int x = msg.linear.x;
 	px = 5 + msg.pose.pose.position.x;
 	py =10 + msg.pose.pose.position.y;
-	ROS_INFO("w: %f", msg.pose.pose.orientation.w);
-	ROS_INFO("theta: %f", theta);
-	if(msg.pose.pose.orientation.w == 1.0 && msg.pose.pose.orientation.z == 0.0) {
-		theta = 0;
+	//ROS_INFO("w: %f", msg.pose.pose.orientation.w);
+	//ROS_INFO("theta: %f", theta);
+
+	double theCorrectTheta = yawFromQuaternion(msg.pose.pose.orientation.x, msg.pose.pose.orientation.y,msg.pose.pose.orientation.z,msg.pose.pose.orientation.w);
+	theta = theCorrectTheta;
+}
+
+double Sheep1::yawFromQuaternion(double x, double y, double z, double w) {
+	double a = atan2((2.0*(w*z + x*y)),(1.0-2.0*(y*y+z*z)));
+	a = a * 180/M_PI;
+	if(a<0) {
+		a = 360 +a;
 	}
+	return a;
 }
 
 
@@ -71,12 +82,8 @@ void Sheep1::StageLaser_callback(sensor_msgs::LaserScan msg)
 {
 	distance = msg.ranges[20];
 	se306_example::IdentityRequest request;
-	ROS_INFO("distance: %f", distance);
+	//ROS_INFO("distance: %f", distance);
 	if(distance <= 10) {
-		theta += angular_z*9.0;
-				if(theta >= 360) {
-					theta = theta - 360;
-				}
 		linear_x = 0.0;
 		angular_z = 0.0;
 		RobotNode_cmdvel.linear.x = linear_x;
@@ -94,8 +101,8 @@ void Sheep1::StageLaser_callback(sensor_msgs::LaserScan msg)
 		request.py = py+y+(length/2.0);
 		//pose.pop_front();
 
-		ROS_INFO("x: %f", request.px);
-		ROS_INFO("y: %f", request.py);
+		//ROS_INFO("x: %f", request.px);
+		//ROS_INFO("y: %f", request.py);
 
 		Request_pub.publish(request);
 		std_msgs::String status;
@@ -103,7 +110,7 @@ void Sheep1::StageLaser_callback(sensor_msgs::LaserScan msg)
 		Stop_pub.publish(status);
 		ROS_INFO("Request sent");
 
-		ROS_INFO("theta: %f", theta);
+		//ROS_INFO("theta: %f", theta);
 	}
 
 
@@ -142,7 +149,7 @@ void Sheep1::identityReply_callBack(se306_example::IdentityReply reply)
 
 void Sheep1::identityRequest_callBack(se306_example::IdentityRequest request)
 {
-	ROS_INFO("Request received");
+	//ROS_INFO("Request received");
 	se306_example::IdentityReply reply;
 	bool result = doesIntersect(request.px, request.py);
 	if(result) {
@@ -156,7 +163,7 @@ void Sheep1::identityRequest_callBack(se306_example::IdentityRequest request)
 		ROS_INFO("reply sent");
 	}
 
-	ROS_INFO("does intersect? %d ", result);
+	//ROS_INFO("does intersect? %d ", result);
 
 }
 /*this function returns a double array depending on the theta
@@ -187,7 +194,7 @@ std::list<double> Sheep1::calculateTheta(double theta, double distance)
           result.push_back(distance);
           result.push_back(0.00);
         }else if(theta == 90.00){
-        	ROS_INFO("theta is 90");
+        //	ROS_INFO("theta is 90");
           result.push_back(0.00);
           result.push_back(distance);
         }else if (theta==180){
@@ -233,10 +240,26 @@ std::list<double> Sheep1::calculateTheta(double theta, double distance)
         return result;
 }
 
-void Sheep1::stageFollow_callback(std_msgs::String msg)
+void Sheep1::stageFollow_callback(se306_example::FollowSheep msg)
 {
-	if(msg.data.compare("follow") == 0) {
-		followGhost = true;
+	if(msg.follow.compare("follow") == 0) {
+		if(theta > msg.theta+5) {
+			linear_x = 0.0;
+			angular_z = -0.5;
+			ROS_INFO("theta: %f", theta);
+			ROS_INFO("theta: %f", msg.theta);
+
+		} else if(theta < msg.theta-5) {
+			linear_x = 0.0;
+						angular_z = 0.5;
+	}else {
+			followGhost = true;
+			linear_x = msg.linear_x;
+			angular_z = msg.angular_z;
+			//ROS_INFO("follow received");
+		}
+	} else {
+		followGhost = false;
 	}
 }
 
@@ -287,7 +310,7 @@ ros::NodeHandle Sheep1::run(){
 	//ros::Publisher RobotNode_stage_pub1 = n.advertise<geometry_msgs::Twist>("grass",1000);
 	Request_pub = n.advertise<se306_example::IdentityRequest>("identityRequest", 1000);
 	Reply_pub = n.advertise<se306_example::IdentityReply>("identityReply", 1000);
-	Stop_pub = n.advertise<std_msgs::String>("SheepOne/stop",1000);
+	//Stop_pub = n.advertise<std_msgs::String>("SheepOne/stop",1000);
 
 	std::stringstream ss;
 	ss<<robot_name;
@@ -296,18 +319,17 @@ ros::NodeHandle Sheep1::run(){
 	ros::Subscriber stageOdo_sub1 = n.subscribe<se306_example::IdentityRequest>("identityRequest",1000, &Sheep1::identityRequest_callBack, this);
 	ros::Subscriber StageOdo_sub2 = n.subscribe<se306_example::IdentityReply>("identityReply",1000, &Sheep1::identityReply_callBack,this);
 	ros::Subscriber StageLaser_sub3 = n.subscribe<sensor_msgs::LaserScan>(robot_name+robot_number+"/base_scan",1000, &Sheep1::StageLaser_callback, this);
-	ros::Subscriber stageOdo_sub4 = n.subscribe<std_msgs::String>(robot_name+robot_number+"/follow",1000, &Sheep1::stageFollow_callback, this);
-	ros::Subscriber stagecmd = n.subscribe<geometry_msgs::Twist>("GhostSheep/cmd_vel",1000, &Sheep1::ghostcmd, this);
+	ros::Subscriber stageOdo_sub4 = n.subscribe<se306_example::FollowSheep>(robot_name+robot_number+"/follow",1000, &Sheep1::stageFollow_callback, this);
+	ros::Subscriber stagecmd = n.subscribe<geometry_msgs::Twist>("GhostSheepOne/cmd_vel",1000, &Sheep1::ghostcmd, this);
 
 	std::list<ros::Subscriber>::iterator it;
 	it = subsList.end();
 	subsList.insert(it,stageOdo_sub);
 
 	//double th = 90*M_PI/2.0;
-	ros::Rate loop_rate(2);
+	ros::Rate loop_rate(10);
 	nav_msgs::Odometry odom;
 	geometry_msgs::Quaternion odom_quat;
-	int counter = 0;
 
 	//se306_example::Grass grass;
 
@@ -321,11 +343,6 @@ ros::NodeHandle Sheep1::run(){
 		RobotNode_cmdvel.linear.x = linear_x;
 		//RobotNode_cmdvel.linear.y = 0.2;
 		RobotNode_cmdvel.angular.z = angular_z;
-		counter++;
-		theta += angular_z*9.0;
-		if(theta >= 360) {
-			theta = theta - 360;
-		}
 
 		RobotNode_stage_pub.publish(RobotNode_cmdvel);
 		//RobotNode_stage_pub.publish(grass);
