@@ -63,6 +63,7 @@ void Grass::identityRequest_callBack(se306_example::IdentityRequest request)
 		if (result) {
 			reply.height = this->height;
 			reply.sender = robot_name+robot_number;
+			reply.sender_number = robot_number;
 			reply.destination = request.sender;
 			reply.type = "Grass";
 			reply.px = px;

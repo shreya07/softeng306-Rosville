@@ -6,10 +6,11 @@ import struct
 
 
 class IdentityReply(genpy.Message):
-  _md5sum = "24879df5d9bf0c9e65d97c81f426936f"
+  _md5sum = "078dc91eed617a750d0a95562312f3fd"
   _type = "se306_example/IdentityReply"
   _has_header = False #flag to mark the presence of a Header object
   _full_text = """string sender
+string sender_number
 string destination
 string type
 int32 height
@@ -20,8 +21,8 @@ int32 py
 float32 theta
 
 """
-  __slots__ = ['sender','destination','type','height','abs_cmd_vel_linear_x','abs_cmd_vel_angular_z','px','py','theta']
-  _slot_types = ['string','string','string','int32','float32','float32','int32','int32','float32']
+  __slots__ = ['sender','sender_number','destination','type','height','abs_cmd_vel_linear_x','abs_cmd_vel_angular_z','px','py','theta']
+  _slot_types = ['string','string','string','string','int32','float32','float32','int32','int32','float32']
 
   def __init__(self, *args, **kwds):
     """
@@ -31,7 +32,7 @@ float32 theta
     changes.  You cannot mix in-order arguments and keyword arguments.
 
     The available fields are:
-       sender,destination,type,height,abs_cmd_vel_linear_x,abs_cmd_vel_angular_z,px,py,theta
+       sender,sender_number,destination,type,height,abs_cmd_vel_linear_x,abs_cmd_vel_angular_z,px,py,theta
 
     :param args: complete set of field values, in .msg order
     :param kwds: use keyword arguments corresponding to message field names
@@ -42,6 +43,8 @@ float32 theta
       #message fields cannot be None, assign default values for those that are
       if self.sender is None:
         self.sender = ''
+      if self.sender_number is None:
+        self.sender_number = ''
       if self.destination is None:
         self.destination = ''
       if self.type is None:
@@ -60,6 +63,7 @@ float32 theta
         self.theta = 0.
     else:
       self.sender = ''
+      self.sender_number = ''
       self.destination = ''
       self.type = ''
       self.height = 0
@@ -82,6 +86,12 @@ float32 theta
     """
     try:
       _x = self.sender
+      length = len(_x)
+      if python3 or type(_x) == unicode:
+        _x = _x.encode('utf-8')
+        length = len(_x)
+      buff.write(struct.pack('<I%ss'%length, length, _x))
+      _x = self.sender_number
       length = len(_x)
       if python3 or type(_x) == unicode:
         _x = _x.encode('utf-8')
@@ -126,6 +136,15 @@ float32 theta
       start = end
       end += length
       if python3:
+        self.sender_number = str[start:end].decode('utf-8')
+      else:
+        self.sender_number = str[start:end]
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      start = end
+      end += length
+      if python3:
         self.destination = str[start:end].decode('utf-8')
       else:
         self.destination = str[start:end]
@@ -155,6 +174,12 @@ float32 theta
     """
     try:
       _x = self.sender
+      length = len(_x)
+      if python3 or type(_x) == unicode:
+        _x = _x.encode('utf-8')
+        length = len(_x)
+      buff.write(struct.pack('<I%ss'%length, length, _x))
+      _x = self.sender_number
       length = len(_x)
       if python3 or type(_x) == unicode:
         _x = _x.encode('utf-8')
@@ -194,6 +219,15 @@ float32 theta
         self.sender = str[start:end].decode('utf-8')
       else:
         self.sender = str[start:end]
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      start = end
+      end += length
+      if python3:
+        self.sender_number = str[start:end].decode('utf-8')
+      else:
+        self.sender_number = str[start:end]
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])

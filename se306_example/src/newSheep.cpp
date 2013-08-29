@@ -23,6 +23,7 @@
 #include "../msg_gen/cpp/include/se306_example/IdentityReply.h"
 #include "../msg_gen/cpp/include/se306_example/FollowSheep.h"
 #include "../msg_gen/cpp/include/se306_example/eatGrass.h"
+#include "../msg_gen/cpp/include/se306_example/cover.h"
 
 /*Constructor
  * The :RobotRobot(robot_name,argc,argv,px,py,robot_number) part at the end
@@ -54,7 +55,9 @@ newSheep::newSheep(std::string robot_name, int argc, char **argv,double px,doubl
   grassReached = false;
   eaten = false;
   grassName = "";
-
+  gPX = -1;
+  gPY = -1;
+  grassNumber = "";
 
 }
 /*destrustor
@@ -116,6 +119,9 @@ void newSheep::identityReply_callBack(se306_example::IdentityReply reply)
     	if(reply.height > 5) {
     		grassDetected = true;
     		grassName = reply.sender;
+    		gPX = reply.px;
+    		gPY = reply.py;
+    		grassNumber = reply.sender_number;
 
     	}
 
@@ -151,6 +157,11 @@ void newSheep::grassThings() {
 			grassDetected = false;
 			grassReached = false;
 			eaten = false;
+			/*se306_example::cover msgs;
+			msgs.robot_name = "WhiteBlock"+grassNumber;
+			msgs.grassPX = gPX;
+			msgs.grassPY = gPY;
+			cover_pub.publish(msgs);*/
 		}
 	}
 }
@@ -300,6 +311,7 @@ ros::NodeHandle newSheep::run(){
   Reply_pub = n.advertise<se306_example::IdentityReply>("identityReply", 1000);
   Stop_pub = n.advertise<std_msgs::String>("SheepOne/stop",1000);
   Eat_pub = n.advertise<se306_example::eatGrass>("eat", 1000);
+  cover_pub = n.advertise<se306_example::cover>("cover", 1000);
 
   std::stringstream ss;
   ss<<robot_name;

@@ -19,6 +19,7 @@
 #include "Robot.h"
 #include "../msg_gen/cpp/include/se306_example/IdentityRequest.h"
 #include "../msg_gen/cpp/include/se306_example/IdentityReply.h"
+#include "../msg_gen/cpp/include/se306_example/cover.h"
 
 class WhiteBlock:Robot
 {
@@ -37,6 +38,10 @@ public:
 	ros::Publisher Request_pub;
 	ros::Publisher Reply_pub;
 	bool doStop;
+	double PX_INIT;
+	double PY_INIT;
+	int gPX;
+	int gPY;
 
 	void StageLaser_callback(sensor_msgs::LaserScan msg);
   WhiteBlock(std::string robot_name, int argc, char **argv, double px, double py,std::string robot_number);
@@ -48,6 +53,7 @@ public:
   void identityReply_callBack(se306_example::IdentityReply reply);
   void identityRequest_callBack(se306_example::IdentityRequest request);
   bool doesIntersect(float x, float y);
+  void cover_callback(se306_example::cover msg);
 
   //double y;
 };

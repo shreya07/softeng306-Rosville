@@ -32,4 +32,6 @@ rosbuild_genmsg()
 rosbuild_add_executable(GodNode src/GodNode.cpp)
 rosbuild_add_executable(newSheep src/newSheep.cpp src/Robot.cpp)
 rosbuild_add_executable(GrassOne src/Grass.cpp src/Robot.cpp)
+rosbuild_add_executable(white src/WhiteBlock.cpp src/Robot.cpp)
+
 

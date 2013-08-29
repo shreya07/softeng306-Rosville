@@ -21,6 +21,7 @@
 #include "../msg_gen/cpp/include/se306_example/IdentityReply.h"
 #include "../msg_gen/cpp/include/se306_example/FollowSheep.h"
 #include "../msg_gen/cpp/include/se306_example/eatGrass.h"
+#include "../msg_gen/cpp/include/se306_example/cover.h"
 
 class newSheep:Robot
 {
@@ -40,6 +41,7 @@ public:
 	ros::Publisher Reply_pub;
 	ros::Publisher Stop_pub;
 	ros::Publisher Eat_pub;
+	ros::Publisher cover_pub;
 	double old_ang_z;
 	bool once;
 	double health;
@@ -49,6 +51,9 @@ public:
 	bool grassReached;
 	bool eaten;
 	std::string grassName;
+	int gPX;
+	int gPY;
+	std::string grassNumber;
 
 
 	void StageLaser_callback(sensor_msgs::LaserScan msg);

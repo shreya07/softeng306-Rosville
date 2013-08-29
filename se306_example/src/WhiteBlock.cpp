@@ -21,6 +21,7 @@
 
 #include "../msg_gen/cpp/include/se306_example/IdentityRequest.h"
 #include "../msg_gen/cpp/include/se306_example/IdentityReply.h"
+#include "../msg_gen/cpp/include/se306_example/cover.h"
 
 /*Constructor
  * The :RobotRobot(robot_name,argc,argv,px,py,robot_number) part at the end
@@ -37,13 +38,18 @@ WhiteBlock::WhiteBlock(std::string robot_name, int argc, char **argv,double px,d
 	distance = 15;
 	linear_x = 0.0;
 	angular_z = 0.0;
-	theta = 120.0*M_PI/180.0;
+	theta = 0.0;
+
+	  PX_INIT = px;
+	  PY_INIT = py;
 	constLinear = -0.2;
 	nodeDistance = 30;
 	targetTheta = 0;
 	width = 1;
 	length = 2;
 	doStop = false;
+	gPX = -1;
+	gPY = -1;
 
 
 }
@@ -57,32 +63,15 @@ WhiteBlock::~WhiteBlock()
 /*Callback method for the robots position*/
 void WhiteBlock::stageOdom_callback(nav_msgs::Odometry msg){
 	//int x = msg.linear.x;
-	px = 15 + msg.pose.pose.position.x;
-	py =20 + msg.pose.pose.position.y;
+	px = PX_INIT + msg.pose.pose.position.x;
+	py =PY_INIT + msg.pose.pose.position.y;
 }
 
-void WhiteBlock::stagecmd_callback(geometry_msgs::Twist msg){
-	//int x = msg.linear.x;
-	if(doStop) {
-		linear_x = 0;
-		angular_z = 0;
-	} else {
-		linear_x = msg.linear.x;
-		angular_z = msg.angular.z;
+void WhiteBlock::cover_callback(se306_example::cover msg) {
+	if(msg.robot_name.compare(robot_name+robot_number) == 0) {
+		gPX = msg.grassPX;
+		gPY = msg.grassPY;
 	}
-
-}
-
-
-void WhiteBlock::stageStop_callback(std_msgs::String msg)
-{
-	if(msg.data.compare("stop") == 0) {
-		if(!doStop) {
-			doStop = true;
-		}
-	}
-
-
 }
 
 
@@ -114,8 +103,9 @@ ros::NodeHandle WhiteBlock::run(){
 	ss<<robot_name;
 
 	ros::Subscriber stageOdo_sub = n.subscribe<nav_msgs::Odometry>(robot_name+robot_number+"/odom",1000, &WhiteBlock::stageOdom_callback, this);
-	ros::Subscriber stageOdo_sub1 = n.subscribe<geometry_msgs::Twist>("SheepOne/cmd_vel",1000, &WhiteBlock::stagecmd_callback, this);
-	ros::Subscriber stageOdo_sub2 = n.subscribe<std_msgs::String>("SheepOne/stop",1000, &WhiteBlock::stageStop_callback, this);
+	//ros::Subscriber stageOdo_sub1 = n.subscribe<geometry_msgs::Twist>("SheepOne/cmd_vel",1000, &WhiteBlock::stagecmd_callback, this);
+	//ros::Subscriber stageOdo_sub2 = n.subscribe<std_msgs::String>("SheepOne/stop",1000, &WhiteBlock::stageStop_callback, this);
+	ros::Subscriber cover_sub = n.subscribe<se306_example::cover>("cover",1000,&WhiteBlock::cover_callback,this);
 
 	std::list<ros::Subscriber>::iterator it;
 	it = subsList.end();
@@ -134,6 +124,16 @@ ros::NodeHandle WhiteBlock::run(){
 
 		// RobotNode_cmdvel.angular.x = 0.2;
 		//RobotNode_cmdvel.angular.y = 0.5;
+		if(gPX != -1) {
+			if(gPX >= px && gPY <= py) {
+				linear_x = 2.0;
+				angular_z = 0;
+			} else {
+				linear_x = 0;
+			}
+		} else {
+			linear_x = 0;
+		}
 
 		RobotNode_cmdvel.linear.x = linear_x;
 		//RobotNode_cmdvel.linear.y = 0.2;
@@ -151,7 +151,7 @@ ros::NodeHandle WhiteBlock::run(){
 
 int main(int argc, char **argv)
 {
-	WhiteBlock robot = WhiteBlock("Block",argc,argv,15,20,"One");
+	WhiteBlock robot = WhiteBlock("Block",argc,argv,18,8,"One");
 	robot.run();
 	return 0;
 }
