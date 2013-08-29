@@ -21,13 +21,13 @@ class Robot
 {
 public:
   /*constructor
-  * @param robot_name = "RobotName1" or the number of the robot that you are using.
-  * Basically it is the string that you put in the ros::init folder
-  * argc, argv are from the main method
-  * px, py is the original position of the robot
-  * robot_number is the numebr of the robot that you created
-  * for example if your robot_name ="RobotNode1" then your robot_number is 1*/
-  Robot(std::string robot_name, int argc, char **argv,double px,double py, std::string robot_number);
+   * @param robot_name = "RobotName1" or the number of the robot that you are using.
+   * Basically it is the string that you put in the ros::init folder
+   * argc, argv are from the main method
+   * px, py is the original position of the robot
+   * robot_number is the numebr of the robot that you created
+   * for example if your robot_name ="RobotNode1" then your robot_number is 1*/
+  Robot(std::string robot_name, int argc, char **argv);
 
   /*destructor
    * This is to free up memory, please implement this and free up all your memory
@@ -45,7 +45,6 @@ protected:
   char **argv;
   double px;
   double py;
-  std::string robot_number;
 
   /*lists of subscribers and publishers, please remember to add your publishers and
    * subscribers to this list*/

@@ -1,5 +1,9 @@
-robot_1,SheepOne
-robot_2,GhostSheepOne
-robot_3,FarmerOne
-robot_4,SheepTwo
-robot_5,GrassOne
+robot_1,GateOne
+robot_2,GateTwo
+robot_3,GateThree
+robot_4,SheepOne
+robot_5,GhostSheepOne
+robot_6,FarmerOne
+robot_7,SheepTwo
+robot_8,GrassOne
+robot_9,PoopOne

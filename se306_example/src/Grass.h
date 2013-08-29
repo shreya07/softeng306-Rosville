@@ -13,7 +13,6 @@
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/Odometry.h>
 #include <sensor_msgs/LaserScan.h>
-#include <boost/lexical_cast.hpp>
 #include <iostream>
 #include "stdio.h"
 #include "string.h"
@@ -29,34 +28,35 @@
 class Grass:Robot
 	{
 	public:
-		Grass(std::string robot_name, int argc, char **argv, double px, double py,std::string robot_number);
+		Grass(std::string robot_name, int argc, char **argv, double px, double py,std::string robot_number, std::string field);
 		~Grass();
 		ros::NodeHandle run();
-		void stageOdom_callback (nav_msgs::Odometry msg);
 		void rainfall_callback (const std_msgs::String::ConstPtr& msg);
-		void spinCallback(se306_example::Custom msg);
 		void grow(double moisture);
 		void identityReply_callBack(se306_example::IdentityReply reply);
 		void identityRequest_callBack(se306_example::IdentityRequest request);
 		bool doesIntersect(float x, float y);
 		void eatenCallback(const std_msgs::String::ConstPtr& msg);
+		void stageOdom_callback(nav_msgs::Odometry msg);
 	protected:
                 ros::Publisher Request_pub;
                 ros::Publisher Eaten_pub;
                 ros::Publisher Reply_pub;
                 ros::Publisher spin;
                 ros::Subscriber laser;
-				double soilQual;
-				double maxSoilQuality;
-				double maxMoistCont;
-				double angular_z;
+		double soilQual;
+		double maxSoilQuality;
+		double maxMoistCont;
+		double angular_z;
                 double height;
                 double moistCont;
                 int width;
                 int maxHeight;
                 int length;
-                std_msgs::String message;
+		std_msgs::String message;
+		std::string field;
 	};
+
 
 #endif /* GRASS_H_ */
 

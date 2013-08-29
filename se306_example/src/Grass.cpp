@@ -23,7 +23,7 @@
 #include "../msg_gen/cpp/include/se306_example/IdentityRequest.h"
 #include "../msg_gen/cpp/include/se306_example/IdentityReply.h"
 
-Grass::Grass(std::string robot_name, int argc, char **argv,double px,double py, std::string robot_number):Robot(robot_name,argc,argv,px,py,robot_number) {
+Grass::Grass(std::string robot_name, int argc, char **argv,double px,double py, std::string robot_number, std::string field):Robot(robot_name,argc,argv,px,py,robot_number) {
   moistCont = 0;
   maxMoistCont = 0;
   height = 5;
@@ -33,11 +33,16 @@ Grass::Grass(std::string robot_name, int argc, char **argv,double px,double py, 
   length = 2;
   soilQual = 0;
   maxSoilQuality = 10;
+  this->field = field;
+
 }
 
 Grass::~Grass()
 {
   // TODO Auto-generated destructor stub
+}
+void Grass::stageOdom_callback(nav_msgs::Odometry msg){
+
 }
 
 void Grass::identityReply_callBack(se306_example::IdentityReply reply)
@@ -62,8 +67,6 @@ void Grass::identityRequest_callBack(se306_example::IdentityRequest request)
       reply.sender = robot_name;
       reply.destination = request.sender;
       reply.type = "Grass";
-      reply.px = px;
-      reply.py = py;
       Reply_pub.publish(reply);
       ROS_INFO("reply sent");
       ROS_INFO("SUCCESS");
@@ -99,16 +102,8 @@ bool Grass::doesIntersect(float x, float y) {
   return matchesInY && matchesInX;
 }
 
-// CALL BACK METHOD TO DELEGATE ITS POSITION
-void Grass::stageOdom_callback(nav_msgs::Odometry msg){
-   this->px = this->px+msg.pose.pose.position.x;
-   this->py = this->py+msg.pose.pose.position.y;
-}
-
 // CHECKS RAINFALL AND INCREMENTS/DECREMENTS MOISTURE LEVEL
 void Grass::rainfall_callback(const std_msgs::String::ConstPtr& rainfall) {
-
-  //ROS_INFO("I heard: [%s]", rainfall->data.c_str());
 
   if (rainfall->data.compare("Sunny")==0) {
     moistCont = moistCont - 20;
@@ -168,7 +163,7 @@ ros::NodeHandle Grass::run(){
   ros::NodeHandle n = Robot::run();
 
   // LISTEN
-  ros::Subscriber receive_rainfall = n.subscribe<std_msgs::String>("weather/status",1000, &Grass::rainfall_callback, this);
+  ros::Subscriber receive_rainfall = n.subscribe<std_msgs::String>("weather/status"+field,1000, &Grass::rainfall_callback, this);
   ros::Subscriber requestPos = n.subscribe<se306_example::IdentityRequest>("identityRequest",1000, &Grass::identityRequest_callBack, this);
   ros::Subscriber replyPos = n.subscribe<se306_example::IdentityReply>("identityReply",1000, &Grass::identityReply_callBack,this);
   ros::Subscriber eatSub = n.subscribe<std_msgs::String>(robot_name+robot_number+"/eat",1000, &Grass::eatenCallback,this);
@@ -207,30 +202,11 @@ ros::NodeHandle Grass::run(){
 
 
   // INITIALIZE VARIABLES TO PUBLISH
-  std_msgs::String heightOfGrass;
   std_msgs::String moisture;
   geometry_msgs::Twist angular;
-  se306_example::Custom grass;
 
-//  // SET ANGULAR VELOV
-//  this->angular_z = 0.2;
-
-  grass.px = this->px;
-  grass.py = this->py;
   while (ros::ok())
   {
-    grow(this->moistCont);
-    angular.angular.z = angular_z;
-    ROS_INFO("Value is [%lf]", angular.angular.z);
-
-    // PUBLISH
-    grassPos.publish(grass);
-    spin.publish(angular);
-
-
-    ROS_INFO("Current value of Moisture is %f",this->moistCont);
-    ROS_INFO("Current value of Height is %f",this->height);
-
     ros::spinOnce();
     loop_rate.sleep();
   }
@@ -239,7 +215,8 @@ ros::NodeHandle Grass::run(){
 
 int main(int argc, char **argv)
 {
-  Grass robot = Grass("Grass",argc,argv,10,20,"One");
+  Grass robot = Grass("Grass",argc,argv,10,20,"One","One");
   robot.run();
   return 0;
 }
+

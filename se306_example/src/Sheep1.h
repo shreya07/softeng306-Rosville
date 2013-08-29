@@ -44,15 +44,14 @@ public:
 	double old_ang_z;
 	bool once;
 	double health;
-
-
-	void StageLaser_callback(sensor_msgs::LaserScan msg);
 	Sheep1(std::string robot_name, int argc, char **argv, double px, double py,std::string robot_number);
 	~Sheep1();
 	ros::NodeHandle run();
 	void stageOdom_callback (nav_msgs::Odometry msg);
 	void identityReply_callBack(se306_example::IdentityReply reply);
 	void identityRequest_callBack(se306_example::IdentityRequest request);
+        void StageLaser_callback(sensor_msgs::LaserScan msg);
+        void stageFollow_callback(se306_example::FollowSheep msg);
 	bool doesIntersect(float x, float y);
 	void ghostcmd(geometry_msgs::Twist msg);
 	std::list<double> calculateTheta(double theta, double distance);
