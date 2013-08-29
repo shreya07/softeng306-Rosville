@@ -36,8 +36,8 @@ Sheep1::Sheep1(std::string robot_name, int argc, char **argv,double px,double py
   //this-> x = px;
   //this-> y = py;
   distance = 15;
-  linear_x = 2.0;
-  angular_z = 0.0;
+  linear_x = 0.0;
+  angular_z = 0.5;
   theta = 0.0;
   width = 1;
   length = 2;
@@ -100,8 +100,9 @@ void Sheep1::StageLaser_callback(sensor_msgs::LaserScan msg)
 void Sheep1::identityReply_callBack(se306_example::IdentityReply reply)
 {
       ROS_INFO("reply received");
-  //ROS_INFO("%s is being returned", reply.type.c_str());
+  ROS_INFO("%s is being returned", reply.type.c_str());
   if(reply.destination.compare(robot_name)==0) {
+
 
     if(reply.type.compare("grass")==0) {
       //ROS_INFO("Grass detected");
@@ -261,20 +262,21 @@ void Sheep1::stageFollow_callback(se306_example::FollowSheep msg)
     	  linear_x = msg.linear_x;
     	  angular_z = msg.angular_z;
         followGhost = false;
+        ROS_INFO("don't follow");
       }
 }
 
 void Sheep1::ghostcmd(geometry_msgs::Twist msg){
   //int x = msg.linear.x;
   if(followGhost) {
-	  if(px <= msg.linear.z-0.5 || px >= msg.linear.z+0.5) {
+	  /*if(px <= msg.linear.z-0.5 || px >= msg.linear.z+0.5) {
 		  if(py <= msg.linear.y-0.5 || py >= msg.linear.y+0.5) {
 			  linear_x = msg.linear.x*0.5;
 			  angular_z = msg.angular.z;
 			  ROS_INFO("correcting to ghost");
 			  return;
 		  }
-	  }
+	  }*/
 	  linear_x = msg.linear.x;
 	  angular_z = msg.angular.z;
   }

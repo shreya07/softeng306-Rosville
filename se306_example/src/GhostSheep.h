@@ -38,6 +38,7 @@ public:
 	ros::Publisher Eat_pub;
 	bool followSheep;
 	bool grassDetected;
+	bool requestSent;
 	double grassPX;
 	double grassPY;
 	int counter;

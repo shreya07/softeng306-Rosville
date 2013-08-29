@@ -47,6 +47,7 @@ GhostSheep::GhostSheep(std::string robot_name, int argc, char **argv,double px,d
 	grassPX = -1;
 	grassPY = -1;
 	counter = 0;
+	requestSent = false;
 
 }
 /*destrustor
@@ -63,16 +64,16 @@ void GhostSheep::stageOdom_callback(nav_msgs::Odometry msg){
 	py =20 + msg.pose.pose.position.y;
 
 	double theCorrectTheta = yawFromQuaternion(msg.pose.pose.orientation.x, msg.pose.pose.orientation.y,msg.pose.pose.orientation.z,msg.pose.pose.orientation.w);
-		theta = theCorrectTheta;
+	theta = theCorrectTheta;
 }
 
 double GhostSheep::yawFromQuaternion(double x, double y, double z, double w) {
-		double a = atan2((2.0*(w*z + x*y)),(1.0-2.0*(y*y+z*z)));
-		a = a * 180/M_PI;
-		if(a<0) {
-			a = 360 +a;
-		}
-		return a;
+	double a = atan2((2.0*(w*z + x*y)),(1.0-2.0*(y*y+z*z)));
+	a = a * 180/M_PI;
+	if(a<0) {
+		a = 360 +a;
+	}
+	return a;
 }
 
 
@@ -97,50 +98,53 @@ void GhostSheep::StageLaser_callback(sensor_msgs::LaserScan msg)
 	if(distance <= 10) {
 		changeFollow(true);
 		if(!grassDetected) {
-		linear_x = 0.0;
-		angular_z = 0.0;
-		changeFollow(true);
-		RobotNode_cmdvel.linear.x = linear_x;
-				RobotNode_cmdvel.angular.z = angular_z;
+			if(grassPX == -1) {
+			linear_x = 0.0;
+			angular_z = 0.0;
+			changeFollow(true);
+			RobotNode_cmdvel.linear.x = linear_x;
+			RobotNode_cmdvel.angular.z = angular_z;
 
-				RobotNode_stage_pub.publish(RobotNode_cmdvel);
+			RobotNode_stage_pub.publish(RobotNode_cmdvel);
 
-		request.sender = robot_name;
+			request.sender = robot_name+robot_number;
 
-		std::list<double> pose = calculateTheta(theta, distance);
-		double x = pose.front();
-		double y = pose.back();
+			std::list<double> pose = calculateTheta(theta, distance);
+			double x = pose.front();
+			double y = pose.back();
 
-		request.px = this->px+x+(width/2.0);
-		//pose.pop_front();
-		request.py = py+y+(length/2.0);
-		//pose.pop_front();
+			request.px = this->px+x+(width/2.0);
+			//pose.pop_front();
+			request.py = py+y+(length/2.0);
+			//pose.pop_front();
 
-		//ROS_INFO("x: %f", request.px);
-		//ROS_INFO("y: %f", request.py);
+			//ROS_INFO("x: %f", request.px);
+			//ROS_INFO("y: %f", request.py);
 
-		Request_pub.publish(request);
+			Request_pub.publish(request);
 
-		//std_msgs::String status;
-		//status.data = "stop";
-		//Stop_pub.publish(status);
-		ROS_INFO ("Request sent to x:%f and y%f",request.px,request.py);
+			//std_msgs::String status;
+			//status.data = "stop";
+			//Stop_pub.publish(status);
+			ROS_INFO ("Request sent to x:%f and y%f",request.px,request.py);
+			}
 
-		//ROS_INFO("theta: %f", theta);
+			//ROS_INFO("theta: %f", theta);
 		} else if(grassReached()) {
 
-			if(counter % 10 == 0) {
+			/*if(counter % 10 == 0) {
 				grassPX = -1;
-				grassPY = -1;
+				grassPY = -1;*/
 				linear_x = 2.0;
 				angular_z = 0;
+
 				changeFollow(false);
 				//counter = 0;
-			}else {
+		/*	}else {
 				linear_x = 0;
 				angular_z = 0;
 				counter++;
-			}
+			}*/
 		} else {
 			linear_x = 2.0;
 			angular_z = 0.0;
@@ -155,7 +159,7 @@ bool GhostSheep::grassReached() {
 	if(grassPX != -1 && grassPY != -1) {
 		if(px <= grassPX+1 && px >= grassPX-1) {
 			if(py <= grassPY+1 && py >= grassPY-1) {
-			    ROS_INFO("grass reached");
+				ROS_INFO("grass reached");
 				return true;
 			}
 		}
@@ -166,6 +170,7 @@ bool GhostSheep::grassReached() {
 
 void GhostSheep::changeFollow(bool follow) {
 	se306_example::FollowSheep status;
+
 	if(follow) {
 		followSheep = follow;
 
@@ -190,17 +195,23 @@ void GhostSheep::changeFollow(bool follow) {
 void GhostSheep::identityReply_callBack(se306_example::IdentityReply reply)
 {
 	//ROS_INFO("reply received");
-	if(reply.destination.compare(robot_name)==0) {
+	if(reply.destination.compare(robot_name+robot_number)==0) {
 		//ROS_INFO("sender: %s", reply.sender.c_str());
 		if(reply.type.compare("Grass")==0) {
-			grassDetected = true;
-			grassPX = reply.px;
-			grassPY = reply.py;
-			ROS_INFO("Grass detected");
-			se306_example::eatGrass msg;
-			msg.sender = robot_name;
-			msg.destination = reply.sender;
-			Eat_pub.publish(msg);
+			if(reply.height > 0) {
+				grassDetected = true;
+				grassPX = reply.px;
+				grassPY = reply.py;
+				ROS_INFO("Grass detected");
+				se306_example::eatGrass msg;
+				msg.sender = robot_name;
+				msg.destination = reply.sender;
+				Eat_pub.publish(msg);
+			} else {
+				grassPX = reply.px;
+				grassPY = reply.py;
+			}
+
 		}else if(reply.type.compare("sheep")==0){
 
 
@@ -215,66 +226,66 @@ void GhostSheep::identityReply_callBack(se306_example::IdentityReply reply)
 std::list<double> GhostSheep::calculateTheta(double theta, double distance)
 {
 
-        std::list<double> result;
-        double calcualted_theta;
-        /*there are 4 cases in which differing methods have to be used
-         * case 1 : when theta is between 0 and 90
-         * case 2 : when theta is between 90 and 180
-         * case 3 : when theta is between 180 and 270
-         * case 4 : when theta is between 270 and 360
-         * then there are the obvious cases that sin and cos and stuff will
-         * not work for when theta == 0 or 90 or 270 or 360*/
+	std::list<double> result;
+	double calcualted_theta;
+	/*there are 4 cases in which differing methods have to be used
+	 * case 1 : when theta is between 0 and 90
+	 * case 2 : when theta is between 90 and 180
+	 * case 3 : when theta is between 180 and 270
+	 * case 4 : when theta is between 270 and 360
+	 * then there are the obvious cases that sin and cos and stuff will
+	 * not work for when theta == 0 or 90 or 270 or 360*/
 
-        /*easy cases*/
-        result.clear();
-        if (theta==0){
-          result.push_back(distance);
-          result.push_back(0.00);
-        }else if(theta == 90.00){
-        	//ROS_INFO("theta is 90");
-          result.push_back(0.00);
-          result.push_back(distance);
-        }else if (theta==180){
-          result.push_back(-distance);
-          result.push_back(0.00);
-        }else if (theta == 270){
-          result.push_back(0.00);
-          result.push_back(-distance);
-        }
-        /*case 1 : if theta is between 0 and 90 then the theta of the triangle that
-         * we made will be the same theta as what is given to us*/
-        else if ((theta>0)&&(theta<90)){
-          calcualted_theta = theta * (M_PI/180.0);
-          //x value is dist*cos(calculated_theta)
-          //y value is dist*sin(calculated_theta)d
-          result.push_back(distance * cos(calcualted_theta));
-          result.push_back(distance * sin(calcualted_theta));
+	/*easy cases*/
+	result.clear();
+	if (theta==0){
+		result.push_back(distance);
+		result.push_back(0.00);
+	}else if(theta == 90.00){
+		//ROS_INFO("theta is 90");
+		result.push_back(0.00);
+		result.push_back(distance);
+	}else if (theta==180){
+		result.push_back(-distance);
+		result.push_back(0.00);
+	}else if (theta == 270){
+		result.push_back(0.00);
+		result.push_back(-distance);
+	}
+	/*case 1 : if theta is between 0 and 90 then the theta of the triangle that
+	 * we made will be the same theta as what is given to us*/
+	else if ((theta>0)&&(theta<90)){
+		calcualted_theta = theta * (M_PI/180.0);
+		//x value is dist*cos(calculated_theta)
+		//y value is dist*sin(calculated_theta)d
+		result.push_back(distance * cos(calcualted_theta));
+		result.push_back(distance * sin(calcualted_theta));
 
-        }
-        /*case 2: if the theta is between 90 and 180, then the theta of the triangle is 180-theta*/
-        else if((theta>90)&&(theta<180)){
-          calcualted_theta = 180 - theta;
-          result.push_back(-distance * cos(calcualted_theta));
-          result.push_back(distance * sin(calcualted_theta));
+	}
+	/*case 2: if the theta is between 90 and 180, then the theta of the triangle is 180-theta*/
+	else if((theta>90)&&(theta<180)){
+		calcualted_theta = 180 - theta;
+		result.push_back(-distance * cos(calcualted_theta));
+		result.push_back(distance * sin(calcualted_theta));
 
-        }
-        /*case 3 : if the theta value is between 180 and 270*/
-        else if ((theta>180)&&(theta<270)){
-          /*calulated theta must be theta - 180*/
-          calcualted_theta = theta - 180;
-          result.push_back(-distance * cos(calcualted_theta));
-          result.push_back(-distance * sin(calcualted_theta));
-        }
-        /*case 4 : when theta is between 270 and 360*/
-        else {
-          /*calculated theta must be 360-theta*/
-          calcualted_theta = 360 - theta;
-          result.push_back(distance * cos(calcualted_theta));
-          result.push_back(distance * sin(calcualted_theta));
-        }
+	}
+	/*case 3 : if the theta value is between 180 and 270*/
+	else if ((theta>180)&&(theta<270)){
+		/*calulated theta must be theta - 180*/
+		calcualted_theta = theta - 180;
+		result.push_back(-distance * cos(calcualted_theta));
+		result.push_back(-distance * sin(calcualted_theta));
+	}
+	/*case 4 : when theta is between 270 and 360*/
+	else {
+		/*calculated theta must be 360-theta*/
+		calcualted_theta = 360 - theta;
+		result.push_back(distance * cos(calcualted_theta));
+		result.push_back(distance * sin(calcualted_theta));
+	}
 
 	//return result;
-        return result;
+	return result;
 }
 
 
@@ -302,7 +313,7 @@ ros::NodeHandle GhostSheep::run(){
 	Request_pub = n.advertise<se306_example::IdentityRequest>("identityRequest", 1000);
 	Reply_pub = n.advertise<se306_example::IdentityReply>("identityReply", 1000);
 	Follow_pub = n.advertise<se306_example::FollowSheep>("SheepOne/follow", 1000);
-	Eat_pub = n.advertise<std_msgs::String>("eat", 1000);
+	Eat_pub = n.advertise<se306_example::eatGrass>("eat", 1000);
 
 
 	std::stringstream ss;

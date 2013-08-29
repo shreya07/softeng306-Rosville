@@ -27,7 +27,7 @@
 Grass::Grass(std::string robot_name, int argc, char **argv,double px,double py, std::string robot_number):Robot(robot_name,argc,argv,px,py,robot_number) {
 	moistCont = 0;
 	maxMoistCont = 0;
-	height = 5;
+	height = 15;
 	maxHeight = 20;
 	angular_z = 0;
 	width = 1;
@@ -62,7 +62,7 @@ void Grass::identityRequest_callBack(se306_example::IdentityRequest request)
 		bool result = doesIntersect(request.px, request.py);
 		if (result) {
 			reply.height = this->height;
-			reply.sender = robot_name;
+			reply.sender = robot_name+robot_number;
 			reply.destination = request.sender;
 			reply.type = "Grass";
 			reply.px = px;
@@ -154,14 +154,7 @@ void Grass::grow(double moisture) {
 
 void Grass::eatenCallback(se306_example::eatGrass msg) {
 	if(msg.destination.compare(robot_name+robot_number)==0) {
-		this->height = this->height-5;
-		if (this->height < 0) {
-			this->height = 0;
-		}
-		if (this->height < 5) {
-			message.data = robot_name+robot_number+": Stop";
-			Eaten_pub.publish(message);
-		}
+		this->height = 0;
 		ROS_INFO("New height is: %f", this->height);
 	}
 }
