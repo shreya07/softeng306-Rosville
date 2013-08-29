@@ -27,19 +27,21 @@ public:
 	double distance;
 	geometry_msgs::Twist RobotNode_cmdvel;
 	double linear_x;
-	double constLinear;
 	double angular_z;
 	double theta;
-	double nodeDistance;
-	double targetTheta;
 	bool followGhost;
 	int width;
 	int length;
+	double PX_INIT;
+	double PY_INIT;
 	ros::Publisher RobotNode_stage_pub;
 	ros::Publisher Request_pub;
 	ros::Publisher Reply_pub;
 	ros::Publisher Stop_pub;
-	int count;
+	double old_ang_z;
+	bool once;
+	double health;
+
 
 	void StageLaser_callback(sensor_msgs::LaserScan msg);
 	Sheep1(std::string robot_name, int argc, char **argv, double px, double py,std::string robot_number);

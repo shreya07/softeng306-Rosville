@@ -6,7 +6,7 @@ import struct
 
 
 class IdentityReply(genpy.Message):
-  _md5sum = "e957ca48428a86e1ade20f7efb156185"
+  _md5sum = "24879df5d9bf0c9e65d97c81f426936f"
   _type = "se306_example/IdentityReply"
   _has_header = False #flag to mark the presence of a Header object
   _full_text = """string sender
@@ -17,10 +17,11 @@ float32 abs_cmd_vel_linear_x
 float32 abs_cmd_vel_angular_z
 int32 px
 int32 py
+float32 theta
 
 """
-  __slots__ = ['sender','destination','type','height','abs_cmd_vel_linear_x','abs_cmd_vel_angular_z','px','py']
-  _slot_types = ['string','string','string','int32','float32','float32','int32','int32']
+  __slots__ = ['sender','destination','type','height','abs_cmd_vel_linear_x','abs_cmd_vel_angular_z','px','py','theta']
+  _slot_types = ['string','string','string','int32','float32','float32','int32','int32','float32']
 
   def __init__(self, *args, **kwds):
     """
@@ -30,7 +31,7 @@ int32 py
     changes.  You cannot mix in-order arguments and keyword arguments.
 
     The available fields are:
-       sender,destination,type,height,abs_cmd_vel_linear_x,abs_cmd_vel_angular_z,px,py
+       sender,destination,type,height,abs_cmd_vel_linear_x,abs_cmd_vel_angular_z,px,py,theta
 
     :param args: complete set of field values, in .msg order
     :param kwds: use keyword arguments corresponding to message field names
@@ -55,6 +56,8 @@ int32 py
         self.px = 0
       if self.py is None:
         self.py = 0
+      if self.theta is None:
+        self.theta = 0.
     else:
       self.sender = ''
       self.destination = ''
@@ -64,6 +67,7 @@ int32 py
       self.abs_cmd_vel_angular_z = 0.
       self.px = 0
       self.py = 0
+      self.theta = 0.
 
   def _get_types(self):
     """
@@ -96,7 +100,7 @@ int32 py
         length = len(_x)
       buff.write(struct.pack('<I%ss'%length, length, _x))
       _x = self
-      buff.write(_struct_i2f2i.pack(_x.height, _x.abs_cmd_vel_linear_x, _x.abs_cmd_vel_angular_z, _x.px, _x.py))
+      buff.write(_struct_i2f2if.pack(_x.height, _x.abs_cmd_vel_linear_x, _x.abs_cmd_vel_angular_z, _x.px, _x.py, _x.theta))
     except struct.error as se: self._check_types(se)
     except TypeError as te: self._check_types(te)
 
@@ -136,8 +140,8 @@ int32 py
         self.type = str[start:end]
       _x = self
       start = end
-      end += 20
-      (_x.height, _x.abs_cmd_vel_linear_x, _x.abs_cmd_vel_angular_z, _x.px, _x.py,) = _struct_i2f2i.unpack(str[start:end])
+      end += 24
+      (_x.height, _x.abs_cmd_vel_linear_x, _x.abs_cmd_vel_angular_z, _x.px, _x.py, _x.theta,) = _struct_i2f2if.unpack(str[start:end])
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e) #most likely buffer underfill
@@ -169,7 +173,7 @@ int32 py
         length = len(_x)
       buff.write(struct.pack('<I%ss'%length, length, _x))
       _x = self
-      buff.write(_struct_i2f2i.pack(_x.height, _x.abs_cmd_vel_linear_x, _x.abs_cmd_vel_angular_z, _x.px, _x.py))
+      buff.write(_struct_i2f2if.pack(_x.height, _x.abs_cmd_vel_linear_x, _x.abs_cmd_vel_angular_z, _x.px, _x.py, _x.theta))
     except struct.error as se: self._check_types(se)
     except TypeError as te: self._check_types(te)
 
@@ -210,11 +214,11 @@ int32 py
         self.type = str[start:end]
       _x = self
       start = end
-      end += 20
-      (_x.height, _x.abs_cmd_vel_linear_x, _x.abs_cmd_vel_angular_z, _x.px, _x.py,) = _struct_i2f2i.unpack(str[start:end])
+      end += 24
+      (_x.height, _x.abs_cmd_vel_linear_x, _x.abs_cmd_vel_angular_z, _x.px, _x.py, _x.theta,) = _struct_i2f2if.unpack(str[start:end])
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e) #most likely buffer underfill
 
 _struct_I = genpy.struct_I
-_struct_i2f2i = struct.Struct("<i2f2i")
+_struct_i2f2if = struct.Struct("<i2f2if")

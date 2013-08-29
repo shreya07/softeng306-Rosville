@@ -155,14 +155,12 @@ floorplan
 ( 
   name "swarm"
   bitmap "swarm_world.pgm"
-  size [30.000 30.000 0.500]
-  pose [ 15.000 15.000 0.000 90.000 ]
+  size [30.0 30.0 10]
+  pose [ 15.00 15.000 0 90.000 ]
 )
 # throw in a robot
-myRobot( pose [ 7.000 15.000 6.000 0.000 ] name "God" color "black")
-mySheep( pose [ 5.000 10.000 4.000 0.000 ] name "SheepOne" color "blue")
+myRobot( pose [ 5 15 2 0 ] name "God" color "black")
+mySheep( pose [ 15 20 2 0 ] name "SheepOne" color "blue")
 myGhostSheep( pose [ 5.000 10.000 2.000 0.000 ] name "GhostSheepOne" color "blue")
+mySheep( pose [ 20 20 2 90 ] name "SheepTwo" color "green")
 myRobot( pose [ 7.000 15.000 0.000 0.000 ] name "Grass" color "green")
-#mySheep( pose [ 15 10 0 0 ] name "SheepOne" color "blue")
-
-#myRobot( pose [ 20 10 0 0 ] name "TheOtherNOde" color "blue")

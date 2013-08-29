@@ -6,3 +6,4 @@ float32 abs_cmd_vel_linear_x
 float32 abs_cmd_vel_angular_z
 int32 px
 int32 py
+float32 theta
