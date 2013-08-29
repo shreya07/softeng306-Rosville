@@ -318,7 +318,7 @@ ros::NodeHandle Sheep1::run(){
   ros::Subscriber stageOdo_sub1 = n.subscribe<se306_example::IdentityRequest>("identityRequest",1000, &Sheep1::identityRequest_callBack, this);
   ros::Subscriber StageOdo_sub2 = n.subscribe<se306_example::IdentityReply>("identityReply",1000, &Sheep1::identityReply_callBack,this);
   ros::Subscriber StageLaser_sub3 = n.subscribe<sensor_msgs::LaserScan>(robot_name+robot_number+"/base_scan",1000, &Sheep1::StageLaser_callback, this);
-  ros::Subscriber stageOdo_sub4 = n.subscribe<std_msgs::String>(robot_name+robot_number+"/follow",1000, &Sheep1::stageFollow_callback, this);
+  ros::Subscriber stageOdo_sub4 = n.subscribe<se306_example::FollowSheep>(robot_name+robot_number+"/follow",1000, &Sheep1::stageFollow_callback, this);
   ros::Subscriber stagecmd = n.subscribe<geometry_msgs::Twist>("GhostSheepOne/cmd_vel",1000, &Sheep1::ghostcmd, this);
 
   std::list<ros::Subscriber>::iterator it;

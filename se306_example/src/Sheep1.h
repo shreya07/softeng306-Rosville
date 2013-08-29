@@ -51,11 +51,10 @@ public:
 	void identityReply_callBack(se306_example::IdentityReply reply);
 	void identityRequest_callBack(se306_example::IdentityRequest request);
 	bool doesIntersect(float x, float y);
-	void stageFollow_callback(se306_example::FollowSheep msg);
 	void ghostcmd(geometry_msgs::Twist msg);
 	std::list<double> calculateTheta(double theta, double distance);
 	double yawFromQuaternion(double x, double y, double z, double w);
-
+	void stageFollow_callback(se306_example::FollowSheep msg);
   //double y;
 };
 
