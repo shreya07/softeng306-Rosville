@@ -9,6 +9,6 @@
 
 <node name="Truck" pkg="se306_example" type="Truck" output="screen"/>
 
-<node name="Farmer" pkg="se306_example" type="Farmer" output="screen"/>
+<node name="FarmerOne" pkg="se306_example" type="FarmerNew" output="screen"/>
 
 </launch>
