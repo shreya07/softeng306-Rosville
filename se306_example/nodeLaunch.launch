@@ -30,4 +30,5 @@
 
 
 
+<node name="SheepTwo" pkg="se306_example" type="TestSheep" output="screen"/>
 </launch>

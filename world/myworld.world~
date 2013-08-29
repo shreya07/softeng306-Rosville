@@ -1,12 +1,34 @@
 define mylaser ranger
 (
   sensor(
+<<<<<<< HEAD
   range [ 0.0 15.0 ] # range
   fov 45       # field of vision
   samples 40   # samples 
   )
   # generic model properties
   color "black"
+=======
+  range [ 15.0 15.0 ] # range
+  fov 45       # field of vision
+  samples 41   # samples 
+  )
+  # generic model properties
+  color "black"
+  size [ 1.000 2.000 3.000 ]
+  
+)
+
+define mylaser1 ranger
+(
+  sensor(
+  range [ 15.0 15.0 ] # range
+  fov 45       # field of vision
+  samples 40   # samples 
+  )
+  # generic model properties
+  color "black"
+>>>>>>> e0a748ba689def699a0cd80594002048310cb824
   size [ 1 2 3 ]
   
 )
@@ -27,9 +49,32 @@ define myRobot position
     point[7] [3 0]
     z [0 1]
   )
+<<<<<<< HEAD
   size [1 2 1]
   drive "diff"
   mylaser(pose [ 0.5 0 -1 0 ])
+=======
+  size [1.000 2.000 1.000]
+  drive "diff"
+  mylaser(pose [ 0.500 0.000 0.000 0.000 ])
+  ranger_return 1.000
+)
+
+define mySheep1 position
+(
+  #Shape of robot
+  block
+  (
+    points 4
+    point[0] [0 0]
+    point[1] [0 2]
+    point[2] [1 2]
+    point[3] [1 1]
+    z [0 1]
+  )
+  size [1 2 1]
+  drive "diff"
+>>>>>>> e0a748ba689def699a0cd80594002048310cb824
   ranger_return 1
 )
 
@@ -45,6 +90,7 @@ define mySheep position
     point[3] [1 1]
     z [0 1]
   )
+<<<<<<< HEAD
   size [1 2 1]
   drive "diff"
   mylaser(pose [ 0.5 0 -1 0 ])
@@ -72,12 +118,22 @@ define GateVertical position
 
 
 define GateHorizontal position
+=======
+  size [1.000 2.000 1.000]
+  drive "diff"
+  mylaser(pose [ 0.500 0.000 -1.000 0.000 ])
+  ranger_return 1.000
+)
+
+define myGhostSheep position
+>>>>>>> e0a748ba689def699a0cd80594002048310cb824
 (
   #Shape of robot
   block
   (
     points 4
     point[0] [0 0]
+<<<<<<< HEAD
     point[1] [0 8]
     point[2] [1 8]
     point[3] [1 0]
@@ -90,6 +146,19 @@ define GateHorizontal position
 )
 
 
+=======
+    point[1] [0 2]
+    point[2] [1 2]
+    point[3] [1 1]
+    z [0 1]
+  )
+  size [1.000 2.000 1.000]
+  drive "diff"
+  mylaser(pose [ 0.500 0.000 -3.000 0.000 ])
+  ranger_return 1.000
+)
+
+>>>>>>> e0a748ba689def699a0cd80594002048310cb824
 define robfield position
 (
   #Shape of robot
@@ -117,7 +186,7 @@ define floorplan model
   # most maps will need a bounding box
   boundary 1
   
-  ranger_return 1
+  ranger_return 1.000
 )
 
 define my_block model
@@ -136,22 +205,30 @@ interval_sim 100  # simulation timestep in milliseconds. length of each simulati
 
 window
 ( 
-  size [ 745.000 448.000 ] #size of the window in pixels
-  scale 30 
+  size [ 745 448 ] #size of the window in pixels
+  scale 30.000 
   
 )
 
 # load an environment bitmap
 floorplan
 ( 
+<<<<<<< HEAD
   name "farm"
   bitmap "farmLayout3.png"
   size [30.0 30.0 0.5]
   pose [ 15.00 15.000 0 0 ]
+=======
+  name "swarm"
+  bitmap "swarm_world.pgm"
+  size [30.0 30.0 10]
+  pose [ 15.00 15.000 0 90.000 ]
+>>>>>>> e0a748ba689def699a0cd80594002048310cb824
 )
 
 
 # throw in a robot
+<<<<<<< HEAD
 
 myRobot( pose [ 5 10 0 0 ] name "God" color "blue")
 GateHorizontal( pose [ 5 16.5 0 0 ] name "TopRightGate" color "blue")
@@ -167,3 +244,10 @@ GateVertical( pose [ 13.5 25 0 0 ] name "GateVertical" color "grey")
 #robfield( pose [ 9 5 0 0 ] name "field3" color "black") # bitmap "soil.jpg")
 #robfield( pose [ 9 7 0 0 ] name "field4" color "red") #bitmap "soil.jpg")
 
+=======
+myRobot( pose [ -5 15 2 0 ] name "God" color "black")
+mySheep( pose [ 15 20 4 0 ] name "SheepOne" color "blue")
+myGhostSheep( pose [ 15.000 20.000 2.000 0.000 ] name "GhostSheepOne" color "blue")
+mySheep( pose [ 20 20 4 90 ] name "SheepTwo" color "green")
+myRobot( pose [ 7.000 15.000 0.000 0.000 ] name "Grass" color "green")
+>>>>>>> e0a748ba689def699a0cd80594002048310cb824

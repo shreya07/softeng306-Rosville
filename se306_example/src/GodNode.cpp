@@ -15,6 +15,7 @@ ros::Publisher GateOne_StageLaser_pub; //To Sheep
 ros::Publisher GateOne_cmd_vel_pub; //To stage
 
     
+<<<<<<< HEAD
     //Publishers for GateTwo
 ros::Publisher GateTwo_StageOdom_pub;//To Sheep
 ros::Publisher GateTwo_StageLaser_pub; //To Sheep
@@ -25,6 +26,30 @@ ros::Publisher GateTwo_cmd_vel_pub; //To stage
 ros::Publisher GateThree_StageOdom_pub;//To Sheep
 ros::Publisher GateThree_StageLaser_pub; //To Sheep
 ros::Publisher GateThree_cmd_vel_pub; //To stage
+=======
+    //Publishers for GhostSheepOne
+ros::Publisher GhostSheepOne_StageOdom_pub;//To Sheep
+ros::Publisher GhostSheepOne_StageLaser_pub; //To Sheep
+ros::Publisher GhostSheepOne_cmd_vel_pub; //To stage
+
+    
+    //Publishers for SheepTwo
+ros::Publisher SheepTwo_StageOdom_pub;//To Sheep
+ros::Publisher SheepTwo_StageLaser_pub; //To Sheep
+ros::Publisher SheepTwo_cmd_vel_pub; //To stage
+
+    
+    //Publishers for GrassOne
+ros::Publisher GrassOne_StageOdom_pub;//To Sheep
+ros::Publisher GrassOne_StageLaser_pub; //To Sheep
+ros::Publisher GrassOne_cmd_vel_pub; //To stage
+>>>>>>> e0a748ba689def699a0cd80594002048310cb824
+
+    
+    //Publishers for FarmerOne
+ros::Publisher FarmerOne_StageOdom_pub;//To Sheep
+ros::Publisher FarmerOne_StageLaser_pub; //To Sheep
+ros::Publisher FarmerOne_cmd_vel_pub; //To stage
 
     
 //-----[END]Publisher variables
@@ -37,6 +62,7 @@ void GateOne_StageLaser_callback(sensor_msgs::LaserScan msg){GateOne_StageLaser_
 void GateOne_cmd_vel_callback (geometry_msgs::Twist msg){GateOne_cmd_vel_pub.publish(msg);}
 
     
+<<<<<<< HEAD
 //Callbacks for GateTwo
 void GateTwo_StageOdom_callback(nav_msgs::Odometry msg){ GateTwo_StageOdom_pub.publish(msg);}
 void GateTwo_StageLaser_callback(sensor_msgs::LaserScan msg){GateTwo_StageLaser_pub.publish(msg);}
@@ -47,6 +73,30 @@ void GateTwo_cmd_vel_callback (geometry_msgs::Twist msg){GateTwo_cmd_vel_pub.pub
 void GateThree_StageOdom_callback(nav_msgs::Odometry msg){ GateThree_StageOdom_pub.publish(msg);}
 void GateThree_StageLaser_callback(sensor_msgs::LaserScan msg){GateThree_StageLaser_pub.publish(msg);}
 void GateThree_cmd_vel_callback (geometry_msgs::Twist msg){GateThree_cmd_vel_pub.publish(msg);}
+=======
+//Callbacks for GhostSheepOne
+void GhostSheepOne_StageOdom_callback(nav_msgs::Odometry msg){ GhostSheepOne_StageOdom_pub.publish(msg);}
+void GhostSheepOne_StageLaser_callback(sensor_msgs::LaserScan msg){GhostSheepOne_StageLaser_pub.publish(msg);}
+void GhostSheepOne_cmd_vel_callback (geometry_msgs::Twist msg){GhostSheepOne_cmd_vel_pub.publish(msg);}
+
+    
+//Callbacks for SheepTwo
+void SheepTwo_StageOdom_callback(nav_msgs::Odometry msg){ SheepTwo_StageOdom_pub.publish(msg);}
+void SheepTwo_StageLaser_callback(sensor_msgs::LaserScan msg){SheepTwo_StageLaser_pub.publish(msg);}
+void SheepTwo_cmd_vel_callback (geometry_msgs::Twist msg){SheepTwo_cmd_vel_pub.publish(msg);}
+
+    
+//Callbacks for GrassOne
+void GrassOne_StageOdom_callback(nav_msgs::Odometry msg){ GrassOne_StageOdom_pub.publish(msg);}
+void GrassOne_StageLaser_callback(sensor_msgs::LaserScan msg){GrassOne_StageLaser_pub.publish(msg);}
+void GrassOne_cmd_vel_callback (geometry_msgs::Twist msg){GrassOne_cmd_vel_pub.publish(msg);}
+>>>>>>> e0a748ba689def699a0cd80594002048310cb824
+
+    
+//Callbacks for FarmerOne
+void FarmerOne_StageOdom_callback(nav_msgs::Odometry msg){ FarmerOne_StageOdom_pub.publish(msg);}
+void FarmerOne_StageLaser_callback(sensor_msgs::LaserScan msg){FarmerOne_StageLaser_pub.publish(msg);}
+void FarmerOne_cmd_vel_callback (geometry_msgs::Twist msg){FarmerOne_cmd_vel_pub.publish(msg);}
 
     
 //-----[END] Subscriber callbacks
@@ -74,11 +124,36 @@ int main(int argc, char **argv)
     GateTwo_StageLaser_pub= n.advertise<sensor_msgs::LaserScan>("GateTwo/base_scan", 1000); //To GateTwo
     GateTwo_cmd_vel_pub=n.advertise<geometry_msgs::Twist>("robot_2/cmd_vel", 1000); //To stage
     
+<<<<<<< HEAD
     
     //Advertisments for GateThree
     GateThree_StageOdom_pub = n.advertise<nav_msgs::Odometry>("GateThree/odom", 1000); //To GateThree
     GateThree_StageLaser_pub= n.advertise<sensor_msgs::LaserScan>("GateThree/base_scan", 1000); //To GateThree
     GateThree_cmd_vel_pub=n.advertise<geometry_msgs::Twist>("robot_3/cmd_vel", 1000); //To stage
+=======
+    //Advertisments for GhostSheepOne
+    GhostSheepOne_StageOdom_pub = n.advertise<nav_msgs::Odometry>("GhostSheepOne/odom", 1000); //To GhostSheepOne
+    GhostSheepOne_StageLaser_pub= n.advertise<sensor_msgs::LaserScan>("GhostSheepOne/base_scan", 1000); //To GhostSheepOne
+    GhostSheepOne_cmd_vel_pub=n.advertise<geometry_msgs::Twist>("robot_2/cmd_vel", 1000); //To stage
+    
+    
+    //Advertisments for SheepTwo
+    SheepTwo_StageOdom_pub = n.advertise<nav_msgs::Odometry>("SheepTwo/odom", 1000); //To SheepTwo
+    SheepTwo_StageLaser_pub= n.advertise<sensor_msgs::LaserScan>("SheepTwo/base_scan", 1000); //To SheepTwo
+    SheepTwo_cmd_vel_pub=n.advertise<geometry_msgs::Twist>("robot_3/cmd_vel", 1000); //To stage
+    
+    
+    //Advertisments for GrassOne
+    GrassOne_StageOdom_pub = n.advertise<nav_msgs::Odometry>("GrassOne/odom", 1000); //To GrassOne
+    GrassOne_StageLaser_pub= n.advertise<sensor_msgs::LaserScan>("GrassOne/base_scan", 1000); //To GrassOne
+    GrassOne_cmd_vel_pub=n.advertise<geometry_msgs::Twist>("robot_2/cmd_vel", 1000); //To stage
+>>>>>>> e0a748ba689def699a0cd80594002048310cb824
+    
+    
+    //Advertisments for FarmerOne
+    FarmerOne_StageOdom_pub = n.advertise<nav_msgs::Odometry>("FarmerOne/odom", 1000); //To FarmerOne
+    FarmerOne_StageLaser_pub= n.advertise<sensor_msgs::LaserScan>("FarmerOne/base_scan", 1000); //To FarmerOne
+    FarmerOne_cmd_vel_pub=n.advertise<geometry_msgs::Twist>("robot_3/cmd_vel", 1000); //To stage
     
     
 
