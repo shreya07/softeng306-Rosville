@@ -1,6 +1,2 @@
 robot_1,SheepOne
-robot_2,BlockOne
-robot_3,PoopOne
-robot_4,GhostSheepOne
-robot_5,SheepTwo
-robot_6,GrassOne
+robot_2,PoopOne

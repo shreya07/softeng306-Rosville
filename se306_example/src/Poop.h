@@ -23,30 +23,30 @@
 class Poop:Robot
 {
 public:
-	double distance;
-	geometry_msgs::Twist poopVel;
-	double linear_x;
-	double constLinear;
-	double angular_z;
-	double theta;
-	double nodeDistance;
-	double targetTheta;
-	int width;
-	int length;
-	ros::Publisher publishPoop;
-	bool doStop;
-	ros::Subscriber sheepPos;
-	ros::Subscriber sheepVel;
-	ros::Subscriber poopReq;
+  double distance;
+  geometry_msgs::Twist poopVel;
+  double linear_x;
+  double constLinear;
+  double angular_z;
+  double theta;
+  double nodeDistance;
+  double targetTheta;
+  int width;
+  int length;
+  ros::Publisher publishPoop;
+  bool doStop;
+  ros::Subscriber sheepPos;
+  ros::Subscriber sheepVel;
+  ros::Subscriber poopReq;
 
-	void StageLaser_callback(sensor_msgs::LaserScan msg);
-	Poop(std::string robot_name, int argc, char **argv, double px, double py,std::string robot_number);
-	~Poop();
-	ros::NodeHandle run();
-	void stageOdom_callback (nav_msgs::Odometry msg);
-	void stagecmd_callback (geometry_msgs::Twist msg);
-	void stageStop_callback (std_msgs::String msg);
-	void requestPoop(const std_msgs::String::ConstPtr& request);
+  void StageLaser_callback(sensor_msgs::LaserScan msg);
+  Poop(std::string robot_name, int argc, char **argv, double px, double py,std::string robot_number);
+  ~Poop();
+  ros::NodeHandle run();
+  void stageOdom_callback (nav_msgs::Odometry msg);
+  void stagecmd_callback (geometry_msgs::Twist msg);
+  void stageStop_callback (std_msgs::String msg);
+  void requestPoop(const std_msgs::String::ConstPtr& request);
 
 };
 
