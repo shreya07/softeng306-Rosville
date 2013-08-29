@@ -45,7 +45,6 @@ Sheep1::Sheep1(std::string robot_name, int argc, char **argv,double px,double py
 	width = 1;
 	length = 2;
 	followGhost = false;
-	count = 0;
 
 
 }
