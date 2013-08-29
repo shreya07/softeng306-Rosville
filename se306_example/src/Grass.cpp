@@ -74,10 +74,10 @@ void Grass::identityRequest_callBack(se306_example::IdentityRequest request)
 }
 
 bool Grass::doesIntersect(float x, float y) {
-  double leftX = px-(width/2.0);
-  double rightX = px+(width/2.0);
-  double top = py+(length/2.0);
-  double bottom = py-(length/2.0);
+  double leftX = px-(width*2.0);
+  double rightX = px+(width*2.0);
+  double top = py+(length*2.0);
+  double bottom = py-(length*2.0);
   geometry_msgs::Twist angular;
 
   bool matchesInX=false;

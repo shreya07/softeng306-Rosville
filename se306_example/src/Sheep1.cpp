@@ -258,6 +258,8 @@ void Sheep1::stageFollow_callback(se306_example::FollowSheep msg)
           //ROS_INFO("follow received");
         }
       } else {
+    	  linear_x = msg.linear_x;
+    	  angular_z = msg.angular_z;
         followGhost = false;
       }
 }

@@ -176,6 +176,8 @@ void GhostSheep::changeFollow(bool follow) {
 	} else {
 		followSheep = follow;
 		grassDetected = false;
+		status.linear_x = linear_x;
+		status.angular_z = angular_z;
 		status.follow = "Don't follow";
 		Follow_pub.publish(status);
 	}
