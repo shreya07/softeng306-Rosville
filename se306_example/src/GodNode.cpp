@@ -9,12 +9,12 @@
 
 //-----Publisher variables
 
-    //Publishers for GrassOne
+//Publishers for GrassOne
 ros::Publisher GrassOne_StageOdom_pub;//To Sheep
 ros::Publisher GrassOne_StageLaser_pub; //To Sheep
 ros::Publisher GrassOne_cmd_vel_pub; //To stage
 
-    
+
 //-----[END]Publisher variables
 
 //-----Subscriber callbacks
@@ -24,7 +24,7 @@ void GrassOne_StageOdom_callback(nav_msgs::Odometry msg){ GrassOne_StageOdom_pub
 void GrassOne_StageLaser_callback(sensor_msgs::LaserScan msg){GrassOne_StageLaser_pub.publish(msg);}
 void GrassOne_cmd_vel_callback (geometry_msgs::Twist msg){GrassOne_cmd_vel_pub.publish(msg);}
 
-    
+
 //-----[END] Subscriber callbacks
 
 ros::Publisher Weather_publisher;//To Sheep
@@ -38,51 +38,82 @@ int main(int argc, char **argv)
   ros::NodeHandle n;
 
   // Advertisements.....
-  
-    //Advertisments for GrassOne
-    GrassOne_StageOdom_pub = n.advertise<nav_msgs::Odometry>("GrassOne/odom", 1000); //To GrassOne
-    GrassOne_StageLaser_pub= n.advertise<sensor_msgs::LaserScan>("GrassOne/base_scan", 1000); //To GrassOne
-    GrassOne_cmd_vel_pub=n.advertise<geometry_msgs::Twist>("robot_1/cmd_vel", 1000); //To stage
-    
-    
 
+  //Advertisments for GrassOne
+  GrassOne_StageOdom_pub = n.advertise<nav_msgs::Odometry>("GrassOne/odom", 1000); //To GrassOne
+  GrassOne_StageLaser_pub= n.advertise<sensor_msgs::LaserScan>("GrassOne/base_scan", 1000); //To GrassOne
+  GrassOne_cmd_vel_pub=n.advertise<geometry_msgs::Twist>("robot_1/cmd_vel", 1000); //To stage
+
+
+  ros::Publisher Weather_publisherOne;
+  ros::Publisher Weather_publisherTwo;
+  ros::Publisher Weather_publisherThree;
+  ros::Publisher Weather_publisherFour;
 
   //Setting up subscribers...
-  
-    //Subscriber for GrassOne
-    ros::Subscriber GrassOne_StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_1/odom", 1000, GrassOne_StageOdom_callback);
-    ros::Subscriber GrassOne_StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_1/base_scan", 1000, GrassOne_StageLaser_callback);
-    ros::Subscriber GrassOne_cmd_vel = n.subscribe<geometry_msgs::Twist>("GrassOne/cmd_vel", 1000,GrassOne_cmd_vel_callback);
-    
-    
 
-  Weather_publisher = n.advertise<std_msgs::String>("weather/status", 1000); //To SheepOne
+  //Subscriber for GrassOne
+  ros::Subscriber GrassOne_StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_1/odom", 1000, GrassOne_StageOdom_callback);
+  ros::Subscriber GrassOne_StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_1/base_scan", 1000, GrassOne_StageLaser_callback);
+  ros::Subscriber GrassOne_cmd_vel = n.subscribe<geometry_msgs::Twist>("GrassOne/cmd_vel", 1000,GrassOne_cmd_vel_callback);
 
-  ros::Rate loop_rate(10);
 
-  //a count of howmany messages we have sent
-  int count = 0;
+  // set up publishers
+  Weather_publisherOne = n.advertise<std_msgs::String>("weather/statusOne", 1000); //To fieldOne
+  Weather_publisherTwo = n.advertise<std_msgs::String>("weather/statusTwo", 1000); //To fieldTwo
+  Weather_publisherThree = n.advertise<std_msgs::String>("weather/statusThree", 1000); //To fieldThree
+  Weather_publisherFour = n.advertise<std_msgs::String>("weather/statusFour", 1000); //To fieldFour
 
-  ////messages
-  //velocity of this RobotNode
-  std_msgs::String status;
-  status.data="Sunny";
+  ros::Rate loop_rate(1);
+
+  //a count of how many messages we have sent
+  int randomNum;
+
+  //messages
+  std_msgs::String statusOne;
+  std_msgs::String statusTwo;
+  std_msgs::String statusThree;
+  std_msgs::String statusFour;
+
+  srand(time(NULL));
+
+  // initialise
+  statusOne.data="Sunny";
+  statusTwo.data="Sunny";
+  statusThree.data="Sunny";
+  statusFour.data="Sunny";
+
   while (ros::ok())
   {
-    if (count%5 == 0) {
-      if (status.data.compare("Sunny") == 0) {
-        status.data = "Raining";
-        ROS_INFO("rainy");
-      } else {
-        status.data = "Sunny";
-        ROS_INFO("sunny");
-      }
+    randomNum = rand();
+
+    if (randomNum < 0.4) {
+      statusOne.data = "Raining";
+      statusTwo.data = "Sunny";
+      ROS_INFO("rainy");
+    } else {
+      statusOne.data = "Sunny";
+      statusTwo.data = "Raining";
+      ROS_INFO("sunny");
     }
+
+    if (randomNum > 0.5) {
+      statusThree.data = "Raining";
+      statusFour.data = "Sunny";
+    } else {
+      statusThree.data = "Sunny";
+      statusFour.data = "Raining";
+    }
+    Weather_publisherOne.publish(statusOne);
+    Weather_publisherTwo.publish(statusTwo);
+    Weather_publisherThree.publish(statusThree);
+    Weather_publisherFour.publish(statusFour);
+
 
     ros::spinOnce();
 
     loop_rate.sleep();
-    count=count+1;
+
   }
 
   return 0;

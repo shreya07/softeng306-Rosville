@@ -23,7 +23,7 @@
 #include "../msg_gen/cpp/include/se306_example/IdentityRequest.h"
 #include "../msg_gen/cpp/include/se306_example/IdentityReply.h"
 
-Grass::Grass(std::string robot_name, int argc, char **argv,double px,double py, std::string robot_number):Robot(robot_name,argc,argv,px,py,robot_number) {
+Grass::Grass(std::string robot_name, int argc, char **argv,double px,double py, std::string robot_number, std::string field):Robot(robot_name,argc,argv,px,py,robot_number) {
   moistCont = 0;
   maxMoistCont = 0;
   height = 5;
@@ -33,11 +33,16 @@ Grass::Grass(std::string robot_name, int argc, char **argv,double px,double py, 
   length = 2;
   soilQual = 0;
   maxSoilQuality = 10;
+  this->field = field;
+
 }
 
 Grass::~Grass()
 {
   // TODO Auto-generated destructor stub
+}
+void Grass::stageOdom_callback(nav_msgs::Odometry msg){
+
 }
 
 void Grass::identityReply_callBack(se306_example::IdentityReply reply)
@@ -95,12 +100,6 @@ bool Grass::doesIntersect(float x, float y) {
   }
 
   return matchesInY && matchesInX;
-}
-
-// CALL BACK METHOD TO DELEGATE ITS POSITION
-void Grass::stageOdom_callback(nav_msgs::Odometry msg){
-  this->px = this->px+msg.pose.pose.position.x;
-  this->py = this->py+msg.pose.pose.position.y;
 }
 
 // CHECKS RAINFALL AND INCREMENTS/DECREMENTS MOISTURE LEVEL
@@ -164,7 +163,7 @@ ros::NodeHandle Grass::run(){
   ros::NodeHandle n = Robot::run();
 
   // LISTEN
-  ros::Subscriber receive_rainfall = n.subscribe<std_msgs::String>("weather/status",1000, &Grass::rainfall_callback, this);
+  ros::Subscriber receive_rainfall = n.subscribe<std_msgs::String>("weather/status"+field,1000, &Grass::rainfall_callback, this);
   ros::Subscriber requestPos = n.subscribe<se306_example::IdentityRequest>("identityRequest",1000, &Grass::identityRequest_callBack, this);
   ros::Subscriber replyPos = n.subscribe<se306_example::IdentityReply>("identityReply",1000, &Grass::identityReply_callBack,this);
   ros::Subscriber eatSub = n.subscribe<std_msgs::String>(robot_name+robot_number+"/eat",1000, &Grass::eatenCallback,this);
@@ -216,7 +215,7 @@ ros::NodeHandle Grass::run(){
 
 int main(int argc, char **argv)
 {
-  Grass robot = Grass("Grass",argc,argv,10,20,"One");
+  Grass robot = Grass("Grass",argc,argv,10,20,"One","One");
   robot.run();
   return 0;
 }

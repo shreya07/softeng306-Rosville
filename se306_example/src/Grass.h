@@ -28,16 +28,16 @@
 class Grass:Robot
 	{
 	public:
-		Grass(std::string robot_name, int argc, char **argv, double px, double py,std::string robot_number);
+		Grass(std::string robot_name, int argc, char **argv, double px, double py,std::string robot_number, std::string field);
 		~Grass();
 		ros::NodeHandle run();
-		void stageOdom_callback (nav_msgs::Odometry msg);
 		void rainfall_callback (const std_msgs::String::ConstPtr& msg);
 		void grow(double moisture);
 		void identityReply_callBack(se306_example::IdentityReply reply);
 		void identityRequest_callBack(se306_example::IdentityRequest request);
 		bool doesIntersect(float x, float y);
 		void eatenCallback(const std_msgs::String::ConstPtr& msg);
+		void stageOdom_callback(nav_msgs::Odometry msg);
 	protected:
                 ros::Publisher Request_pub;
                 ros::Publisher Eaten_pub;
@@ -54,6 +54,7 @@ class Grass:Robot
                 int maxHeight;
                 int length;
 		std::string message;
+		std::string field;
 	};
 
 
