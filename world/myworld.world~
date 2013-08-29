@@ -160,4 +160,5 @@ floorplan
 )
 # throw in a robot
 myRobot( pose [ -5 15 2 0 ] name "God" color "black")
-mySheep( pose [ 12 20 0 0 ] name "SheepOne" color "blue")
+mySheep( pose [ 12 10 0 0 ] name "SheepOne" color "blue")
+mySheep( pose [ 18 10 0 0 ] name "Grass" color "blue")

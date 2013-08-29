@@ -20,6 +20,7 @@
 #include "../msg_gen/cpp/include/se306_example/IdentityRequest.h"
 #include "../msg_gen/cpp/include/se306_example/IdentityReply.h"
 #include "../msg_gen/cpp/include/se306_example/FollowSheep.h"
+#include "../msg_gen/cpp/include/se306_example/eatGrass.h"
 
 class newSheep:Robot
 {
@@ -38,11 +39,16 @@ public:
 	ros::Publisher Request_pub;
 	ros::Publisher Reply_pub;
 	ros::Publisher Stop_pub;
+	ros::Publisher Eat_pub;
 	double old_ang_z;
 	bool once;
 	double health;
 	bool replyReceived;
 	bool requestSent;
+	bool grassDetected;
+	bool grassReached;
+	bool eaten;
+	std::string grassName;
 
 
 	void StageLaser_callback(sensor_msgs::LaserScan msg);
@@ -56,7 +62,8 @@ public:
 	void ghostcmd(geometry_msgs::Twist msg);
 	std::list<double> calculateTheta(double theta, double distance);
 	double yawFromQuaternion(double x, double y, double z, double w);
-	void stageFollow_callback(se306_example::FollowSheep msg);
+	void grassEaten(std_msgs::String msg);
+	void grassThings();
   //double y;
 };
 

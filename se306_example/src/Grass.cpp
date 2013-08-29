@@ -154,8 +154,16 @@ void Grass::grow(double moisture) {
 
 void Grass::eatenCallback(se306_example::eatGrass msg) {
 	if(msg.destination.compare(robot_name+robot_number)==0) {
-		this->height = 0;
+		this->height -= 5;
 		ROS_INFO("New height is: %f", this->height);
+		if(this->height < 0) {
+			this->height = 0;
+		}
+		if(this->height == 0) {
+			std_msgs::String result;
+			result.data = msg.sender;
+			Eaten_pub.publish(result);
+		}
 	}
 }
 
@@ -185,7 +193,7 @@ ros::NodeHandle Grass::run(){
 	// CREATE MOISTURE AND HEIGHT TOPICS TO PUBLISH TOWARDS
 	Request_pub = n.advertise<se306_example::IdentityRequest>("identityRequest", 1000);
 	Reply_pub = n.advertise<se306_example::IdentityReply>("identityReply", 1000);
-	Eaten_pub = n.advertise<std_msgs::String>(robot_name+robot_number+"/eaten", 1000);
+	Eaten_pub = n.advertise<std_msgs::String>("eaten", 1000);
 
 
 
@@ -216,7 +224,7 @@ ros::NodeHandle Grass::run(){
 
 int main(int argc, char **argv)
 {
-	Grass robot = Grass("Grass",argc,argv,7,15,"One");
+	Grass robot = Grass("Grass",argc,argv,18,10,"One");
 	robot.run();
 	return 0;
 }

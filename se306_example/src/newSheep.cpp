@@ -22,6 +22,7 @@
 #include "../msg_gen/cpp/include/se306_example/IdentityRequest.h"
 #include "../msg_gen/cpp/include/se306_example/IdentityReply.h"
 #include "../msg_gen/cpp/include/se306_example/FollowSheep.h"
+#include "../msg_gen/cpp/include/se306_example/eatGrass.h"
 
 /*Constructor
  * The :RobotRobot(robot_name,argc,argv,px,py,robot_number) part at the end
@@ -49,6 +50,10 @@ newSheep::newSheep(std::string robot_name, int argc, char **argv,double px,doubl
   health = 1.0;
   replyReceived = false;
   requestSent = false;
+  grassDetected = false;
+  grassReached = false;
+  eaten = false;
+  grassName = "";
 
 
 }
@@ -106,8 +111,14 @@ void newSheep::identityReply_callBack(se306_example::IdentityReply reply)
   if(reply.destination.compare(robot_name+robot_number)==0) {
 
 
-    if(reply.type.compare("grass")==0) {
+    if(reply.type.compare("Grass")==0) {
       //ROS_INFO("Grass detected");
+    	if(reply.height > 5) {
+    		grassDetected = true;
+    		grassName = reply.sender;
+
+    	}
+
     }else if(reply.type.compare("sheep")==0){
 
     }else if(reply.type.compare("PoisonGrass")==0){
@@ -117,6 +128,31 @@ void newSheep::identityReply_callBack(se306_example::IdentityReply reply)
       ROS_INFO("Don't know what it is");
     }
   }
+}
+
+void newSheep::grassThings() {
+	se306_example::eatGrass msg;
+	linear_x = 2.0;
+	angular_z = 0.0;
+	if(distance <= 0){
+		grassReached = true;
+	}
+	if(grassReached && !eaten) {
+		linear_x = 0;
+		angular_z = 0;
+		msg.sender = robot_name+robot_number;
+		msg.destination = grassName;
+		Eat_pub.publish(msg);
+	} else if(grassReached && eaten) {
+		if(distance<3) {
+			linear_x = 0;
+			angular_z = 2.0;
+		} else {
+			grassDetected = false;
+			grassReached = false;
+			eaten = false;
+		}
+	}
 }
 
 void newSheep::identityRequest_callBack(se306_example::IdentityRequest request)
@@ -217,6 +253,12 @@ std::list<double> newSheep::calculateTheta(double theta, double distance)
   return result;
 }
 
+void newSheep::grassEaten(std_msgs::String msg) {
+	if(msg.data.compare(robot_name+robot_number) == 0) {
+		eaten = true;
+	}
+}
+
 
 bool newSheep::doesIntersect(float x, float y) {
   float leftX = px-(width*2);
@@ -257,6 +299,7 @@ ros::NodeHandle newSheep::run(){
   Request_pub = n.advertise<se306_example::IdentityRequest>("identityRequest", 1000);
   Reply_pub = n.advertise<se306_example::IdentityReply>("identityReply", 1000);
   Stop_pub = n.advertise<std_msgs::String>("SheepOne/stop",1000);
+  Eat_pub = n.advertise<se306_example::eatGrass>("eat", 1000);
 
   std::stringstream ss;
   ss<<robot_name;
@@ -265,7 +308,7 @@ ros::NodeHandle newSheep::run(){
   ros::Subscriber stageOdo_sub1 = n.subscribe<se306_example::IdentityRequest>("identityRequest",1000, &newSheep::identityRequest_callBack, this);
   ros::Subscriber StageOdo_sub2 = n.subscribe<se306_example::IdentityReply>("identityReply",1000, &newSheep::identityReply_callBack,this);
   ros::Subscriber StageLaser_sub3 = n.subscribe<sensor_msgs::LaserScan>(robot_name+robot_number+"/base_scan",1000, &newSheep::StageLaser_callback, this);
- // ros::Subscriber stageOdo_sub4 = n.subscribe<se306_example::FollowSheep>(robot_name+robot_number+"/follow",1000, &newSheep::stageFollow_callback, this);
+  ros::Subscriber stageOdo_sub4 = n.subscribe<std_msgs::String>("eaten",1000, &newSheep::grassEaten, this);
   //ros::Subscriber stagecmd = n.subscribe<geometry_msgs::Twist>("GhostSheepOne/cmd_vel",1000, &newSheep::ghostcmd, this);
 
   std::list<ros::Subscriber>::iterator it;
@@ -273,7 +316,7 @@ ros::NodeHandle newSheep::run(){
   subsList.insert(it,stageOdo_sub);
 
   //double th = 90*M_PI/2.0;
-  ros::Rate loop_rate(10);
+  ros::Rate loop_rate(5);
   nav_msgs::Odometry odom;
   geometry_msgs::Quaternion odom_quat;
   int counter = 0;
@@ -287,8 +330,9 @@ ros::NodeHandle newSheep::run(){
 
     // RobotNode_cmdvel.angular.x = 0.2;
     //RobotNode_cmdvel.angular.y = 0.5;
-
-	  if(!replyReceived && requestSent && distance <= 4) {
+	  if(grassDetected) {
+		  grassThings();
+	  } else if(!replyReceived && requestSent && distance <= 4) {
 		  linear_x = 0.5;
 		  angular_z = 2.0;
 	  } else {
@@ -327,7 +371,7 @@ double newSheep::yawFromQuaternion(double x, double y, double z,double w){
 
 int main(int argc, char **argv)
 {
-	newSheep robot = newSheep("newSheep",argc,argv,15,20,"One");
+	newSheep robot = newSheep("newSheep",argc,argv,12,10,"One");
 	robot.run();
 	return 0;
 }
