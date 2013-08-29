@@ -30,7 +30,7 @@
 
 
 <!--
-<node name="GrassOne" pkg="se306_example" type="GrassOne" output="screen"/>
+<node name="GrassOne" pkg="se306_example" type="Grass" output="screen"/>
 
 <node name="PoisonGrassOne" pkg="se306_example" type="PoisonGrassOne" output="screen"/>
 <node name="SheepOne" pkg="se306_example" type="SheepOne" output="screen"/>

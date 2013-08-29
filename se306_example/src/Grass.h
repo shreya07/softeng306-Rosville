@@ -28,7 +28,7 @@
 class Grass:Robot
 	{
 	public:
-		Grass(std::string robot_name, int argc, char **argv, double px, double py,std::string robot_number, std::string field);
+		Grass(std::string robot_name, int argc, char **argv);
 		~Grass();
 		ros::NodeHandle run();
 		void rainfall_callback (const std_msgs::String::ConstPtr& msg);
