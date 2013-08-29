@@ -42,7 +42,7 @@ void FarmerNew::Teleop_callback(geometry_msgs::Twist msg)
 void FarmerNew::sell_callback(std_msgs::String msg)
 {
   money = money + 5;
-  ROS_INFO("Money: %f", money);
+  ROS_INFO("Farmer:%f", money);
 }
 
 ros::NodeHandle FarmerNew::run()
