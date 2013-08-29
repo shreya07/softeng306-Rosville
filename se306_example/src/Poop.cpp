@@ -1,10 +1,3 @@
-/*
- * R3.cpp
- *
- *  Created on: 12/08/2013
- *      Author: Shreya
- */
-
 #include "Poop.h"
 #include "ros/ros.h"
 #include <tf/transform_broadcaster.h>
@@ -36,22 +29,21 @@ Poop::Poop(std::string robot_name, int argc, char **argv,double px,double py, st
 	doStop = false;
 
 }
-/*destrustor
- * I have not implemented it here but you should*/
+/*destrustor*/
 Poop::~Poop()
 {
 	// TODO Auto-generated destructor stub
 }
 
+
 /*Callback method for the robots position*/
 void Poop::stageOdom_callback(nav_msgs::Odometry msg){
-	//int x = msg.linear.x;
 	px = 15 + msg.pose.pose.position.x;
 	py = 20 + msg.pose.pose.position.y;
 }
 
+
 void Poop::stagecmd_callback(geometry_msgs::Twist msg){
-	//int x = msg.linear.x;
 	if(doStop) {
 		linear_x = 0;
 		angular_z = 0;
@@ -73,6 +65,8 @@ void Poop::stageStop_callback(std_msgs::String msg)
 
 }
 
+
+/* request the sheep to drop poop*/
 void Poop::requestPoop(const std_msgs::String::ConstPtr& request) {
 	if (request->data.compare("Request") == 0) {
 		linear_x = 0;
@@ -83,25 +77,24 @@ void Poop::requestPoop(const std_msgs::String::ConstPtr& request) {
 }
 
 
+
 /*The run method that we use to run the robot*/
 ros::NodeHandle Poop::run(){
 
 	ros::NodeHandle n = Robot::run();
 
 	publishPoop = n.advertise<geometry_msgs::Twist>(robot_name+robot_number+"/cmd_vel",1000);
-
-
 	// initialize subscribers listen to sheep position and velocity
 	sheepVel = n.subscribe<geometry_msgs::Twist>("SheepOne/cmd_vel",1000, &Poop::stagecmd_callback, this);
 	poopReq = n.subscribe<std_msgs::String>("poop", 1000, &Poop::requestPoop, this);
 
-	// Add subscribers to subscriber list
+	/* Add subscribers to subscriber list*/
 	std::list<ros::Subscriber>::iterator it;
 	it = subsList.end();
 	subsList.insert(it,sheepPos);
 	subsList.insert(it,sheepVel);
 
-	// set to 10 messages per second
+	/*set to 10 messages per second*/
 	ros::Rate loop_rate(10);
 
 	// initialize type variables to use in publishing
@@ -109,8 +102,8 @@ ros::NodeHandle Poop::run(){
 	geometry_msgs::Quaternion odom_quat;
 
 	/*define the while loop here*/
-	while (ros::ok())
-	{
+	while (ros::ok()){
+
 		ROS_INFO("velocity1: %f, angular1: %f", linear_x, angular_z);
 		// set poop velocity to match sheep poop
 		poopVel.linear.x = linear_x;
@@ -122,8 +115,8 @@ ros::NodeHandle Poop::run(){
 		loop_rate.sleep();
 	}
 	return n;
-
 }
+
 
 //int main(int argc, char **argv)
 //{

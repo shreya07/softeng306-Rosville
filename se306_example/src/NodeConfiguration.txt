@@ -1,9 +1,6 @@
 robot_1,SheepOne
-<<<<<<< HEAD
 robot_2,BlockOne
 robot_3,PoopOne
-=======
-robot_2,GhostSheepOne
-robot_3,SheepTwo
-robot_4,GrassOne
->>>>>>> 339039b10789cc601eb456cfc9060ffcb62a2708
+robot_4,GhostSheepOne
+robot_5,SheepTwo
+robot_6,GrassOne

@@ -99,7 +99,7 @@ void Sheep1::StageLaser_callback(sensor_msgs::LaserScan msg)
 
 void Sheep1::identityReply_callBack(se306_example::IdentityReply reply)
 {
-<<<<<<< HEAD
+
 	ROS_INFO("reply received");
 	if(reply.destination.compare(robot_name)) {
 		if(reply.type.compare("grass")) {
@@ -125,7 +125,7 @@ void Sheep1::identityReply_callBack(se306_example::IdentityReply reply)
 			ROS_INFO("Don't know what it is");
 		}
 	}
-=======
+
       ROS_INFO("reply received");
   ROS_INFO("%s is being returned", reply.type.c_str());
   if(reply.destination.compare(robot_name)==0) {
@@ -155,8 +155,6 @@ void Sheep1::identityReply_callBack(se306_example::IdentityReply reply)
           old_ang_z = angular_z;
           this->angular_z = reply.abs_cmd_vel_angular_z + (thetadifference/45.00);
           once = true;
->>>>>>> 339039b10789cc601eb456cfc9060ffcb62a2708
-
         }
       }
       //swarm completed
