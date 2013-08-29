@@ -1,23 +1,94 @@
 define mylaser ranger
 (
   sensor(
-  range [ 0.0 30.0 ] # range
-  fov 360       # field of vision
-  samples 360   # samples 
+  range [ 0.0 15.0 ] # range
+  fov 45       # field of vision
+  samples 40   # samples 
   )
   # generic model properties
   color "black"
-  size [ 0.05 0.05 0.1 ]
+  size [ 1 2 3 ]
   
 )
 
 define myRobot position
 (
-  size [0.35 0.35 0.25]
+  #Shape of robot
+  block
+  (
+    points 8
+    point[0] [0 0]
+    point[1] [0 2]
+    point[2] [1 2]
+    point[3] [1 1]
+    point[4] [2 1]
+    point[5] [2 2]
+    point[6] [3 2]
+    point[7] [3 0]
+    z [0 1]
+  )
+  size [1 2 1]
   drive "diff"
-  mylaser(pose [ 0.050 0.000 0 0.000 ])
+  mylaser(pose [ 0.5 0 -1 0 ])
   ranger_return 1
 )
+
+define mySheep position
+(
+  #Shape of robot
+  block
+  (
+    points 4
+    point[0] [0 0]
+    point[1] [0 2]
+    point[2] [1 2]
+    point[3] [1 1]
+    z [0 1]
+  )
+  size [1 2 1]
+  drive "diff"
+  mylaser(pose [ 0.5 0 -1 0 ])
+  ranger_return 1
+)
+
+
+define GateVertical position
+(
+  #Shape of robot
+  block
+  (
+    points 4
+    point[0] [0 0]
+    point[1] [0 1]
+    point[2] [8 1]
+    point[3] [8 0]
+    z [0 1]
+  )
+  size [1 6 1]
+  drive "omni"
+  mylaser(pose [ 0.5 0 -1 0 ])
+  ranger_return 1
+)
+
+
+define GateHorizontal position
+(
+  #Shape of robot
+  block
+  (
+    points 4
+    point[0] [0 0]
+    point[1] [0 8]
+    point[2] [1 8]
+    point[3] [1 0]
+    z [0 1]
+  )
+  size [6 1 1]
+  drive "diff"
+  mylaser(pose [ 0.5 0 -1 0 ])
+  ranger_return 1
+)
+
 
 define robfield position
 (
@@ -34,7 +105,7 @@ define robfield position
   #fit shape to this size in meters
   size [4 2 0.25]
   drive "diff"
-  mylaser(pose [ 0.050 0.000 0 0.000 ])
+  mylaser(pose [ 0.050 1.000 0 0.000 ])
 )
 
 
@@ -73,20 +144,26 @@ window
 # load an environment bitmap
 floorplan
 ( 
-  name "swarm"
-  bitmap "swarm_world.pgm"
+  name "farm"
+  bitmap "farmLayout3.png"
   size [30.0 30.0 0.5]
-  pose [ 15.00 15.000 0 90.000 ]
+  pose [ 15.00 15.000 0 0 ]
 )
-# throw in a robot
-myRobot( pose [ 5 10 0 0 ] name "God" color "blue")
-myRobot( pose [ 15 20 0 0 ] name "SheepOne" color "green" bitmap "sheep.png")
 
-myRobot( pose [ 10 30 0 0 ] name "Grass" color "black")
+
+# throw in a robot
+
+myRobot( pose [ 5 10 0 0 ] name "God" color "blue")
+GateHorizontal( pose [ 5 16.5 0 0 ] name "TopRightGate" color "blue")
+GateHorizontal( pose [ 25 16.5 0 0 ] name "TopLeftGate" color "blue")
+GateVertical( pose [ 13.5 25 0 0 ] name "GateVertical" color "grey")
+
+
+#mySheep( pose [ 10 20 0 0 ] name "GrassOne" color "green")
+#myRobot( pose [ 10 30 0 0 ] name "SheepTwo" color "black")
 #myRobot( pose [ 1 28 0 0 ] name "truck" color "red")
-myRobot( pose [ -5 10 0 0 ] name "God" color "blue" bitmap "cross.png")
-myRobot( pose [ 15 20 0 0 ] name "SheepOne" color "black" bitmap "sheep1.png")
-myRobot( pose [ 10 20 0 0 ] name "GrassOne" color "green" bitmap "grass.png")
-myRobot( pose [ 5.5 15 0 0 ] name "truck" color "red" bitmap "truck.png")
-myRobot( pose [ 10 15 0 0 ] name "Farmer" color "black" bitmap "farmer.png")
+#robfield( pose [ 5 5 0 0 ] name "field1" color "brown") #bitmap "soil.jpg")
+#robfield( pose [ 5 7 0 0 ] name "field2" color "green") # bitmap "soil.jpg")
+#robfield( pose [ 9 5 0 0 ] name "field3" color "black") # bitmap "soil.jpg")
+#robfield( pose [ 9 7 0 0 ] name "field4" color "red") #bitmap "soil.jpg")
 

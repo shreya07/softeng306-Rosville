@@ -8,7 +8,7 @@
 <param name="isHorizontal" value="true" type="bool"/>
 <param name="px" value=" 5" type="double"/>
 <param name="py" value=" 16.5" type="double"/>
-<param name="directionToOpen" value="right" type="string"/>
+<param name="directionToOpen" value="left" type="string"/>
 </node>
 
 <node name="GateTwo" pkg="se306_example" type="Gate" output="screen">
