@@ -229,7 +229,7 @@ ros::NodeHandle Grass::run(){
 
 
     ROS_INFO("Current value of Moisture is %f",this->moistCont);
-    ROS_INFO("Current value of Height is %f",this->height);
+    ROS_INFO("GrassOne:%f",this->height);
 
     ros::spinOnce();
     loop_rate.sleep();
