@@ -6,7 +6,7 @@ import struct
 
 
 class IdentityReply(genpy.Message):
-  _md5sum = "309a8015d7d85889db9d2cae74c5019f"
+  _md5sum = "24879df5d9bf0c9e65d97c81f426936f"
   _type = "se306_example/IdentityReply"
   _has_header = False #flag to mark the presence of a Header object
   _full_text = """string sender
@@ -15,10 +15,13 @@ string type
 int32 height
 float32 abs_cmd_vel_linear_x
 float32 abs_cmd_vel_angular_z
+int32 px
+int32 py
+float32 theta
 
 """
-  __slots__ = ['sender','destination','type','height','abs_cmd_vel_linear_x','abs_cmd_vel_angular_z']
-  _slot_types = ['string','string','string','int32','float32','float32']
+  __slots__ = ['sender','destination','type','height','abs_cmd_vel_linear_x','abs_cmd_vel_angular_z','px','py','theta']
+  _slot_types = ['string','string','string','int32','float32','float32','int32','int32','float32']
 
   def __init__(self, *args, **kwds):
     """
@@ -28,7 +31,7 @@ float32 abs_cmd_vel_angular_z
     changes.  You cannot mix in-order arguments and keyword arguments.
 
     The available fields are:
-       sender,destination,type,height,abs_cmd_vel_linear_x,abs_cmd_vel_angular_z
+       sender,destination,type,height,abs_cmd_vel_linear_x,abs_cmd_vel_angular_z,px,py,theta
 
     :param args: complete set of field values, in .msg order
     :param kwds: use keyword arguments corresponding to message field names
@@ -49,6 +52,12 @@ float32 abs_cmd_vel_angular_z
         self.abs_cmd_vel_linear_x = 0.
       if self.abs_cmd_vel_angular_z is None:
         self.abs_cmd_vel_angular_z = 0.
+      if self.px is None:
+        self.px = 0
+      if self.py is None:
+        self.py = 0
+      if self.theta is None:
+        self.theta = 0.
     else:
       self.sender = ''
       self.destination = ''
@@ -56,6 +65,9 @@ float32 abs_cmd_vel_angular_z
       self.height = 0
       self.abs_cmd_vel_linear_x = 0.
       self.abs_cmd_vel_angular_z = 0.
+      self.px = 0
+      self.py = 0
+      self.theta = 0.
 
   def _get_types(self):
     """
@@ -88,7 +100,7 @@ float32 abs_cmd_vel_angular_z
         length = len(_x)
       buff.write(struct.pack('<I%ss'%length, length, _x))
       _x = self
-      buff.write(_struct_i2f.pack(_x.height, _x.abs_cmd_vel_linear_x, _x.abs_cmd_vel_angular_z))
+      buff.write(_struct_i2f2if.pack(_x.height, _x.abs_cmd_vel_linear_x, _x.abs_cmd_vel_angular_z, _x.px, _x.py, _x.theta))
     except struct.error as se: self._check_types(se)
     except TypeError as te: self._check_types(te)
 
@@ -128,8 +140,8 @@ float32 abs_cmd_vel_angular_z
         self.type = str[start:end]
       _x = self
       start = end
-      end += 12
-      (_x.height, _x.abs_cmd_vel_linear_x, _x.abs_cmd_vel_angular_z,) = _struct_i2f.unpack(str[start:end])
+      end += 24
+      (_x.height, _x.abs_cmd_vel_linear_x, _x.abs_cmd_vel_angular_z, _x.px, _x.py, _x.theta,) = _struct_i2f2if.unpack(str[start:end])
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e) #most likely buffer underfill
@@ -161,7 +173,7 @@ float32 abs_cmd_vel_angular_z
         length = len(_x)
       buff.write(struct.pack('<I%ss'%length, length, _x))
       _x = self
-      buff.write(_struct_i2f.pack(_x.height, _x.abs_cmd_vel_linear_x, _x.abs_cmd_vel_angular_z))
+      buff.write(_struct_i2f2if.pack(_x.height, _x.abs_cmd_vel_linear_x, _x.abs_cmd_vel_angular_z, _x.px, _x.py, _x.theta))
     except struct.error as se: self._check_types(se)
     except TypeError as te: self._check_types(te)
 
@@ -202,11 +214,11 @@ float32 abs_cmd_vel_angular_z
         self.type = str[start:end]
       _x = self
       start = end
-      end += 12
-      (_x.height, _x.abs_cmd_vel_linear_x, _x.abs_cmd_vel_angular_z,) = _struct_i2f.unpack(str[start:end])
+      end += 24
+      (_x.height, _x.abs_cmd_vel_linear_x, _x.abs_cmd_vel_angular_z, _x.px, _x.py, _x.theta,) = _struct_i2f2if.unpack(str[start:end])
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e) #most likely buffer underfill
 
 _struct_I = genpy.struct_I
-_struct_i2f = struct.Struct("<i2f")
+_struct_i2f2if = struct.Struct("<i2f2if")

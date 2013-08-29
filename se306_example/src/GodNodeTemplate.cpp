@@ -39,6 +39,7 @@ int main(int argc, char **argv)
 	//a count of howmany messages we have sent
 	int count = 0;
 
+<<<<<<< HEAD
 	//send to poop class requesting poop to drop;
 	const std_msgs::String::ConstPtr& poopInfo;
 	int poopCount = 0;
@@ -70,6 +71,29 @@ int main(int argc, char **argv)
 			}
 			poopCount++;
 		}
+=======
+  ////messages
+  //velocity of this RobotNode
+  std_msgs::String status;
+  status.data="Sunny";
+  while (ros::ok())
+  {
+    if (count%5 == 0) {
+      if (status.data.compare("Sunny") == 0) {
+        status.data = "Raining";
+        ROS_INFO("rainy");
+      } else {
+        status.data = "Sunny";
+        ROS_INFO("sunny");
+      }
+    }
+
+    ros::spinOnce();
+
+    loop_rate.sleep();
+    count=count+1;
+  }
+>>>>>>> 339039b10789cc601eb456cfc9060ffcb62a2708
 
 		ros::spinOnce();
 

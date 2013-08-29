@@ -15,17 +15,30 @@ ros::Publisher SheepOne_StageLaser_pub; //To Sheep
 ros::Publisher SheepOne_cmd_vel_pub; //To stage
 
     
-    //Publishers for BlockOne
-ros::Publisher BlockOne_StageOdom_pub;//To Sheep
-ros::Publisher BlockOne_StageLaser_pub; //To Sheep
-ros::Publisher BlockOne_cmd_vel_pub; //To stage
+    //Publishers for GhostSheepOne
+ros::Publisher GhostSheepOne_StageOdom_pub;//To Sheep
+ros::Publisher GhostSheepOne_StageLaser_pub; //To Sheep
+ros::Publisher GhostSheepOne_cmd_vel_pub; //To stage
 
     
+<<<<<<< HEAD
     //Publishers for PoopOne
 ros::Publisher PoopOne_StageOdom_pub;//To Poop
 ros::Publisher PoopOne_StageLaser_pub; //To Poop
 ros::Publisher PoopOne_cmd_vel_pub; //To stage
 ros::Publisher poopAdvert; //to poop
+=======
+    //Publishers for SheepTwo
+ros::Publisher SheepTwo_StageOdom_pub;//To Sheep
+ros::Publisher SheepTwo_StageLaser_pub; //To Sheep
+ros::Publisher SheepTwo_cmd_vel_pub; //To stage
+
+    
+    //Publishers for GrassOne
+ros::Publisher GrassOne_StageOdom_pub;//To Sheep
+ros::Publisher GrassOne_StageLaser_pub; //To Sheep
+ros::Publisher GrassOne_cmd_vel_pub; //To stage
+>>>>>>> 339039b10789cc601eb456cfc9060ffcb62a2708
 
     
 //-----[END]Publisher variables
@@ -38,16 +51,29 @@ void SheepOne_StageLaser_callback(sensor_msgs::LaserScan msg){SheepOne_StageLase
 void SheepOne_cmd_vel_callback (geometry_msgs::Twist msg){SheepOne_cmd_vel_pub.publish(msg);}
 
     
-//Callbacks for BlockOne
-void BlockOne_StageOdom_callback(nav_msgs::Odometry msg){ BlockOne_StageOdom_pub.publish(msg);}
-void BlockOne_StageLaser_callback(sensor_msgs::LaserScan msg){BlockOne_StageLaser_pub.publish(msg);}
-void BlockOne_cmd_vel_callback (geometry_msgs::Twist msg){BlockOne_cmd_vel_pub.publish(msg);}
+//Callbacks for GhostSheepOne
+void GhostSheepOne_StageOdom_callback(nav_msgs::Odometry msg){ GhostSheepOne_StageOdom_pub.publish(msg);}
+void GhostSheepOne_StageLaser_callback(sensor_msgs::LaserScan msg){GhostSheepOne_StageLaser_pub.publish(msg);}
+void GhostSheepOne_cmd_vel_callback (geometry_msgs::Twist msg){GhostSheepOne_cmd_vel_pub.publish(msg);}
 
     
+//Callbacks for SheepTwo
+void SheepTwo_StageOdom_callback(nav_msgs::Odometry msg){ SheepTwo_StageOdom_pub.publish(msg);}
+void SheepTwo_StageLaser_callback(sensor_msgs::LaserScan msg){SheepTwo_StageLaser_pub.publish(msg);}
+void SheepTwo_cmd_vel_callback (geometry_msgs::Twist msg){SheepTwo_cmd_vel_pub.publish(msg);}
+
+    
+<<<<<<< HEAD
 //Callbacks for PoopOne
 void PoopOne_StageOdom_callback(nav_msgs::Odometry msg){ PoopOne_StageOdom_pub.publish(msg);}
 void PoopOne_StageLaser_callback(sensor_msgs::LaserScan msg){PoopOne_StageLaser_pub.publish(msg);}
 void PoopOne_cmd_vel_callback (geometry_msgs::Twist msg){PoopOne_cmd_vel_pub.publish(msg);}
+=======
+//Callbacks for GrassOne
+void GrassOne_StageOdom_callback(nav_msgs::Odometry msg){ GrassOne_StageOdom_pub.publish(msg);}
+void GrassOne_StageLaser_callback(sensor_msgs::LaserScan msg){GrassOne_StageLaser_pub.publish(msg);}
+void GrassOne_cmd_vel_callback (geometry_msgs::Twist msg){GrassOne_cmd_vel_pub.publish(msg);}
+>>>>>>> 339039b10789cc601eb456cfc9060ffcb62a2708
 
     
 //-----[END] Subscriber callbacks
@@ -70,10 +96,22 @@ int main(int argc, char **argv)
     SheepOne_cmd_vel_pub=n.advertise<geometry_msgs::Twist>("robot_1/cmd_vel", 1000); //To stage
     
     
-    //Advertisments for BlockOne
-    BlockOne_StageOdom_pub = n.advertise<nav_msgs::Odometry>("BlockOne/odom", 1000); //To BlockOne
-    BlockOne_StageLaser_pub= n.advertise<sensor_msgs::LaserScan>("BlockOne/base_scan", 1000); //To BlockOne
-    BlockOne_cmd_vel_pub=n.advertise<geometry_msgs::Twist>("robot_2/cmd_vel", 1000); //To stage
+    //Advertisments for GhostSheepOne
+    GhostSheepOne_StageOdom_pub = n.advertise<nav_msgs::Odometry>("GhostSheepOne/odom", 1000); //To GhostSheepOne
+    GhostSheepOne_StageLaser_pub= n.advertise<sensor_msgs::LaserScan>("GhostSheepOne/base_scan", 1000); //To GhostSheepOne
+    GhostSheepOne_cmd_vel_pub=n.advertise<geometry_msgs::Twist>("robot_2/cmd_vel", 1000); //To stage
+    
+    
+    //Advertisments for SheepTwo
+    SheepTwo_StageOdom_pub = n.advertise<nav_msgs::Odometry>("SheepTwo/odom", 1000); //To SheepTwo
+    SheepTwo_StageLaser_pub= n.advertise<sensor_msgs::LaserScan>("SheepTwo/base_scan", 1000); //To SheepTwo
+    SheepTwo_cmd_vel_pub=n.advertise<geometry_msgs::Twist>("robot_3/cmd_vel", 1000); //To stage
+    
+    
+    //Advertisments for GrassOne
+    GrassOne_StageOdom_pub = n.advertise<nav_msgs::Odometry>("GrassOne/odom", 1000); //To GrassOne
+    GrassOne_StageLaser_pub= n.advertise<sensor_msgs::LaserScan>("GrassOne/base_scan", 1000); //To GrassOne
+    GrassOne_cmd_vel_pub=n.advertise<geometry_msgs::Twist>("robot_4/cmd_vel", 1000); //To stage
     
     
     //Advertisments for PoopOne
@@ -93,6 +131,7 @@ int main(int argc, char **argv)
     ros::Subscriber SheepOne_cmd_vel = n.subscribe<geometry_msgs::Twist>("SheepOne/cmd_vel", 1000,SheepOne_cmd_vel_callback);
     
     
+<<<<<<< HEAD
     //Subscriber for BlockOne
     ros::Subscriber BlockOne_StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_2/odom", 1000, BlockOne_StageOdom_callback);
     ros::Subscriber BlockOne_StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_2/base_scan", 1000, BlockOne_StageLaser_callback);
@@ -112,6 +151,26 @@ int main(int argc, char **argv)
 
 	//a count of howmany messages we have sent
 	int count = 0;
+=======
+    //Subscriber for GhostSheepOne
+    ros::Subscriber GhostSheepOne_StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_2/odom", 1000, GhostSheepOne_StageOdom_callback);
+    ros::Subscriber GhostSheepOne_StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_2/base_scan", 1000, GhostSheepOne_StageLaser_callback);
+    ros::Subscriber GhostSheepOne_cmd_vel = n.subscribe<geometry_msgs::Twist>("GhostSheepOne/cmd_vel", 1000,GhostSheepOne_cmd_vel_callback);
+    
+    
+    //Subscriber for SheepTwo
+    ros::Subscriber SheepTwo_StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_3/odom", 1000, SheepTwo_StageOdom_callback);
+    ros::Subscriber SheepTwo_StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_3/base_scan", 1000, SheepTwo_StageLaser_callback);
+    ros::Subscriber SheepTwo_cmd_vel = n.subscribe<geometry_msgs::Twist>("SheepTwo/cmd_vel", 1000,SheepTwo_cmd_vel_callback);
+    
+    
+    //Subscriber for GrassOne
+    ros::Subscriber GrassOne_StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_4/odom", 1000, GrassOne_StageOdom_callback);
+    ros::Subscriber GrassOne_StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_4/base_scan", 1000, GrassOne_StageLaser_callback);
+    ros::Subscriber GrassOne_cmd_vel = n.subscribe<geometry_msgs::Twist>("GrassOne/cmd_vel", 1000,GrassOne_cmd_vel_callback);
+    
+    
+>>>>>>> 339039b10789cc601eb456cfc9060ffcb62a2708
 
 	//send to poop class requesting poop to drop;
 	std_msgs::String poopInfo;
@@ -129,6 +188,7 @@ int main(int argc, char **argv)
 			status.data="Rainy";
 			Weather_publisher.publish(status);
 
+<<<<<<< HEAD
 			//ROS_INFO("rainy");
 		}else if (count%59){
 			status.data="Sunny";
@@ -150,6 +210,29 @@ int main(int argc, char **argv)
 		loop_rate.sleep();
 		count=count+1;
 	}
+=======
+  ////messages
+  //velocity of this RobotNode
+  std_msgs::String status;
+  status.data="Sunny";
+  while (ros::ok())
+  {
+    if (count%5 == 0) {
+      if (status.data.compare("Sunny") == 0) {
+        status.data = "Raining";
+        ROS_INFO("rainy");
+      } else {
+        status.data = "Sunny";
+        ROS_INFO("sunny");
+      }
+    }
+
+    ros::spinOnce();
+
+    loop_rate.sleep();
+    count=count+1;
+  }
+>>>>>>> 339039b10789cc601eb456cfc9060ffcb62a2708
 
 	return 0;
 
