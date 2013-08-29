@@ -39,16 +39,13 @@ GhostSheep::GhostSheep(std::string robot_name, int argc, char **argv,double px,d
 	linear_x = 0.0;
 	angular_z = 0.0;
 	theta = 0.0;
-	constLinear = -0.2;
-	nodeDistance = 30;
-	targetTheta = 0;
 	width = 1;
 	length = 2;
-	doStop = false;
 	followSheep = true;
 	grassDetected = false;
 	grassPX = -1;
 	grassPY = -1;
+	counter = 0;
 
 }
 /*destrustor
@@ -130,9 +127,17 @@ void GhostSheep::StageLaser_callback(sensor_msgs::LaserScan msg)
 
 		//ROS_INFO("theta: %f", theta);
 		} else if(grassReached()) {
-			grassPX = -1;
-			grassPY = -1;
-			changeFollow(false);
+			linear_x = 0;
+			angular_z = 0;
+			counter++;
+			if(counter > 50) {
+				grassPX = -1;
+				grassPY = -1;
+				linear_x = 2.0;
+				angular_z = 0;
+				changeFollow(false);
+				counter = 0;
+			}
 		} else {
 			linear_x = 2.0;
 			angular_z = 0.0;
