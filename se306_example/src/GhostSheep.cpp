@@ -127,16 +127,18 @@ void GhostSheep::StageLaser_callback(sensor_msgs::LaserScan msg)
 
 		//ROS_INFO("theta: %f", theta);
 		} else if(grassReached()) {
-			linear_x = 0;
-			angular_z = 0;
-			counter++;
-			if(counter > 10) {
+
+			if(counter % 10 == 0) {
 				grassPX = -1;
 				grassPY = -1;
 				linear_x = 2.0;
 				angular_z = 0;
 				changeFollow(false);
-				counter = 0;
+				//counter = 0;
+			}else {
+				linear_x = 0;
+				angular_z = 0;
+				counter++;
 			}
 		} else {
 			linear_x = 2.0;
@@ -172,7 +174,7 @@ void GhostSheep::changeFollow(bool follow) {
 		status.theta = theta;
 		//ROS_INFO("theta: %f", theta);
 		Follow_pub.publish(status);
-		ROS_INFO("follow sent");
+		//ROS_INFO("follow sent");
 	} else {
 		followSheep = follow;
 		grassDetected = false;
@@ -188,13 +190,14 @@ void GhostSheep::identityReply_callBack(se306_example::IdentityReply reply)
 {
 	//ROS_INFO("reply received");
 	if(reply.destination.compare(robot_name)==0) {
+		//ROS_INFO("sender: %s", reply.sender.c_str());
 		if(reply.type.compare("Grass")==0) {
 			grassDetected = true;
 			grassPX = reply.px;
 			grassPY = reply.py;
 			ROS_INFO("Grass detected");
 		}else if(reply.type.compare("sheep")==0){
-		        ROS_INFO("Swarm starting");
+		       // ROS_INFO("Swarm starting");
 		        /*to get swarm:
 		         * calculate the distance between you and the sheep
 		         * if he is travelling the same direction as you
