@@ -31,13 +31,10 @@ rosbuild_genmsg()
 
 rosbuild_add_executable(GodNode src/GodNode.cpp)
 #rosbuild_add_executable(SheepOne src/Sheep1.cpp src/Robot.cpp)
-rosbuild_add_executable(PoopOne src/Poop.cpp src/Poop1.cpp src/Robot.cpp)
-#rosbuild_add_executable(GhostSheep src/GhostSheep.cpp src/Robot.cpp)
-rosbuild_add_executable(GrassOne src/Grass.cpp src/Robot.cpp)
-<<<<<<< HEAD
-=======
-rosbuild_add_executable(SheepOne src/sheepOne.cpp src/Sheep1.cpp src/Robot.cpp)
-rosbuild_add_executable(SheepTwo src/sheep2.cpp src/Sheep1.cpp src/Robot.cpp)
-rosbuild_add_executable(FarmerOne src/FarmerNew.cpp src/Robot.cpp)
-rosbuild_add_executable(Gate src/Gate.cpp src/Robot.cpp)
->>>>>>> b9d1fe1bf03228b8557a2dc6130f4d7c97202833
+#rosbuild_add_executable(PoopOne src/Poop.cpp src/Poop1.cpp src/Robot.cpp)
+#rosbuild_add_executable(osbuild_add_executable(GrassOne src/Grass.cpp src/Robot.cpp)
+ 
+#rosbuild_add_executable(SheepOne src/sheepOne.cpp src/Sheep1.cpp src/Robot.cpp)
+#rosbuild_add_executable(SheepTwo src/sheep2.cpp src/Sheep1.cpp src/Robot.cpp)
+#rosbuild_add_executable(FarmerOne src/FarmerNew.cpp src/Robot.cpp)
+#rosbuild_add_executable(Gate src/Gate.cpp src/Robot.cpp)

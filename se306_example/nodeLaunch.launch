@@ -2,18 +2,45 @@
 
 <node name="GodNode" pkg="se306_example" type="GodNode" output="screen"/>
 
+
+
+<node name="GateOne" pkg="se306_example" type="Gate" output="screen">
+<param name="isHorizontal" value="true" type="bool"/>
+<param name="px" value=" 5" type="double"/>
+<param name="py" value=" 16.5" type="double"/>
+<param name="directionToOpen" value="right" type="string"/>
+</node>
+
+<node name="GateTwo" pkg="se306_example" type="Gate" output="screen">
+<param name="isHorizontal" value="true" type="bool"/>
+<param name="px" value=" 25" type="double"/>
+<param name="py" value=" 16.5" type="double"/>
+<param name="directionToOpen" value="left" type="string"/>
+</node>
+
+<node name="GateThree" pkg="se306_example" type="Gate" output="screen">
+<param name="isHorizontal" value="false" type="bool"/>
+<param name="px" value=" 13.5" type="double"/>
+<param name="py" value=" 25" type="double"/>
+<param name="directionToOpen" value="down" type="string"/>
+</node>
+
+
+
+
+
 <!--
-<node name="SheepOne" pkg="se306_example" type="SheepOne" output="screen"/>
--->
 <node name="GrassOne" pkg="se306_example" type="GrassOne" output="screen"/>
 
 <node name="PoisonGrassOne" pkg="se306_example" type="PoisonGrassOne" output="screen"/>
+<node name="SheepOne" pkg="se306_example" type="SheepOne" output="screen"/>
 
-<!--
+
+
 <node name="Truck" pkg="se306_example" type="Truck" output="screen"/>
--->
+
 <node name="Farmer" pkg="se306_example" type="FarmerOne" output="screen"/>
-<!--
+
 <node name="SheepTwo" pkg="se306_example" type="TestSheep" output="screen"/>
 -->
 </launch>
