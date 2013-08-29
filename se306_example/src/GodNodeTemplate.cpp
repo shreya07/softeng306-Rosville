@@ -16,6 +16,7 @@
 //-----[END] Subscriber callbacks
 
 ros::Publisher Weather_publisher;//To Sheep
+ros::Publisher poopAdvert; //to poop
 
 int main(int argc, char **argv)
 {
@@ -95,5 +96,4 @@ int main(int argc, char **argv)
     }
 
   return 0;
-
 }
