@@ -36,7 +36,7 @@ Sheep1::Sheep1(std::string robot_name, int argc, char **argv,double px,double py
   //this-> y = py;
 
   distance = 15;
-  linear_x = 0.0;
+  linear_x = 2.0;
   angular_z = 2.0;
   theta = 0.0;
   constLinear = -0.2;
@@ -52,6 +52,8 @@ Sheep1::Sheep1(std::string robot_name, int argc, char **argv,double px,double py
   //is this correct?
   PX_INIT = px;
   PY_INIT = py;
+  old_ang_z = 2.0;
+  once = false;
 
 
 }
@@ -86,6 +88,7 @@ void Sheep1::StageLaser_callback(sensor_msgs::LaserScan msg)
   //ROS_INFO("Angle is %f", theta);
   if(distance <= 10) {
 
+    ROS_INFO("%f",distance);
     RobotNode_cmdvel.linear.x = linear_x;
     RobotNode_cmdvel.angular.z = angular_z;
     //RobotNode_stage_pub.publish(RobotNode_cmdvel);
@@ -128,7 +131,7 @@ void Sheep1::identityReply_callBack(se306_example::IdentityReply reply)
       //ROS_INFO("Grass detected");
     }else if(reply.type.compare("sheep")==0){
       ROS_INFO("Swarm starting");
-      ROS_INFO("%f",this->abs_cmd_vel_angular_z);
+     // ROS_INFO("%f",this->abs_cmd_vel_angular_z);
       //calculate the distance between you and the sheep
       //this is the distance variable
       //make sure that this distance is more than 2
@@ -137,13 +140,25 @@ void Sheep1::identityReply_callBack(se306_example::IdentityReply reply)
         //move back and avoid
         //shall implement this later
       }else{
-        //ROS_INFO("Moving Forward");
+        ROS_INFO("Moving Forward");
+        this->linear_x=reply.abs_cmd_vel_linear_x;
+        if((theta<= reply.theta+7)||(theta>=reply.theta-7)){
+          //movin the same direction
+          this-> angular_z =old_ang_z;
+
+
+        }else{
+          //we are not moving in the same direction
+          double thetadifference = theta- reply.theta;
+          old_ang_z = angular_z;
+          this->angular_z = reply.abs_cmd_vel_angular_z + (thetadifference/45.00);
+          once = true;
+
+        }
         //if he is travelling the same direction as you
-        ROS_INFO("%f is the abs_x of the sheep and %f is your abs angular z", reply.abs_cmd_vel_angular_z, this-> abs_cmd_vel_angular_z);
+        //ROS_INFO("%f is the abs_x of the sheep and %f is your abs angular z", reply.abs_cmd_vel_angular_z, this-> abs_cmd_vel_angular_z);
         //if (((reply.abs_cmd_vel_linear_x>0)&&(this->abs_cmd_vel_linear_x>0))||((reply.abs_cmd_vel_linear_x<0)&&(this->abs_cmd_vel_linear_x<0))){
         //pick the one thats ordered the best
-                 this->angular_z = 0;
-          this->linear_x = 0;
 //        }else{
 //          //if you are not travelling the same direction as the othersheep
 //          std::list<double> pose = calculateTheta(theta, distance);
@@ -191,13 +206,9 @@ void Sheep1::identityRequest_callBack(se306_example::IdentityRequest request)
     reply.destination = request.sender;
     reply.type = "sheep";
     /*this needs to be changed a bit to reflect actual velocity*/
-    abs_cmd_vel_angular_z = angular_z;
-    abs_cmd_vel_linear_x = linear_x;
-    /*need to figure out a way to get actual linear and anglualar x*/
-    reply.abs_cmd_vel_linear_x= abs_cmd_vel_linear_x;
-    reply.abs_cmd_vel_angular_z = abs_cmd_vel_angular_z;
-
-    ROS_INFO("sent linear x = %f and sent angular z = %f",abs_cmd_vel_linear_x,abs_cmd_vel_angular_z);
+    reply.abs_cmd_vel_angular_z = angular_z;
+    reply.abs_cmd_vel_linear_x = linear_x;
+    reply.theta = theta;
     Reply_pub.publish(reply);
     ROS_INFO("reply sent");
   }
@@ -297,10 +308,10 @@ void Sheep1::ghostcmd(geometry_msgs::Twist msg){
 }
 
 bool Sheep1::doesIntersect(float x, float y) {
-  float leftX = px-(width/2.0);
-  float rightX = px+(width/2.0);
-  float top = py+(length/2.0);
-  float bottom = py-(length/2.0);
+  float leftX = px-(width*2);
+  float rightX = px+(width*2);
+  float top = py+(length*2);
+  float bottom = py-(length*2);
 
   if(leftX <= x && rightX >= x) {
     if(top >= y && bottom <= y) {
@@ -351,11 +362,12 @@ ros::NodeHandle Sheep1::run(){
   subsList.insert(it,stageOdo_sub);
 
   //double th = 90*M_PI/2.0;
-  ros::Rate loop_rate(2);
+  ros::Rate loop_rate(10);
   nav_msgs::Odometry odom;
   geometry_msgs::Quaternion odom_quat;
   int counter = 0;
 
+  int anglecounter = 0;
   //se306_example::Grass grass;
 
   /*define the while loop here*/
@@ -370,8 +382,16 @@ ros::NodeHandle Sheep1::run(){
     RobotNode_cmdvel.angular.z = angular_z;
     counter++;
 
-
     RobotNode_stage_pub.publish(RobotNode_cmdvel);
+    if (once)
+    {
+      anglecounter++;
+      if (anglecounter%30 == 0)
+      {
+        angular_z = old_ang_z;
+        once = false;
+      }
+    }
     //RobotNode_stage_pub.publish(grass);
     //ROS_INFO("OK");
     //ROS_INFO("theta is %f",theta);
@@ -389,7 +409,7 @@ double Sheep1::yawFromQuaternion(double x, double y, double z,double w){
   if (a < 0){
     a = 360 + a;
   }
-  ROS_INFO("%f",a);
+  //ROS_INFO("%f",a);
   return a;
 }
 //int main(int argc, char **argv)

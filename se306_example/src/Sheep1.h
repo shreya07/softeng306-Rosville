@@ -44,6 +44,8 @@ public:
 	ros::Publisher Request_pub;
 	ros::Publisher Reply_pub;
 	ros::Publisher Stop_pub;
+	double old_ang_z;
+	bool once;
 
 	void StageLaser_callback(sensor_msgs::LaserScan msg);
 	Sheep1(std::string robot_name, int argc, char **argv, double px, double py,std::string robot_number);

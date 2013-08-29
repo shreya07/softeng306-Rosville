@@ -25,8 +25,10 @@ struct IdentityReply_ {
   : sender()
   , destination()
   , type()
+  , height(0)
   , abs_cmd_vel_linear_x(0.0)
   , abs_cmd_vel_angular_z(0.0)
+  , theta(0.0)
   {
   }
 
@@ -34,8 +36,10 @@ struct IdentityReply_ {
   : sender(_alloc)
   , destination(_alloc)
   , type(_alloc)
+  , height(0)
   , abs_cmd_vel_linear_x(0.0)
   , abs_cmd_vel_angular_z(0.0)
+  , theta(0.0)
   {
   }
 
@@ -48,11 +52,17 @@ struct IdentityReply_ {
   typedef std::basic_string<char, std::char_traits<char>, typename ContainerAllocator::template rebind<char>::other >  _type_type;
   std::basic_string<char, std::char_traits<char>, typename ContainerAllocator::template rebind<char>::other >  type;
 
+  typedef int32_t _height_type;
+  int32_t height;
+
   typedef float _abs_cmd_vel_linear_x_type;
   float abs_cmd_vel_linear_x;
 
   typedef float _abs_cmd_vel_angular_z_type;
   float abs_cmd_vel_angular_z;
+
+  typedef float _theta_type;
+  float theta;
 
 
   typedef boost::shared_ptr< ::se306_example::IdentityReply_<ContainerAllocator> > Ptr;
@@ -83,12 +93,12 @@ template<class ContainerAllocator>
 struct MD5Sum< ::se306_example::IdentityReply_<ContainerAllocator> > {
   static const char* value() 
   {
-    return "235dab027597591de3ce911869103024";
+    return "5990b27180b90d0c5c1a9f9695c1e6cf";
   }
 
   static const char* value(const  ::se306_example::IdentityReply_<ContainerAllocator> &) { return value(); } 
-  static const uint64_t static_value1 = 0x235dab027597591dULL;
-  static const uint64_t static_value2 = 0xe3ce911869103024ULL;
+  static const uint64_t static_value1 = 0x5990b27180b90d0cULL;
+  static const uint64_t static_value2 = 0x5c1a9f9695c1e6cfULL;
 };
 
 template<class ContainerAllocator>
@@ -108,8 +118,10 @@ struct Definition< ::se306_example::IdentityReply_<ContainerAllocator> > {
     return "string sender\n\
 string destination\n\
 string type\n\
+int32 height\n\
 float32 abs_cmd_vel_linear_x\n\
 float32 abs_cmd_vel_angular_z\n\
+float32 theta\n\
 \n\
 ";
   }
@@ -132,8 +144,10 @@ template<class ContainerAllocator> struct Serializer< ::se306_example::IdentityR
     stream.next(m.sender);
     stream.next(m.destination);
     stream.next(m.type);
+    stream.next(m.height);
     stream.next(m.abs_cmd_vel_linear_x);
     stream.next(m.abs_cmd_vel_angular_z);
+    stream.next(m.theta);
   }
 
   ROS_DECLARE_ALLINONE_SERIALIZER;
@@ -157,10 +171,14 @@ struct Printer< ::se306_example::IdentityReply_<ContainerAllocator> >
     Printer<std::basic_string<char, std::char_traits<char>, typename ContainerAllocator::template rebind<char>::other > >::stream(s, indent + "  ", v.destination);
     s << indent << "type: ";
     Printer<std::basic_string<char, std::char_traits<char>, typename ContainerAllocator::template rebind<char>::other > >::stream(s, indent + "  ", v.type);
+    s << indent << "height: ";
+    Printer<int32_t>::stream(s, indent + "  ", v.height);
     s << indent << "abs_cmd_vel_linear_x: ";
     Printer<float>::stream(s, indent + "  ", v.abs_cmd_vel_linear_x);
     s << indent << "abs_cmd_vel_angular_z: ";
     Printer<float>::stream(s, indent + "  ", v.abs_cmd_vel_angular_z);
+    s << indent << "theta: ";
+    Printer<float>::stream(s, indent + "  ", v.theta);
   }
 };
 
