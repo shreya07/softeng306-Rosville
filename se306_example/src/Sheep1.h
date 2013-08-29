@@ -12,11 +12,13 @@
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/Odometry.h>
 #include <sensor_msgs/LaserScan.h>
+#include "std_msgs/String.h"
 
 
 #include <sstream>
 #include "math.h"
 #include "Robot.h"
+
 #include "../msg_gen/cpp/include/se306_example/IdentityRequest.h"
 #include "../msg_gen/cpp/include/se306_example/IdentityReply.h"
 #include "../msg_gen/cpp/include/se306_example/FollowSheep.h"
@@ -38,6 +40,7 @@ public:
 	ros::Publisher Request_pub;
 	ros::Publisher Reply_pub;
 	ros::Publisher Stop_pub;
+	ros::Publisher sheepsoldFarmer_pub;
 	double old_ang_z;
 	bool once;
 	double health;
@@ -55,6 +58,7 @@ public:
 	std::list<double> calculateTheta(double theta, double distance);
 	double yawFromQuaternion(double x, double y, double z, double w);
 	void stageFollow_callback(se306_example::FollowSheep msg);
+	void sellcmdhandler(std_msgs::String msg);
   //double y;
 };
 
