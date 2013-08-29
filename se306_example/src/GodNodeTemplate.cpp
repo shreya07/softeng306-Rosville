@@ -72,7 +72,7 @@ int main(int argc, char **argv)
   while (ros::ok())
   {
     randomNum = ((rand()%10));
-    ROS_INFO("random num %f", randomNum);
+//ROS_INFO("random num %f", randomNum);
 
     if (randomNum < 4) {
       statusOne.data = "Raining";

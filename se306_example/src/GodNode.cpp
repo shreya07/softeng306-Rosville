@@ -33,6 +33,18 @@ ros::Publisher GrassOne_StageLaser_pub; //To Sheep
 ros::Publisher GrassOne_cmd_vel_pub; //To stage
 
     
+    //Publishers for GrassPoisonOne
+ros::Publisher GrassPoisonOne_StageOdom_pub;//To Sheep
+ros::Publisher GrassPoisonOne_StageLaser_pub; //To Sheep
+ros::Publisher GrassPoisonOne_cmd_vel_pub; //To stage
+
+    
+    //Publishers for Farmer
+ros::Publisher Farmer_StageOdom_pub;//To Sheep
+ros::Publisher Farmer_StageLaser_pub; //To Sheep
+ros::Publisher Farmer_cmd_vel_pub; //To stage
+
+    
 //-----[END]Publisher variables
 
 //-----Subscriber callbacks
@@ -59,6 +71,18 @@ void GateThree_cmd_vel_callback (geometry_msgs::Twist msg){GateThree_cmd_vel_pub
 void GrassOne_StageOdom_callback(nav_msgs::Odometry msg){ GrassOne_StageOdom_pub.publish(msg);}
 void GrassOne_StageLaser_callback(sensor_msgs::LaserScan msg){GrassOne_StageLaser_pub.publish(msg);}
 void GrassOne_cmd_vel_callback (geometry_msgs::Twist msg){GrassOne_cmd_vel_pub.publish(msg);}
+
+    
+//Callbacks for GrassPoisonOne
+void GrassPoisonOne_StageOdom_callback(nav_msgs::Odometry msg){ GrassPoisonOne_StageOdom_pub.publish(msg);}
+void GrassPoisonOne_StageLaser_callback(sensor_msgs::LaserScan msg){GrassPoisonOne_StageLaser_pub.publish(msg);}
+void GrassPoisonOne_cmd_vel_callback (geometry_msgs::Twist msg){GrassPoisonOne_cmd_vel_pub.publish(msg);}
+
+    
+//Callbacks for Farmer
+void Farmer_StageOdom_callback(nav_msgs::Odometry msg){ Farmer_StageOdom_pub.publish(msg);}
+void Farmer_StageLaser_callback(sensor_msgs::LaserScan msg){Farmer_StageLaser_pub.publish(msg);}
+void Farmer_cmd_vel_callback (geometry_msgs::Twist msg){Farmer_cmd_vel_pub.publish(msg);}
 
     
 //-----[END] Subscriber callbacks
@@ -100,6 +124,18 @@ int main(int argc, char **argv)
     GrassOne_cmd_vel_pub=n.advertise<geometry_msgs::Twist>("robot_4/cmd_vel", 1000); //To stage
     
     
+    //Advertisments for GrassPoisonOne
+    GrassPoisonOne_StageOdom_pub = n.advertise<nav_msgs::Odometry>("GrassPoisonOne/odom", 1000); //To GrassPoisonOne
+    GrassPoisonOne_StageLaser_pub= n.advertise<sensor_msgs::LaserScan>("GrassPoisonOne/base_scan", 1000); //To GrassPoisonOne
+    GrassPoisonOne_cmd_vel_pub=n.advertise<geometry_msgs::Twist>("robot_5/cmd_vel", 1000); //To stage
+    
+    
+    //Advertisments for Farmer
+    Farmer_StageOdom_pub = n.advertise<nav_msgs::Odometry>("Farmer/odom", 1000); //To Farmer
+    Farmer_StageLaser_pub= n.advertise<sensor_msgs::LaserScan>("Farmer/base_scan", 1000); //To Farmer
+    Farmer_cmd_vel_pub=n.advertise<geometry_msgs::Twist>("robot_6/cmd_vel", 1000); //To stage
+    
+    
   ros::Publisher Weather_publisherOne;
   ros::Publisher Weather_publisherTwo;
   ros::Publisher Weather_publisherThree;
@@ -131,6 +167,18 @@ int main(int argc, char **argv)
     ros::Subscriber GrassOne_cmd_vel = n.subscribe<geometry_msgs::Twist>("GrassOne/cmd_vel", 1000,GrassOne_cmd_vel_callback);
     
     
+    //Subscriber for GrassPoisonOne
+    ros::Subscriber GrassPoisonOne_StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_5/odom", 1000, GrassPoisonOne_StageOdom_callback);
+    ros::Subscriber GrassPoisonOne_StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_5/base_scan", 1000, GrassPoisonOne_StageLaser_callback);
+    ros::Subscriber GrassPoisonOne_cmd_vel = n.subscribe<geometry_msgs::Twist>("GrassPoisonOne/cmd_vel", 1000,GrassPoisonOne_cmd_vel_callback);
+    
+    
+    //Subscriber for Farmer
+    ros::Subscriber Farmer_StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_6/odom", 1000, Farmer_StageOdom_callback);
+    ros::Subscriber Farmer_StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_6/base_scan", 1000, Farmer_StageLaser_callback);
+    ros::Subscriber Farmer_cmd_vel = n.subscribe<geometry_msgs::Twist>("Farmer/cmd_vel", 1000,Farmer_cmd_vel_callback);
+    
+    
 
 
   // set up publishers
@@ -145,7 +193,7 @@ int main(int argc, char **argv)
   int poopCount = 0;
 
   // set loop rate
-  ros::Rate loop_rate(1);
+  ros::Rate loop_rate(10);
 
   //a count of how many messages we have sent
   double randomNum;
@@ -168,7 +216,7 @@ int main(int argc, char **argv)
   while (ros::ok())
   {
     randomNum = ((rand()%10));
-    ROS_INFO("random num %f", randomNum);
+//ROS_INFO("random num %f", randomNum);
 
     if (randomNum < 4) {
       statusOne.data = "Raining";

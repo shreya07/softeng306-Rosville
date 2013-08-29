@@ -24,7 +24,7 @@
 <param name="py" value=" 25" type="double"/>
 <param name="directionToOpen" value="down" type="string"/>
 </node>
-
+<!--
 <node name="GrassOne" pkg="se306_example" type="Grass" output="screen">
 <param name="px" value=" 10" type="double"/>
 <param name="py" value=" 30" type="double"/>
@@ -36,6 +36,7 @@
 <param name="py" value=" 25" type="double"/>
 
 </node>
+-->
 
 <node name="Farmer" pkg="se306_example" type="FarmerOne" output="screen">
 <param name="px" value=" 10" type="double"/>
