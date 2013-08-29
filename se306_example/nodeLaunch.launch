@@ -1,12 +1,6 @@
 <launch>
-<!-- value can be int/double/bool -->
 
 <node name="GodNode" pkg="se306_example" type="GodNode" output="screen">
-</node>
-
-<node name="PoisonGrassOne" pkg="se306_example" type="PoisonGrassOne" output="screen">
-<param name="px" value="15.0"/> 
-<param name="py" value="20.0"/>
 </node>
 
 <node name="SheepOne" pkg="se306_example" type="SheepOne" output="screen">
@@ -14,6 +8,12 @@
 
 <node name="GrassOne" pkg="se306_example" type="GrassOne" output="screen">
 </node>
+
+<node name="PoisonGrassOne" pkg="se306_example" type="PoisonGrassOne" output="screen">
+<param name="px" value="15.0"/> 
+<param name="py" value="20.0"/>
+</node>
+
 <!--
 <node name="Truck" pkg="se306_example" type="Truck" output="screen">
 </node>

@@ -76,15 +76,14 @@ ros::NodeHandle n;
   status.data="Sunny";
   while (ros::ok())
   {
-	  ROS_INFO("God:cloudy");
 //	  ROS_INFO("cloudy");
     if (count%5 == 0) {
       if (status.data.compare("Sunny") == 0) {
         status.data = "Raining";
-        ROS_INFO("God:rainy");
+        ROS_INFO("GodNode:rainy");
       } else {
         status.data = "Sunny";
-        ROS_INFO("God:sunny");
+        ROS_INFO("GodNode:sunny");
       }
     }
     Weather_publisher.publish(status);
