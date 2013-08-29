@@ -54,6 +54,7 @@ Sheep1::Sheep1(std::string robot_name, int argc, char **argv,double px,double py
   PY_INIT = py;
   old_ang_z = 2.0;
   once = false;
+  health = 1.0;
 
 
 }
@@ -71,11 +72,7 @@ void Sheep1::stageOdom_callback(nav_msgs::Odometry msg){
   prevpy = py;
   px = PX_INIT + msg.pose.pose.position.x;
   py = PY_INIT + msg.pose.pose.position.y;
-  //ROS_INFO("w: %f", msg.pose.pose.orientation.w);
-  //ROS_INFO("theta: %f", theta);
-  //ROS_INFO("callback called");
   double theCorrectTheta = yawFromQuaternion(msg.pose.pose.orientation.x,msg.pose.pose.orientation.y,msg.pose.pose.orientation.z,msg.pose.pose.orientation.w);
-  //ROS_INFO("the theta is %f",theCorrectTheta);
   theta = theCorrectTheta;
 }
 
@@ -84,8 +81,6 @@ void Sheep1::StageLaser_callback(sensor_msgs::LaserScan msg)
 {
   distance = msg.ranges[20];
   se306_example::IdentityRequest request;
-  //ROS_INFO("distance: %s , %f", robot_name.c_str(),distance);
-  //ROS_INFO("Angle is %f", theta);
   if(distance <= 10) {
 
     ROS_INFO("%f",distance);
@@ -95,27 +90,19 @@ void Sheep1::StageLaser_callback(sensor_msgs::LaserScan msg)
 
     request.sender = robot_name;
 
-    //ROS_INFO ("Calculated theta is %f", theta);
     std::list<double> pose = calculateTheta(theta, distance);
     double x = pose.front();
     double y = pose.back();
-    //ROS_INFO ("Calculated x and y values x = %f, y=%f", x,y);
 
     request.px = this->px+x+(width/2.0);
     //pose.pop_front();
     request.py = py+y+(length/2.0);
     //pose.pop_front();
 
-    //ROS_INFO("x: %f", request.px);
-    //ROS_INFO("y: %f", request.py);
-
     Request_pub.publish(request);
     std_msgs::String status;
     status.data = "stop";
     Stop_pub.publish(status);
-    //ROS_INFO("Request sent");
-
-    //ROS_INFO("theta: %f", theta);
   }
 
 
@@ -131,7 +118,6 @@ void Sheep1::identityReply_callBack(se306_example::IdentityReply reply)
       //ROS_INFO("Grass detected");
     }else if(reply.type.compare("sheep")==0){
       ROS_INFO("Swarm starting");
-     // ROS_INFO("%f",this->abs_cmd_vel_angular_z);
       //calculate the distance between you and the sheep
       //this is the distance variable
       //make sure that this distance is more than 2
@@ -155,35 +141,12 @@ void Sheep1::identityReply_callBack(se306_example::IdentityReply reply)
           once = true;
 
         }
-        //if he is travelling the same direction as you
-        //ROS_INFO("%f is the abs_x of the sheep and %f is your abs angular z", reply.abs_cmd_vel_angular_z, this-> abs_cmd_vel_angular_z);
-        //if (((reply.abs_cmd_vel_linear_x>0)&&(this->abs_cmd_vel_linear_x>0))||((reply.abs_cmd_vel_linear_x<0)&&(this->abs_cmd_vel_linear_x<0))){
-        //pick the one thats ordered the best
-//        }else{
-//          //if you are not travelling the same direction as the othersheep
-//          std::list<double> pose = calculateTheta(theta, distance);
-//          //get the x and y values of the
-//          double x = pose.front();
-//          double y = pose.back();
-//          ROS_INFO("reply x is %f and y is %f, theta was %f", x,y,theta);
-//          ROS_INFO("px is %f py is %f",px,py);
-//          //pick the one that is the graetest xvalue first
-//          if((px<x)||(py<y)){
-//            //set your linear_x to be the same as the otherpersomes linear x
-//            //need to rotate the sheep twice
-//
-//            //this->angular_z = reply.abs_cmd_vel_angular_z;
-//            //this->linear_x = reply.abs_cmd_vel_linear_x;
-//            this -> angular_z = 0;
-//            this -> linear_x = 0;
-//            //need to set the command velocity again?
-//            //is it overriden by anything
-//          }
-//        }
       }
       //swarm completed
       ROS_INFO("Swarm Completed");
 
+    }else if(reply.type.compare("PoisonGrass")==0){
+      health -=0.5;
     }
     else  {
       ROS_INFO("Don't know what it is");
@@ -212,8 +175,6 @@ void Sheep1::identityRequest_callBack(se306_example::IdentityRequest request)
     Reply_pub.publish(reply);
     ROS_INFO("reply sent");
   }
-
-  //ROS_INFO("does intersect? %d ", result);
 
 }
 /*this function returns a double array depending on the theta
@@ -377,9 +338,14 @@ ros::NodeHandle Sheep1::run(){
     // RobotNode_cmdvel.angular.x = 0.2;
     //RobotNode_cmdvel.angular.y = 0.5;
 
-    RobotNode_cmdvel.linear.x = linear_x;
+    if (health<=0){
+      health = 0.1;
+    }else if (health>1){
+      health =1;
+    }
+    RobotNode_cmdvel.linear.x = linear_x*health;
     //RobotNode_cmdvel.linear.y = 0.2;
-    RobotNode_cmdvel.angular.z = angular_z;
+    RobotNode_cmdvel.angular.z = angular_z*health;
     counter++;
 
     RobotNode_stage_pub.publish(RobotNode_cmdvel);
@@ -390,11 +356,18 @@ ros::NodeHandle Sheep1::run(){
       {
         angular_z = old_ang_z;
         once = false;
+        anglecounter=0;
       }
     }
     //RobotNode_stage_pub.publish(grass);
     //ROS_INFO("OK");
     //ROS_INFO("theta is %f",theta);
+
+    /*increase the health of the sheep
+     * because the looprate is 10 per second*/
+    if(health<1){
+      health +=0.05;
+    }
     ros::spinOnce();
     loop_rate.sleep();
 
