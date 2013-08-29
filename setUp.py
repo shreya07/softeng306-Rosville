@@ -16,6 +16,7 @@ def callRoscore():
     print "success1"
     pids.append(pid1)
     callStage()
+    callTeleop()
 
 def callStage():
     terminal2 = ['gnome-terminal']
@@ -41,6 +42,13 @@ def callLaunch():
     pid4 = subprocess.call(terminal4)
     pids.append(pid3)
     print "success4"
+
+def callTeleop():
+    terminal4 = ['gnome-terminal']
+    terminal4.extend(['-x', 'sh', '-c', 'roslaunch pr2_teleop teleop_keyboard.launch'])
+    pid4 = subprocess.call(terminal4)
+    pids.append(pid4)
+    print "teleop is running.."
 
 callRoscore()
 

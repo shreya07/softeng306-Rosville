@@ -1,4 +1,5 @@
 robot_1,SheepOne
 robot_2,GhostSheepOne
-robot_3,SheepTwo
-robot_4,GrassOne
+robot_3,FarmerOne
+robot_4,SheepTwo
+robot_5,GrassOne

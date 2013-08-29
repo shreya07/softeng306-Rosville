@@ -13,6 +13,7 @@
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/Odometry.h>
 #include <sensor_msgs/LaserScan.h>
+#include <boost/lexical_cast.hpp>
 #include <iostream>
 #include "stdio.h"
 #include "string.h"
@@ -33,6 +34,7 @@ class Grass:Robot
 		ros::NodeHandle run();
 		void stageOdom_callback (nav_msgs::Odometry msg);
 		void rainfall_callback (const std_msgs::String::ConstPtr& msg);
+		void spinCallback(se306_example::Custom msg);
 		void grow(double moisture);
 		void identityReply_callBack(se306_example::IdentityReply reply);
 		void identityRequest_callBack(se306_example::IdentityRequest request);
@@ -55,7 +57,6 @@ class Grass:Robot
                 int length;
                 std_msgs::String message;
 	};
-
 
 #endif /* GRASS_H_ */
 

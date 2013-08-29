@@ -33,6 +33,12 @@ ros::Publisher GrassOne_StageLaser_pub; //To Sheep
 ros::Publisher GrassOne_cmd_vel_pub; //To stage
 
     
+    //Publishers for FarmerOne
+ros::Publisher FarmerOne_StageOdom_pub;//To Sheep
+ros::Publisher FarmerOne_StageLaser_pub; //To Sheep
+ros::Publisher FarmerOne_cmd_vel_pub; //To stage
+
+    
 //-----[END]Publisher variables
 
 //-----Subscriber callbacks
@@ -59,6 +65,12 @@ void SheepTwo_cmd_vel_callback (geometry_msgs::Twist msg){SheepTwo_cmd_vel_pub.p
 void GrassOne_StageOdom_callback(nav_msgs::Odometry msg){ GrassOne_StageOdom_pub.publish(msg);}
 void GrassOne_StageLaser_callback(sensor_msgs::LaserScan msg){GrassOne_StageLaser_pub.publish(msg);}
 void GrassOne_cmd_vel_callback (geometry_msgs::Twist msg){GrassOne_cmd_vel_pub.publish(msg);}
+
+    
+//Callbacks for FarmerOne
+void FarmerOne_StageOdom_callback(nav_msgs::Odometry msg){ FarmerOne_StageOdom_pub.publish(msg);}
+void FarmerOne_StageLaser_callback(sensor_msgs::LaserScan msg){FarmerOne_StageLaser_pub.publish(msg);}
+void FarmerOne_cmd_vel_callback (geometry_msgs::Twist msg){FarmerOne_cmd_vel_pub.publish(msg);}
 
     
 //-----[END] Subscriber callbacks
@@ -96,7 +108,13 @@ int main(int argc, char **argv)
     //Advertisments for GrassOne
     GrassOne_StageOdom_pub = n.advertise<nav_msgs::Odometry>("GrassOne/odom", 1000); //To GrassOne
     GrassOne_StageLaser_pub= n.advertise<sensor_msgs::LaserScan>("GrassOne/base_scan", 1000); //To GrassOne
-    GrassOne_cmd_vel_pub=n.advertise<geometry_msgs::Twist>("robot_4/cmd_vel", 1000); //To stage
+    GrassOne_cmd_vel_pub=n.advertise<geometry_msgs::Twist>("robot_2/cmd_vel", 1000); //To stage
+    
+    
+    //Advertisments for FarmerOne
+    FarmerOne_StageOdom_pub = n.advertise<nav_msgs::Odometry>("FarmerOne/odom", 1000); //To FarmerOne
+    FarmerOne_StageLaser_pub= n.advertise<sensor_msgs::LaserScan>("FarmerOne/base_scan", 1000); //To FarmerOne
+    FarmerOne_cmd_vel_pub=n.advertise<geometry_msgs::Twist>("robot_3/cmd_vel", 1000); //To stage
     
     
 
@@ -109,21 +127,9 @@ int main(int argc, char **argv)
     ros::Subscriber SheepOne_cmd_vel = n.subscribe<geometry_msgs::Twist>("SheepOne/cmd_vel", 1000,SheepOne_cmd_vel_callback);
     
     
-    //Subscriber for GhostSheepOne
-    ros::Subscriber GhostSheepOne_StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_2/odom", 1000, GhostSheepOne_StageOdom_callback);
-    ros::Subscriber GhostSheepOne_StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_2/base_scan", 1000, GhostSheepOne_StageLaser_callback);
-    ros::Subscriber GhostSheepOne_cmd_vel = n.subscribe<geometry_msgs::Twist>("GhostSheepOne/cmd_vel", 1000,GhostSheepOne_cmd_vel_callback);
-    
-    
-    //Subscriber for SheepTwo
-    ros::Subscriber SheepTwo_StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_3/odom", 1000, SheepTwo_StageOdom_callback);
-    ros::Subscriber SheepTwo_StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_3/base_scan", 1000, SheepTwo_StageLaser_callback);
-    ros::Subscriber SheepTwo_cmd_vel = n.subscribe<geometry_msgs::Twist>("SheepTwo/cmd_vel", 1000,SheepTwo_cmd_vel_callback);
-    
-    
     //Subscriber for GrassOne
-    ros::Subscriber GrassOne_StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_4/odom", 1000, GrassOne_StageOdom_callback);
-    ros::Subscriber GrassOne_StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_4/base_scan", 1000, GrassOne_StageLaser_callback);
+    ros::Subscriber GrassOne_StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_2/odom", 1000, GrassOne_StageOdom_callback);
+    ros::Subscriber GrassOne_StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_2/base_scan", 1000, GrassOne_StageLaser_callback);
     ros::Subscriber GrassOne_cmd_vel = n.subscribe<geometry_msgs::Twist>("GrassOne/cmd_vel", 1000,GrassOne_cmd_vel_callback);
     
     
@@ -141,20 +147,29 @@ int main(int argc, char **argv)
   status.data="Sunny";
   while (ros::ok())
   {
-    if (count%5 == 0) {
-      if (status.data.compare("Sunny") == 0) {
-        status.data = "Raining";
-        ROS_INFO("rainy");
-      } else {
-        status.data = "Sunny";
-        ROS_INFO("sunny");
-      }
-    }
+    if (count%30==0)
+    {
+      status.data="Rainy";
+      Weather_publisher.publish(status);
 
-    ros::spinOnce();
+      //ROS_INFO("rainy");
+    }else if (count%59){
+      status.data="Sunny";
+      //ROS_INFO("sunny");
+      Weather_publisher.publish(status);
 
-    loop_rate.sleep();
-    count=count+1;
+          ROS_INFO("rainy");
+        }else if (count%59){
+          status.data="Sunny";
+          ROS_INFO("sunny");
+          Weather_publisher.publish(status);
+
+        }
+
+        ros::spinOnce();
+
+        loop_rate.sleep();
+        count=count+1;
   }
 
   return 0;

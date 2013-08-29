@@ -101,12 +101,14 @@ bool Grass::doesIntersect(float x, float y) {
 
 // CALL BACK METHOD TO DELEGATE ITS POSITION
 void Grass::stageOdom_callback(nav_msgs::Odometry msg){
-  this->px = this->px+msg.pose.pose.position.x;
-  this->py = this->py+msg.pose.pose.position.y;
+   this->px = this->px+msg.pose.pose.position.x;
+   this->py = this->py+msg.pose.pose.position.y;
 }
 
 // CHECKS RAINFALL AND INCREMENTS/DECREMENTS MOISTURE LEVEL
 void Grass::rainfall_callback(const std_msgs::String::ConstPtr& rainfall) {
+
+  //ROS_INFO("I heard: [%s]", rainfall->data.c_str());
 
   if (rainfall->data.compare("Sunny")==0) {
     moistCont = moistCont - 20;
@@ -205,11 +207,30 @@ ros::NodeHandle Grass::run(){
 
 
   // INITIALIZE VARIABLES TO PUBLISH
+  std_msgs::String heightOfGrass;
   std_msgs::String moisture;
   geometry_msgs::Twist angular;
+  se306_example::Custom grass;
 
+//  // SET ANGULAR VELOV
+//  this->angular_z = 0.2;
+
+  grass.px = this->px;
+  grass.py = this->py;
   while (ros::ok())
   {
+    grow(this->moistCont);
+    angular.angular.z = angular_z;
+    ROS_INFO("Value is [%lf]", angular.angular.z);
+
+    // PUBLISH
+    grassPos.publish(grass);
+    spin.publish(angular);
+
+
+    ROS_INFO("Current value of Moisture is %f",this->moistCont);
+    ROS_INFO("Current value of Height is %f",this->height);
+
     ros::spinOnce();
     loop_rate.sleep();
   }
@@ -218,8 +239,7 @@ ros::NodeHandle Grass::run(){
 
 int main(int argc, char **argv)
 {
-  Grass robot = Grass("Grass",argc,argv,7,15,"One");
+  Grass robot = Grass("Grass",argc,argv,10,20,"One");
   robot.run();
   return 0;
 }
-

@@ -34,4 +34,4 @@ rosbuild_add_executable(GhostSheep src/GhostSheep.cpp src/Robot.cpp)
 rosbuild_add_executable(GrassOne src/Grass.cpp src/Robot.cpp)
 rosbuild_add_executable(SheepOne src/sheepOne.cpp src/Sheep1.cpp src/Robot.cpp)
 rosbuild_add_executable(SheepTwo src/sheep2.cpp src/Sheep1.cpp src/Robot.cpp)
-
+rosbuild_add_executable(FarmerOne src/FarmerNew.cpp src/Robot.cpp)
