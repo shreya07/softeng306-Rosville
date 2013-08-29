@@ -183,7 +183,7 @@ ros::NodeHandle Grass::run(){
 
 
   // TO CHANGE ANGULAR VELOCITY SET A PUBLISHER TO LISTEN ON CMD_VEL
-  spin = n.advertise<geometry_msgs::Twist>(robot_name+robot_number+"/cmd_vel",1000);
+  ros::Publisher spin = n.advertise<geometry_msgs::Twist>(robot_name+robot_number+"/cmd_vel",1000);
 
 
   // CREATE MOISTURE AND HEIGHT TOPICS TO PUBLISH TOWARDS
