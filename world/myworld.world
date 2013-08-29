@@ -135,14 +135,15 @@ window
 # load an environment bitmap
 floorplan
 ( 
-  name "swarm"
-  bitmap "swarm_world.pgm"
+  name "cave"
+  bitmap "cave.png"
   size [30.0 30.0 0.5]
   pose [ 15.00 15.000 0 90.000 ]
 )
 # throw in a robot
 myRobot( pose [ 5 15 2 0 ] name "God" color "black")
 mySheep( pose [ 5 10 2 0 ] name "SheepOne" color "blue")
+mySheep( pose [ 10 5 2 0 ] name "PoopOne" color "brown")
 
 robfield( pose [ 7.5 7.5 0 0 ] name "field1" color "white") #bitmap "soil.jpg")
 robfield( pose [ 22.5 7.5 0 0 ] name "field2" color "white") # bitmap "soil.jpg")
