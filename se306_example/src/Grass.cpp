@@ -24,6 +24,7 @@
 #include "../msg_gen/cpp/include/se306_example/IdentityReply.h"
 
 Grass::Grass(std::string robot_name, int argc, char **argv):Robot(robot_name,argc,argv) {
+
   moistCont = 0;
   maxMoistCont = 0;
   height = 5;
@@ -33,7 +34,7 @@ Grass::Grass(std::string robot_name, int argc, char **argv):Robot(robot_name,arg
   length = 2;
   soilQual = 0;
   maxSoilQuality = 10;
-  this->field = field;
+  field = "";
 
 }
 
@@ -161,7 +162,7 @@ void Grass::eatenCallback(const std_msgs::String::ConstPtr& msg) {
 ros::NodeHandle Grass::run(){
 
   ros::NodeHandle n = Robot::run();
-
+  n.getParam("field", field);
   // LISTEN
   ros::Subscriber receive_rainfall = n.subscribe<std_msgs::String>("weather/status"+field,1000, &Grass::rainfall_callback, this);
   ros::Subscriber requestPos = n.subscribe<se306_example::IdentityRequest>("identityRequest",1000, &Grass::identityRequest_callBack, this);
