@@ -62,6 +62,8 @@ void Grass::identityRequest_callBack(se306_example::IdentityRequest request)
       reply.sender = robot_name;
       reply.destination = request.sender;
       reply.type = "Grass";
+      reply.px = px;
+      reply.py = py;
       Reply_pub.publish(reply);
       ROS_INFO("reply sent");
       ROS_INFO("SUCCESS");
@@ -216,7 +218,7 @@ ros::NodeHandle Grass::run(){
 
 int main(int argc, char **argv)
 {
-  Grass robot = Grass("Grass",argc,argv,10,20,"One");
+  Grass robot = Grass("Grass",argc,argv,7,15,"One");
   robot.run();
   return 0;
 }

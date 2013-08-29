@@ -37,7 +37,7 @@ Sheep1::Sheep1(std::string robot_name, int argc, char **argv,double px,double py
 	//this-> y = py;
 	distance = 15;
 	linear_x = 0.0;
-	angular_z = 2.0;
+	angular_z = 0.5;
 	theta = 0.0;
 	constLinear = -0.2;
 	nodeDistance = 30;
@@ -119,8 +119,8 @@ void Sheep1::StageLaser_callback(sensor_msgs::LaserScan msg)
 void Sheep1::identityReply_callBack(se306_example::IdentityReply reply)
 {
 	ROS_INFO("reply received");
-	if(reply.destination.compare(robot_name)) {
-		if(reply.type.compare("grass")) {
+	if(reply.destination.compare(robot_name)==0) {
+		if(reply.type.compare("grass")==0) {
 			ROS_INFO("Grass detected");
 		}else if(reply.type.compare("sheep")){
 		        ROS_INFO("Swarm starting");

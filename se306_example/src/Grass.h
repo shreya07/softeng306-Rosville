@@ -53,7 +53,7 @@ class Grass:Robot
                 int width;
                 int maxHeight;
                 int length;
-                std::string message;
+                std_msgs::String message;
 	};
 
 

@@ -46,6 +46,9 @@ GhostSheep::GhostSheep(std::string robot_name, int argc, char **argv,double px,d
 	length = 2;
 	doStop = false;
 	followSheep = true;
+	grassDetected = false;
+	grassPX = -1;
+	grassPY = -1;
 
 }
 /*destrustor
@@ -94,6 +97,8 @@ void GhostSheep::StageLaser_callback(sensor_msgs::LaserScan msg)
 	se306_example::IdentityRequest request;
 	//ROS_INFO("distance: %f", distance);
 	if(distance <= 10) {
+		changeFollow(true);
+		if(!grassDetected) {
 		linear_x = 0.0;
 		angular_z = 0.0;
 		changeFollow(true);
@@ -124,9 +129,28 @@ void GhostSheep::StageLaser_callback(sensor_msgs::LaserScan msg)
 		ROS_INFO("Request sent");
 
 		//ROS_INFO("theta: %f", theta);
+		} else if(grassReached()) {
+			grassPX = -1;
+			grassPY = -1;
+			changeFollow(false);
+		} else {
+			linear_x = 2.0;
+			angular_z = 0.0;
+		}
 	}
 
 
+}
+
+bool GhostSheep::grassReached() {
+	if(grassPX != -1 && grassPY != -1) {
+		if(px <= grassPX+1 && px >= grassPX-1) {
+			if(py <= grassPY+1 && py >= grassPY-1) {
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 void GhostSheep::changeFollow(bool follow) {
@@ -138,7 +162,7 @@ void GhostSheep::changeFollow(bool follow) {
 		status.linear_x = linear_x;
 		status.angular_z = angular_z;
 		status.theta = theta;
-		ROS_INFO("theta: %f", theta);
+		//ROS_INFO("theta: %f", theta);
 		Follow_pub.publish(status);
 		ROS_INFO("follow sent");
 	} else {
@@ -153,9 +177,10 @@ void GhostSheep::identityReply_callBack(se306_example::IdentityReply reply)
 {
 	ROS_INFO("reply received");
 	if(reply.destination.compare(robot_name)==0) {
-		if(reply.type.compare("grass")) {
-			linear_x = 2.0;
-			angular_z = 0;
+		if(reply.type.compare("Grass")==0) {
+			grassDetected = true;
+			grassPX = reply.px;
+			grassPY = reply.py;
 			ROS_INFO("Grass detected");
 		}else if(reply.type.compare("sheep")==0){
 		        ROS_INFO("Swarm starting");

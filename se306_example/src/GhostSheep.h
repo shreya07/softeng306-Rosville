@@ -40,6 +40,9 @@ public:
 	ros::Publisher Follow_pub;
 	bool doStop;
 	bool followSheep;
+	bool grassDetected;
+	double grassPX;
+	double grassPY;
 
   GhostSheep(std::string robot_name, int argc, char **argv, double px, double py,std::string robot_number);
   ~GhostSheep();
@@ -54,6 +57,7 @@ public:
   std::list<double> calculateTheta(double theta, double distance);
   void changeFollow(bool follow);
   double yawFromQuaternion(double x, double y, double z, double w);
+  bool grassReached();
 
   //double y;
 };
