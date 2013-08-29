@@ -23,6 +23,7 @@
 #include "../msg_gen/cpp/include/se306_example/IdentityRequest.h"
 #include "../msg_gen/cpp/include/se306_example/IdentityReply.h"
 #include "../msg_gen/cpp/include/se306_example/eatGrass.h"
+#include "../msg_gen/cpp/include/se306_example/cover.h"
 
 Grass::Grass(std::string robot_name, int argc, char **argv,double px,double py, std::string robot_number):Robot(robot_name,argc,argv,px,py,robot_number) {
 	moistCont = 0;
@@ -155,15 +156,22 @@ void Grass::grow(double moisture) {
 
 void Grass::eatenCallback(se306_example::eatGrass msg) {
 	if(msg.destination.compare(robot_name+robot_number)==0) {
-		this->height -= 5;
-		ROS_INFO("New height is: %f", this->height);
+		this->height -= 2;
+
 		if(this->height < 0) {
 			this->height = 0;
 		}
+		ROS_INFO("New height is: %f", this->height);
 		if(this->height == 0) {
 			std_msgs::String result;
 			result.data = msg.sender;
 			Eaten_pub.publish(result);
+			se306_example::cover cover;
+			cover.robot_name = "Block"+robot_number;
+			cover.grassPX = px;
+			cover.grassPY = py;
+			Cover_pub.publish(cover);
+			ROS_INFO("Cover sent");
 		}
 	}
 }
@@ -195,6 +203,7 @@ ros::NodeHandle Grass::run(){
 	Request_pub = n.advertise<se306_example::IdentityRequest>("identityRequest", 1000);
 	Reply_pub = n.advertise<se306_example::IdentityReply>("identityReply", 1000);
 	Eaten_pub = n.advertise<std_msgs::String>("eaten", 1000);
+	Cover_pub = n.advertise<se306_example::cover>("Block"+robot_number+"/cover", 1000);
 
 
 

@@ -122,6 +122,7 @@ void newSheep::identityReply_callBack(se306_example::IdentityReply reply)
     		gPX = reply.px;
     		gPY = reply.py;
     		grassNumber = reply.sender_number;
+    		ROS_INFO("GRass detected");
 
     	}
 
@@ -140,7 +141,7 @@ void newSheep::grassThings() {
 	se306_example::eatGrass msg;
 	linear_x = 2.0;
 	angular_z = 0.0;
-	if(distance <= 0){
+	if(distance <= 0.5){
 		grassReached = true;
 	}
 	if(grassReached && !eaten) {
@@ -148,6 +149,7 @@ void newSheep::grassThings() {
 		angular_z = 0;
 		msg.sender = robot_name+robot_number;
 		msg.destination = grassName;
+		//ROS_INFO("%s", grassName.c_str());
 		Eat_pub.publish(msg);
 	} else if(grassReached && eaten) {
 		if(distance<3) {
@@ -158,7 +160,8 @@ void newSheep::grassThings() {
 			grassReached = false;
 			eaten = false;
 			/*se306_example::cover msgs;
-			msgs.robot_name = "WhiteBlock"+grassNumber;
+			msgs.robot_name = "Block"+grassNumber;
+			ROS_INFO("%s", msgs.robot_name.c_str());
 			msgs.grassPX = gPX;
 			msgs.grassPY = gPY;
 			cover_pub.publish(msgs);*/
@@ -266,6 +269,7 @@ std::list<double> newSheep::calculateTheta(double theta, double distance)
 
 void newSheep::grassEaten(std_msgs::String msg) {
 	if(msg.data.compare(robot_name+robot_number) == 0) {
+		//ROS_INFO("eaten");
 		eaten = true;
 	}
 }

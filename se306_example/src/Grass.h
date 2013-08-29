@@ -25,6 +25,7 @@
 #include "../msg_gen/cpp/include/se306_example/IdentityRequest.h"
 #include "../msg_gen/cpp/include/se306_example/IdentityReply.h"
 #include "../msg_gen/cpp/include/se306_example/eatGrass.h"
+#include "../msg_gen/cpp/include/se306_example/cover.h"
 
 class Grass:Robot
 	{
@@ -45,6 +46,7 @@ class Grass:Robot
                 ros::Publisher Reply_pub;
                 ros::Publisher spin;
                 ros::Subscriber laser;
+                ros::Publisher Cover_pub;
 				double soilQual;
 				double maxSoilQuality;
 				double maxMoistCont;

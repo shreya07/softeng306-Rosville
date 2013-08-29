@@ -68,10 +68,13 @@ void WhiteBlock::stageOdom_callback(nav_msgs::Odometry msg){
 }
 
 void WhiteBlock::cover_callback(se306_example::cover msg) {
-	if(msg.robot_name.compare(robot_name+robot_number) == 0) {
+	ROS_INFO("Message received");
+	//if(msg.robot_name.compare(robot_name+robot_number) == 0) {
 		gPX = msg.grassPX;
 		gPY = msg.grassPY;
-	}
+		ROS_INFO("x: %d", gPX);
+		ROS_INFO("y: %d", gPY);
+	//}
 }
 
 
@@ -105,14 +108,14 @@ ros::NodeHandle WhiteBlock::run(){
 	ros::Subscriber stageOdo_sub = n.subscribe<nav_msgs::Odometry>(robot_name+robot_number+"/odom",1000, &WhiteBlock::stageOdom_callback, this);
 	//ros::Subscriber stageOdo_sub1 = n.subscribe<geometry_msgs::Twist>("SheepOne/cmd_vel",1000, &WhiteBlock::stagecmd_callback, this);
 	//ros::Subscriber stageOdo_sub2 = n.subscribe<std_msgs::String>("SheepOne/stop",1000, &WhiteBlock::stageStop_callback, this);
-	ros::Subscriber cover_sub = n.subscribe<se306_example::cover>("cover",1000,&WhiteBlock::cover_callback,this);
+	ros::Subscriber cover_sub = n.subscribe<se306_example::cover>(robot_name+robot_number+"/cover",1000,&WhiteBlock::cover_callback,this);
 
 	std::list<ros::Subscriber>::iterator it;
 	it = subsList.end();
 	subsList.insert(it,stageOdo_sub);
 
 	//double th = 90*M_PI/2.0;
-	ros::Rate loop_rate(2);
+	ros::Rate loop_rate(10);
 	nav_msgs::Odometry odom;
 	geometry_msgs::Quaternion odom_quat;
 
@@ -125,9 +128,10 @@ ros::NodeHandle WhiteBlock::run(){
 		// RobotNode_cmdvel.angular.x = 0.2;
 		//RobotNode_cmdvel.angular.y = 0.5;
 		if(gPX != -1) {
-			if(gPX >= px && gPY <= py) {
+			if(gPX >= px && gPY >= py) {
 				linear_x = 2.0;
 				angular_z = 0;
+				ROS_INFO("Move block");
 			} else {
 				linear_x = 0;
 			}
@@ -136,6 +140,7 @@ ros::NodeHandle WhiteBlock::run(){
 		}
 
 		RobotNode_cmdvel.linear.x = linear_x;
+		ROS_INFO("linear: %f", linear_x);
 		//RobotNode_cmdvel.linear.y = 0.2;
 		RobotNode_cmdvel.angular.z = angular_z;
 
