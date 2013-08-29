@@ -35,6 +35,7 @@ public:
 	ros::Publisher Request_pub;
 	ros::Publisher Reply_pub;
 	ros::Publisher Follow_pub;
+	ros::Publisher Eat_pub;
 	bool followSheep;
 	bool grassDetected;
 	double grassPX;

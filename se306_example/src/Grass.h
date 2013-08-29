@@ -24,6 +24,7 @@
 
 #include "../msg_gen/cpp/include/se306_example/IdentityRequest.h"
 #include "../msg_gen/cpp/include/se306_example/IdentityReply.h"
+#include "../msg_gen/cpp/include/se306_example/eatGrass.h"
 
 class Grass:Robot
 	{
@@ -37,7 +38,7 @@ class Grass:Robot
 		void identityReply_callBack(se306_example::IdentityReply reply);
 		void identityRequest_callBack(se306_example::IdentityRequest request);
 		bool doesIntersect(float x, float y);
-		void eatenCallback(const std_msgs::String::ConstPtr& msg);
+		void eatenCallback(se306_example::eatGrass msg);
 	protected:
                 ros::Publisher Request_pub;
                 ros::Publisher Eaten_pub;

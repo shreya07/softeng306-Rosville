@@ -22,6 +22,7 @@
 #include "../msg_gen/cpp/include/se306_example/IdentityRequest.h"
 #include "../msg_gen/cpp/include/se306_example/IdentityReply.h"
 #include "../msg_gen/cpp/include/se306_example/FollowSheep.h"
+#include "../msg_gen/cpp/include/se306_example/eatGrass.h"
 
 /*Constructor
  * The :RobotRobot(robot_name,argc,argv,px,py,robot_number) part at the end
@@ -178,8 +179,8 @@ void GhostSheep::changeFollow(bool follow) {
 	} else {
 		followSheep = follow;
 		grassDetected = false;
-		status.linear_x = linear_x;
-		status.angular_z = angular_z;
+		status.linear_x = 2.0;
+		status.angular_z = 0.0;
 		status.follow = "Don't follow";
 		Follow_pub.publish(status);
 	}
@@ -196,22 +197,12 @@ void GhostSheep::identityReply_callBack(se306_example::IdentityReply reply)
 			grassPX = reply.px;
 			grassPY = reply.py;
 			ROS_INFO("Grass detected");
+			se306_example::eatGrass msg;
+			msg.sender = robot_name;
+			msg.destination = reply.sender;
+			Eat_pub.publish(msg);
 		}else if(reply.type.compare("sheep")==0){
-		       // ROS_INFO("Swarm starting");
-		        /*to get swarm:
-		         * calculate the distance between you and the sheep
-		         * if he is travelling the same direction as you
-		         * then
-		         * make sure you stay some distance from the sheep at all times
-		         * set your angular_z to be his angular_z and the same with
-		         * linear_x
-		         * if he is not travelling the same direction as you
-		         * then pick the one with the greatest x value
-		         * if this doesnt work then pick the one with the greates y value
-		         * set this angular_z and linear_x to be yours
-		         * end
-		         * swarm should work.
-		         * */
+
 
 		}
 		else  {
@@ -311,6 +302,8 @@ ros::NodeHandle GhostSheep::run(){
 	Request_pub = n.advertise<se306_example::IdentityRequest>("identityRequest", 1000);
 	Reply_pub = n.advertise<se306_example::IdentityReply>("identityReply", 1000);
 	Follow_pub = n.advertise<se306_example::FollowSheep>("SheepOne/follow", 1000);
+	Eat_pub = n.advertise<std_msgs::String>("eat", 1000);
+
 
 	std::stringstream ss;
 	ss<<robot_name;
@@ -320,6 +313,7 @@ ros::NodeHandle GhostSheep::run(){
 	//ros::Subscriber stageOdo_sub2 = n.subscribe<std_msgs::String>("SheepOne/stop",1000, &GhostSheep::stageStop_callback, this);
 	ros::Subscriber StageLaser_sub3 = n.subscribe<sensor_msgs::LaserScan>(robot_name+robot_number+"/base_scan",1000, &GhostSheep::StageLaser_callback, this);
 	ros::Subscriber StageOdo_sub2 = n.subscribe<se306_example::IdentityReply>("identityReply",1000, &GhostSheep::identityReply_callBack,this);
+	//ros::Subscriber StageOdo_sub3 = n.subscribe<std_msgs::String>("GrassOne/eaten",1000, &GhostSheep::identityReply_callBack,this);
 
 	std::list<ros::Subscriber>::iterator it;
 	it = subsList.end();
@@ -343,6 +337,9 @@ ros::NodeHandle GhostSheep::run(){
 		RobotNode_cmdvel.linear.x = linear_x;
 		//RobotNode_cmdvel.linear.y = 0.2;
 		RobotNode_cmdvel.angular.z = angular_z;
+
+		RobotNode_cmdvel.linear.y = py;
+		RobotNode_cmdvel.linear.z = px;
 
 		RobotNode_stage_pub.publish(RobotNode_cmdvel);
 		//RobotNode_stage_pub.publish(grass);
