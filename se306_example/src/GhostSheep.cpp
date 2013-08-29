@@ -58,8 +58,8 @@ GhostSheep::~GhostSheep()
 /*Callback method for the robots position*/
 void GhostSheep::stageOdom_callback(nav_msgs::Odometry msg){
 	//int x = msg.linear.x;
-	px = 5 + msg.pose.pose.position.x;
-	py =10 + msg.pose.pose.position.y;
+	px = 15 + msg.pose.pose.position.x;
+	py =20 + msg.pose.pose.position.y;
 
 	double theCorrectTheta = yawFromQuaternion(msg.pose.pose.orientation.x, msg.pose.pose.orientation.y,msg.pose.pose.orientation.z,msg.pose.pose.orientation.w);
 		theta = theCorrectTheta;
@@ -123,14 +123,14 @@ void GhostSheep::StageLaser_callback(sensor_msgs::LaserScan msg)
 		//std_msgs::String status;
 		//status.data = "stop";
 		//Stop_pub.publish(status);
-		ROS_INFO("Request sent");
+		ROS_INFO ("Request sent to x:%f and y%f",request.px,request.py);
 
 		//ROS_INFO("theta: %f", theta);
 		} else if(grassReached()) {
 			linear_x = 0;
 			angular_z = 0;
 			counter++;
-			if(counter > 50) {
+			if(counter > 10) {
 				grassPX = -1;
 				grassPY = -1;
 				linear_x = 2.0;
@@ -141,6 +141,7 @@ void GhostSheep::StageLaser_callback(sensor_msgs::LaserScan msg)
 		} else {
 			linear_x = 2.0;
 			angular_z = 0.0;
+			ROS_INFO("move forward");
 		}
 	}
 
@@ -151,10 +152,12 @@ bool GhostSheep::grassReached() {
 	if(grassPX != -1 && grassPY != -1) {
 		if(px <= grassPX+1 && px >= grassPX-1) {
 			if(py <= grassPY+1 && py >= grassPY-1) {
+			    ROS_INFO("grass reached");
 				return true;
 			}
 		}
 	}
+	ROS_INFO("grass not reached");
 	return false;
 }
 
@@ -172,6 +175,7 @@ void GhostSheep::changeFollow(bool follow) {
 		ROS_INFO("follow sent");
 	} else {
 		followSheep = follow;
+		grassDetected = false;
 		status.follow = "Don't follow";
 		Follow_pub.publish(status);
 	}
@@ -180,7 +184,7 @@ void GhostSheep::changeFollow(bool follow) {
 
 void GhostSheep::identityReply_callBack(se306_example::IdentityReply reply)
 {
-	ROS_INFO("reply received");
+	//ROS_INFO("reply received");
 	if(reply.destination.compare(robot_name)==0) {
 		if(reply.type.compare("Grass")==0) {
 			grassDetected = true;

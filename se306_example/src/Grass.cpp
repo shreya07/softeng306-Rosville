@@ -55,6 +55,8 @@ void Grass::identityRequest_callBack(se306_example::IdentityRequest request)
   if (request.sender.compare(this->robot_name) != 0) {
     ROS_INFO("Request received");
     se306_example::IdentityReply reply;
+    ROS_INFO("x: %f", request.px);
+    ROS_INFO("y: %f", request.py);
 
     bool result = doesIntersect(request.px, request.py);
     if (result) {

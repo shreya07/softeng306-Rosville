@@ -100,7 +100,7 @@ void Sheep1::StageLaser_callback(sensor_msgs::LaserScan msg)
 void Sheep1::identityReply_callBack(se306_example::IdentityReply reply)
 {
       ROS_INFO("reply received");
-  ROS_INFO("%s is being returned", reply.type.c_str());
+  //ROS_INFO("%s is being returned", reply.type.c_str());
   if(reply.destination.compare(robot_name)==0) {
 
     if(reply.type.compare("grass")==0) {
@@ -152,7 +152,7 @@ void Sheep1::identityRequest_callBack(se306_example::IdentityRequest request)
   //ROS_INFO ("x is %f and y is %f and angle is %f", request.px, request.py, theta);
   if(result) {
     ROS_INFO("YAY RESULT!");
-    ROS_INFO ("x is %f and y is %f", request.px, request.py);
+   // ROS_INFO ("x is %f and y is %f", request.px, request.py);
     reply.sender = robot_name;
     reply.destination = request.sender;
     reply.type = "sheep";
@@ -245,8 +245,8 @@ void Sheep1::stageFollow_callback(se306_example::FollowSheep msg)
         if(theta > msg.theta+5) {
           linear_x = 0.0;
           angular_z = -0.5;
-          ROS_INFO("theta: %f", theta);
-          ROS_INFO("theta: %f", msg.theta);
+         // ROS_INFO("theta: %f", theta);
+          //ROS_INFO("theta: %f", msg.theta);
 
         } else if(theta < msg.theta-5) {
           linear_x = 0.0;
