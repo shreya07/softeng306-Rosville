@@ -42,7 +42,6 @@ public:
 	ros::Publisher Stop_pub;
 	ros::Publisher Eat_pub;
 	ros::Publisher cover_pub;
-	double old_ang_z;
 	bool once;
 	double health;
 	bool replyReceived;
@@ -50,6 +49,11 @@ public:
 	bool grassDetected;
 	bool grassReached;
 	bool eaten;
+	bool swarmDetected;
+	double otherSheep_angular_z;
+	double otherSheep_linear_x;
+	double otherSheep_theta;
+	double old_ang_z;
 	std::string grassName;
 	int gPX;
 	int gPY;
@@ -60,6 +64,7 @@ public:
 	newSheep(std::string robot_name, int argc, char **argv, double px, double py,std::string robot_number);
 	~newSheep();
 	ros::NodeHandle run();
+	void swarmStuff();
 	void stageOdom_callback (nav_msgs::Odometry msg);
 	void identityReply_callBack(se306_example::IdentityReply reply);
 	void identityRequest_callBack(se306_example::IdentityRequest request);

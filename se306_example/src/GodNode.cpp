@@ -27,6 +27,12 @@ ros::Publisher whiteBlockOne_StageLaser_pub; //To Sheep
 ros::Publisher whiteBlockOne_cmd_vel_pub; //To stage
 
     
+    //Publishers for newSheepTwo
+ros::Publisher newSheepTwo_StageOdom_pub;//To Sheep
+ros::Publisher newSheepTwo_StageLaser_pub; //To Sheep
+ros::Publisher newSheepTwo_cmd_vel_pub; //To stage
+
+    
 //-----[END]Publisher variables
 
 //-----Subscriber callbacks
@@ -47,6 +53,12 @@ void grassOne_cmd_vel_callback (geometry_msgs::Twist msg){grassOne_cmd_vel_pub.p
 void whiteBlockOne_StageOdom_callback(nav_msgs::Odometry msg){ whiteBlockOne_StageOdom_pub.publish(msg);}
 void whiteBlockOne_StageLaser_callback(sensor_msgs::LaserScan msg){whiteBlockOne_StageLaser_pub.publish(msg);}
 void whiteBlockOne_cmd_vel_callback (geometry_msgs::Twist msg){whiteBlockOne_cmd_vel_pub.publish(msg);}
+
+    
+//Callbacks for newSheepTwo
+void newSheepTwo_StageOdom_callback(nav_msgs::Odometry msg){ newSheepTwo_StageOdom_pub.publish(msg);}
+void newSheepTwo_StageLaser_callback(sensor_msgs::LaserScan msg){newSheepTwo_StageLaser_pub.publish(msg);}
+void newSheepTwo_cmd_vel_callback (geometry_msgs::Twist msg){newSheepTwo_cmd_vel_pub.publish(msg);}
 
     
 //-----[END] Subscriber callbacks
@@ -81,6 +93,12 @@ int main(int argc, char **argv)
     whiteBlockOne_cmd_vel_pub=n.advertise<geometry_msgs::Twist>("robot_3/cmd_vel", 1000); //To stage
     
     
+    //Advertisments for newSheepTwo
+    newSheepTwo_StageOdom_pub = n.advertise<nav_msgs::Odometry>("newSheepTwo/odom", 1000); //To newSheepTwo
+    newSheepTwo_StageLaser_pub= n.advertise<sensor_msgs::LaserScan>("newSheepTwo/base_scan", 1000); //To newSheepTwo
+    newSheepTwo_cmd_vel_pub=n.advertise<geometry_msgs::Twist>("robot_4/cmd_vel", 1000); //To stage
+    
+    
 
 
   //Setting up subscribers...
@@ -101,6 +119,12 @@ int main(int argc, char **argv)
     ros::Subscriber whiteBlockOne_StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_3/odom", 1000, whiteBlockOne_StageOdom_callback);
     ros::Subscriber whiteBlockOne_StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_3/base_scan", 1000, whiteBlockOne_StageLaser_callback);
     ros::Subscriber whiteBlockOne_cmd_vel = n.subscribe<geometry_msgs::Twist>("whiteBlockOne/cmd_vel", 1000,whiteBlockOne_cmd_vel_callback);
+    
+    
+    //Subscriber for newSheepTwo
+    ros::Subscriber newSheepTwo_StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_4/odom", 1000, newSheepTwo_StageOdom_callback);
+    ros::Subscriber newSheepTwo_StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_4/base_scan", 1000, newSheepTwo_StageLaser_callback);
+    ros::Subscriber newSheepTwo_cmd_vel = n.subscribe<geometry_msgs::Twist>("newSheepTwo/cmd_vel", 1000,newSheepTwo_cmd_vel_callback);
     
     
 
