@@ -149,6 +149,39 @@ void GhostSheep::changeFollow(bool follow) {
 
 }
 
+void GhostSheep::identityReply_callBack(se306_example::IdentityReply reply)
+{
+	ROS_INFO("reply received");
+	if(reply.destination.compare(robot_name)==0) {
+		if(reply.type.compare("grass")) {
+			linear_x = 2.0;
+			angular_z = 0;
+			ROS_INFO("Grass detected");
+		}else if(reply.type.compare("sheep")==0){
+		        ROS_INFO("Swarm starting");
+		        /*to get swarm:
+		         * calculate the distance between you and the sheep
+		         * if he is travelling the same direction as you
+		         * then
+		         * make sure you stay some distance from the sheep at all times
+		         * set your angular_z to be his angular_z and the same with
+		         * linear_x
+		         * if he is not travelling the same direction as you
+		         * then pick the one with the greatest x value
+		         * if this doesnt work then pick the one with the greates y value
+		         * set this angular_z and linear_x to be yours
+		         * end
+		         * swarm should work.
+		         * */
+
+		}
+		else  {
+			ROS_INFO("Don't know what it is");
+		}
+	}
+
+}
+
 std::list<double> GhostSheep::calculateTheta(double theta, double distance)
 {
 
@@ -247,6 +280,7 @@ ros::NodeHandle GhostSheep::run(){
 	ros::Subscriber stageOdo_sub1 = n.subscribe<geometry_msgs::Twist>("SheepOne/cmd_vel",1000, &GhostSheep::stagecmd_callback, this);
 	//ros::Subscriber stageOdo_sub2 = n.subscribe<std_msgs::String>("SheepOne/stop",1000, &GhostSheep::stageStop_callback, this);
 	ros::Subscriber StageLaser_sub3 = n.subscribe<sensor_msgs::LaserScan>(robot_name+robot_number+"/base_scan",1000, &GhostSheep::StageLaser_callback, this);
+	ros::Subscriber StageOdo_sub2 = n.subscribe<se306_example::IdentityReply>("identityReply",1000, &GhostSheep::identityReply_callBack,this);
 
 	std::list<ros::Subscriber>::iterator it;
 	it = subsList.end();
