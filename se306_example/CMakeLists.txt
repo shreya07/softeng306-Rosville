@@ -30,11 +30,15 @@ rosbuild_genmsg()
 #target_link_libraries(example ${PROJECT_NAME})
 
 rosbuild_add_executable(GodNode src/GodNode.cpp)
+rosbuild_add_executable(Gate src/Gate.cpp src/Robot.cpp)
+rosbuild_add_executable(Grass src/Grass.cpp src/Robot.cpp)
+rosbuild_add_executable(PoisonGrass src/PoisonGrass.cpp src/Robot.cpp)
+rosbuild_add_executable(FarmerOne src/FarmerNew.cpp src/Robot.cpp)
 #rosbuild_add_executable(SheepOne src/Sheep1.cpp src/Robot.cpp)
 #rosbuild_add_executable(PoopOne src/Poop.cpp src/Poop1.cpp src/Robot.cpp)
-rosbuild_add_executable(GrassOne src/Grass.cpp src/Robot.cpp)
+
  
 #rosbuild_add_executable(SheepOne src/sheepOne.cpp src/Sheep1.cpp src/Robot.cpp)
 #rosbuild_add_executable(SheepTwo src/sheep2.cpp src/Sheep1.cpp src/Robot.cpp)
 #rosbuild_add_executable(FarmerOne src/FarmerNew.cpp src/Robot.cpp)
-#rosbuild_add_executable(Gate src/Gate.cpp src/Robot.cpp)
+

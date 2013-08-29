@@ -15,7 +15,7 @@
 #include "../msg_gen/cpp/include/se306_example/IdentityRequest.h"
 #include "../msg_gen/cpp/include/se306_example/IdentityReply.h"
 
-Poop::Poop(std::string robot_name, int argc, char **argv,double px,double py, std::string robot_number):Robot(robot_name,argc,argv,px,py,robot_number)
+Poop::Poop(std::string robot_name, int argc, char **argv):Robot(robot_name,argc,argv)
 {
 	distance = 15;
 	linear_x = 0.0;
@@ -27,6 +27,8 @@ Poop::Poop(std::string robot_name, int argc, char **argv,double px,double py, st
 	width = 1;
 	length = 2;
 	doStop = false;
+	initialX=-1;
+	initialY=-1;
 
 }
 /*destrustor*/
@@ -38,8 +40,8 @@ Poop::~Poop()
 
 /*Callback method for the robots position*/
 void Poop::stageOdom_callback(nav_msgs::Odometry msg){
-	px = 15 + msg.pose.pose.position.x;
-	py = 20 + msg.pose.pose.position.y;
+	px = initialX + msg.pose.pose.position.x;
+	py = initialY + msg.pose.pose.position.y;
 }
 
 
@@ -84,8 +86,30 @@ ros::NodeHandle Poop::run(){
 
 	ros::NodeHandle n = Robot::run();
 
+	if(!n.getParam("owner",poopOwner)){
+	  ROS_ERROR("Poop owner not set");
+	 }
+
+
+	  if(!n.getParam("px", this->px)){
+	    ROS_ERROR("[Poop][%s] px not set",robot_name.c_str());
+
+
+	  }else{
+	    initialX=px;
+	  }
+
+
+	  if(!n.getParam("py", this->py)){
+	    ROS_ERROR("[Poop][%s] py not set",robot_name.c_str());
+
+	  }else{
+	    initialY=py;
+	  }
+
+
 	// publish the poop message
-	publishPoop = n.advertise<geometry_msgs::Twist>(robot_name+robot_number+"/cmd_vel",1000);
+	publishPoop = n.advertise<geometry_msgs::Twist>(robot_name+"/cmd_vel",1000);
 
 	// initialize subscribers listen to sheep position and velocity
 	sheepVel = n.subscribe<geometry_msgs::Twist>("SheepOne/cmd_vel",1000, &Poop::setPoop, this);

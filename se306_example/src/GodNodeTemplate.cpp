@@ -49,7 +49,7 @@ int main(int argc, char **argv)
   int poopCount = 0;
 
   // set loop rate
-  ros::Rate loop_rate(1);
+  ros::Rate loop_rate(10);
 
   //a count of how many messages we have sent
   double randomNum;

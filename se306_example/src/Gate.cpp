@@ -228,16 +228,35 @@ ros::NodeHandle Gate::run()
   //Get parameter from launch file.
   this->isHorizontal = false;
 
-  n.getParam("isHorizontal", this->isHorizontal);
-  n.getParam("px", this->px);
-  n.getParam("py", this->py);
-  n.getParam("px", this->initialX);
-  n.getParam("py", this->initialY);
-  n.getParam("directionToOpen", directionToOpen);
+  if(!n.getParam("isHorizontal", this->isHorizontal)){
+
+    ROS_ERROR("[Gate][%s]isHorizontal not set",robot_name.c_str());
+  }
+  if(!n.getParam("px", this->px)){
+    ROS_ERROR("[Gate][%s] px not set",robot_name.c_str());
+
+
+  }else{
+    initialX=px;
+  }
+
+
+  if(!n.getParam("py", this->py)){
+    ROS_ERROR("[Gate][%s] py not set",robot_name.c_str());
+
+  }else{
+    initialY=py;
+  }
+
+  if(!n.getParam("directionToOpen", directionToOpen)){
+    ROS_ERROR("[Gate][%s] directionToOpen not set",robot_name.c_str());
+
+  }
+
+
 
   moveMessage = geometry_msgs::Twist();
 
-  ROS_INFO("helloooooo");
   if (isHorizontal)
   {
     ROS_INFO("This gate is horizontal");

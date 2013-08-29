@@ -153,16 +153,18 @@ floorplan
 )
 # throw in a robot
 myRobot( pose [ 5 10 0 0 ] name "God" color "blue")
-GateHorizontal( pose [ 5 16.5 0 0 ] name "TopRightGate" color "blue")
-GateHorizontal( pose [ 25 16.5 0 0 ] name "TopLeftGate" color "blue")
+GateHorizontal( pose [ 5 16.5 0 0 ] name "leftGate" color "blue")
+GateHorizontal( pose [ 25 16.5 0 0 ] name "rightGate" color "blue")
 GateVertical( pose [ 13.5 25 0 0 ] name "GateVertical" color "grey")
-myRobot( pose [ 15 20 0 0 ] name "SheepOne" color "green" bitmap "sheep.png")
-
-myRobot( pose [ 10 30 0 0 ] name "Grass" color "black")
-#myRobot( pose [ 1 28 0 0 ] name "truck" color "red")
-myRobot( pose [ -5 10 0 0 ] name "God" color "blue" bitmap "cross.png")
-myRobot( pose [ 15 20 0 0 ] name "SheepOne" color "black" bitmap "sheep1.png")
 myRobot( pose [ 10 20 0 0 ] name "GrassOne" color "green" bitmap "grass.png")
-myRobot( pose [ 5.5 15 0 0 ] name "truck" color "red" bitmap "truck.png")
-myRobot( pose [ 10 15 0 0 ] name "Farmer" color "black" bitmap "farmer.png")
+myRobot( pose [ 10 25 0 0 ] name "GrassPoisonOne" color "green" bitmap "grass.png")
+myRobot( pose [ 10 22 0 0 ] name "Farmer" color "black")
+
+#myRobot( pose [ 10 30 0 0 ] name "Grass" color "black")
+#myRobot( pose [ 1 28 0 0 ] name "truck" color "red")
+#myRobot( pose [ -5 10 0 0 ] name "God" color "blue" bitmap "cross.png")
+#myRobot( pose [ 15 20 0 0 ] name "SheepOne" color "black" bitmap "sheep1.png")
+#myRobot( pose [ 10 20 0 0 ] name "GrassOne" color "green" bitmap "grass.png")
+#myRobot( pose [ 5.5 15 0 0 ] name "truck" color "red" bitmap "truck.png")
+#myRobot( pose [ 10 15 0 0 ] name "Farmer" color "black" bitmap "farmer.png")
 

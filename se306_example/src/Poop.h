@@ -24,6 +24,9 @@ class Poop:Robot
 {
 public:
   double distance;
+  double initialX;
+  double initialY;
+  std::string poopOwner;
   geometry_msgs::Twist poopVel;
   double linear_x;
   double constLinear;
@@ -35,12 +38,14 @@ public:
   int length;
   ros::Publisher publishPoop;
   bool doStop;
+
   ros::Subscriber sheepPos;
   ros::Subscriber sheepVel;
   ros::Subscriber poopReq;
 
+
   void StageLaser_callback(sensor_msgs::LaserScan msg);
-  Poop(std::string robot_name, int argc, char **argv, double px, double py,std::string robot_number);
+  Poop(std::string robot_name, int argc, char **argv);
   ~Poop();
   ros::NodeHandle run();
   void stageOdom_callback (nav_msgs::Odometry msg);

@@ -43,7 +43,7 @@ Grass::~Grass()
   // TODO Auto-generated destructor stub
 }
 void Grass::stageOdom_callback(nav_msgs::Odometry msg){
-
+//Empty as it does not move
 }
 
 void Grass::identityReply_callBack(se306_example::IdentityReply reply)
@@ -162,7 +162,19 @@ void Grass::eatenCallback(const std_msgs::String::ConstPtr& msg) {
 ros::NodeHandle Grass::run(){
 
   ros::NodeHandle n = Robot::run();
-  n.getParam("field", field);
+
+  if(!n.getParam("field", field)){
+    ROS_ERROR("Field value not set for Grass");
+  }
+
+  if(!n.getParam("px",px)){
+      ROS_ERROR("px value not set for Grass");
+    }
+
+  if(!n.getParam("py",py)){
+       ROS_ERROR("px value not set for Grass");
+     }
+
   // LISTEN
   ros::Subscriber receive_rainfall = n.subscribe<std_msgs::String>("weather/status"+field,1000, &Grass::rainfall_callback, this);
   ros::Subscriber requestPos = n.subscribe<se306_example::IdentityRequest>("identityRequest",1000, &Grass::identityRequest_callBack, this);

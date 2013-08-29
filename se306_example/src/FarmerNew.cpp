@@ -8,8 +8,8 @@
 #include "FarmerNew.h"
 #include "std_msgs/String.h"
 
-FarmerNew::FarmerNew(std::string robot_name, int argc, char **argv, double px, double py, std::string robot_number) :
-    Robot(robot_name, argc, argv, px, py, robot_number)
+FarmerNew::FarmerNew(std::string robot_name, int argc, char **argv) :
+Robot(robot_name, argc, argv)
 {
   money = 0;
 }
@@ -22,8 +22,8 @@ FarmerNew::~FarmerNew()
 void FarmerNew::stageOdom_callback(nav_msgs::Odometry msg)
 {
   //This is the call back function to process odometry messages coming from Stage.
-  px = 10.0 + msg.pose.pose.position.x;
-  py = 15.0 + msg.pose.pose.position.y;
+  px = initialX + msg.pose.pose.position.x;
+  py = initialY + msg.pose.pose.position.y;
   //  ROS_INFO("Current x position is: %f", px);
   //  ROS_INFO("Current y position is: %f", py);
 
@@ -48,11 +48,22 @@ void FarmerNew::sell_callback(std_msgs::String msg)
 ros::NodeHandle FarmerNew::run()
 {
   ros::NodeHandle n = Robot::run();
-  ros::Subscriber stageOdo_sub = n.subscribe<nav_msgs::Odometry>(robot_name + robot_number + "/odom", 1000,
+  if(!n.getParam("px", this->initialX)){
+    ROS_ERROR("[Farmer][%s] px not set",robot_name.c_str());
+
+
+  }
+
+  if(!n.getParam("py", initialY)){
+    ROS_ERROR("[Farmer][%s] py not set",robot_name.c_str());
+
+  }
+
+  ros::Subscriber stageOdo_sub = n.subscribe<nav_msgs::Odometry>(robot_name + "/odom", 1000,
                                                                  &FarmerNew::stageOdom_callback, this);
   ros::Subscriber Teleop_sub = n.subscribe<geometry_msgs::Twist>("/base_controller/command", 1000,
                                                                  &FarmerNew::Teleop_callback, this);
-  ros::Publisher RobotNode_stage_pub = n.advertise<geometry_msgs::Twist>(robot_name + robot_number + "/cmd_vel", 1000);
+  ros::Publisher RobotNode_stage_pub = n.advertise<geometry_msgs::Twist>(robot_name + "/cmd_vel", 1000);
   ros::Rate loop_rate(10);
 
   /*define the while loop here*/
@@ -67,8 +78,8 @@ ros::NodeHandle FarmerNew::run()
     //ROS_INFO("OK");
     ros::spinOnce();
     loop_rate.sleep();
-//            linear_x = 0;
-//            angular_z = 0;
+    //            linear_x = 0;
+    //            angular_z = 0;
   }
 
   return n;
@@ -76,7 +87,7 @@ ros::NodeHandle FarmerNew::run()
 
 int main(int argc, char **argv)
 {
-  FarmerNew robot = FarmerNew("Farmer", argc, argv, 15, 20, "One");
+  FarmerNew robot = FarmerNew("Farmer", argc, argv);
 
   robot.run();
   return 0;

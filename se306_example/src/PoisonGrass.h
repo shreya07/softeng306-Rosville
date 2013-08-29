@@ -28,7 +28,7 @@
 class PoisonGrass:Robot
 	{
 	public:
-		PoisonGrass(std::string robot_name, int argc, char **argv, double px, double py,std::string robot_number);
+		PoisonGrass(std::string robot_name, int argc, char **argv);
 		~PoisonGrass();
 		ros::NodeHandle run();
 		void stageOdom_callback (nav_msgs::Odometry msg);

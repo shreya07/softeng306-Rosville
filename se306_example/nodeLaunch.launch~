@@ -25,12 +25,28 @@
 <param name="directionToOpen" value="down" type="string"/>
 </node>
 
+<node name="GrassOne" pkg="se306_example" type="Grass" output="screen">
+<param name="px" value=" 10" type="double"/>
+<param name="py" value=" 30" type="double"/>
 
+</node>
 
+<node name="PoisonGrassOne" pkg="se306_example" type="PoisonGrass" output="screen">
+<param name="px" value=" 10" type="double"/>
+<param name="py" value=" 25" type="double"/>
+
+</node>
+
+<node name="Farmer" pkg="se306_example" type="FarmerOne" output="screen">
+<param name="px" value=" 10" type="double"/>
+<param name="py" value=" 3" type="double"/>
+</node>
 
 
 <!--
-<node name="GrassOne" pkg="se306_example" type="GrassOne" output="screen"/>
+
+
+
 
 <node name="PoisonGrassOne" pkg="se306_example" type="PoisonGrassOne" output="screen"/>
 <node name="SheepOne" pkg="se306_example" type="SheepOne" output="screen"/>
@@ -38,9 +54,10 @@
 
 
 <node name="Truck" pkg="se306_example" type="Truck" output="screen"/>
--->
-<node name="Farmer" pkg="se306_example" type="FarmerOne" output="screen"/>
-<!--
+
+
+
 <node name="SheepTwo" pkg="se306_example" type="TestSheep" output="screen"/>
 -->
+
 </launch>
