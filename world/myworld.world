@@ -83,10 +83,11 @@ myRobot( pose [ 5 10 0 0 ] name "God" color "blue")
 myRobot( pose [ 15 20 0 0 ] name "SheepOne" color "green" bitmap "sheep.png")
 
 myRobot( pose [ 10 30 0 0 ] name "Grass" color "black")
+myRobot( pose [ 10 15 0 0 ] name "FarmerOne" color "black" bitmap "farmer.png")
 #myRobot( pose [ 1 28 0 0 ] name "truck" color "red")
 myRobot( pose [ -5 10 0 0 ] name "God" color "blue" bitmap "cross.png")
 myRobot( pose [ 15 20 0 0 ] name "SheepOne" color "black" bitmap "sheep1.png")
 myRobot( pose [ 10 20 0 0 ] name "GrassOne" color "green" bitmap "grass.png")
 myRobot( pose [ 5.5 15 0 0 ] name "truck" color "red" bitmap "truck.png")
-myRobot( pose [ 10 15 0 0 ] name "Farmer" color "black" bitmap "farmer.png")
+
 
