@@ -131,7 +131,6 @@ void Sheep1::identityReply_callBack(se306_example::IdentityReply reply)
 		         * end
 		         * swarm should work.
 		         * */
-
 		}
 		else  {
 			ROS_INFO("Don't know what it is");
