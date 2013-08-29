@@ -36,7 +36,7 @@ Sheep1::Sheep1(std::string robot_name, int argc, char **argv,double px,double py
   //this-> x = px;
   //this-> y = py;
   distance = 15;
-  linear_x = 0.0;
+  linear_x = 2;
   angular_z = 0.5;
   theta = 0.0;
   width = 1;

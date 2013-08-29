@@ -159,9 +159,9 @@ floorplan
   pose [ 15.00 15.000 0 90.000 ]
 )
 # throw in a robot
-myRobot( pose [ 5 15 2 0 ] name "God" color "black")
-mySheep( pose [ 5 10 2 0 ] name "SheepOne" color "blue")
-mySheep( pose [ 10 5 2 0 ] name "PoopOne" color "brown")
+myRobot( pose [ 5 15 3 0 ] name "God" color "black")
+mySheep( pose [ 5 10 3 0 ] name "SheepOne" color "blue")
+mySheep( pose [ 5 10 2 0 ] name "PoopOne" color "brown")
 
 #robfield( pose [ 7.5 7.5 0 0 ] name "field1" color "white") #bitmap "soil.jpg")
 #robfield( pose [ 22.5 7.5 0 0 ] name "field2" color "white") # bitmap "soil.jpg")
@@ -173,15 +173,15 @@ mySheep( pose [ 10 5 2 0 ] name "PoopOne" color "brown")
 #myRobot( pose [ 10 10 20 0 ] name "God" color "blue")
 #myRobot( pose [ 20 10 0 0 ] name "TheOtherNOde" color "blue")
 
-  name "swarm"
-  bitmap "swarm_world.pgm"
-  size [30.0 30.0 10]
-  pose [ 15.00 15.000 2 90.000 ]
-)
+#  name "swarm"
+#  bitmap "swarm_world.pgm"
+#  size [30.0 30.0 10]
+#  pose [ 15.00 15.000 2 90.000 ]
+#)
 # throw in a robot
-myRobot( pose [ -5 15 2 0 ] name "God" color "black")
-mySheep( pose [ 15 20 4 0 ] name "SheepOne" color "blue")
-myGhostSheep( pose [ 15.000 20.000 2.000 0.000 ] name "GhostSheepOne" color "blue")
-mySheep( pose [ 20 20 4 90 ] name "SheepTwo" color "green")
-myRobot( pose [ 7.000 15.000 0.000 0.000 ] name "Grass" color "green")
-myRobot( pose [ 10 10 2 0 ] name "PoopOne" color "brown")
+#myRobot( pose [ -5 15 2 0 ] name "God" color "black")
+#mySheep( pose [ 15 20 4 0 ] name "SheepOne" color "blue")
+#myGhostSheep( pose [ 15.000 20.000 2.000 0.000 ] name "GhostSheepOne" color "blue")
+#mySheep( pose [ 20 20 4 90 ] name "SheepTwo" color "green")
+#myRobot( pose [ 7.000 15.000 0.000 0.000 ] name "Grass" color "green")
+#myRobot( pose [ 10 10 2 0 ] name "PoopOne" color "brown")

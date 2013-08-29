@@ -43,17 +43,18 @@ void Poop::stageOdom_callback(nav_msgs::Odometry msg){
 }
 
 
-void Poop::stagecmd_callback(geometry_msgs::Twist msg){
+void Poop::setPoop(geometry_msgs::Twist msg){
 	if(doStop) {
 		linear_x = 0;
 		angular_z = 0;
+		ROS_INFO("Has been set to 0");
 	} else {
 		linear_x = msg.linear.x;
 		angular_z = msg.angular.z;
+		ROS_INFO("Not being set 0");
 	}
 
 }
-
 
 void Poop::stageStop_callback(std_msgs::String msg)
 {
@@ -83,9 +84,11 @@ ros::NodeHandle Poop::run(){
 
 	ros::NodeHandle n = Robot::run();
 
+	// publish the poop message
 	publishPoop = n.advertise<geometry_msgs::Twist>(robot_name+robot_number+"/cmd_vel",1000);
+
 	// initialize subscribers listen to sheep position and velocity
-	sheepVel = n.subscribe<geometry_msgs::Twist>("SheepOne/cmd_vel",1000, &Poop::stagecmd_callback, this);
+	sheepVel = n.subscribe<geometry_msgs::Twist>("SheepOne/cmd_vel",1000, &Poop::setPoop, this);
 	poopReq = n.subscribe<std_msgs::String>("poop", 1000, &Poop::requestPoop, this);
 
 	/* Add subscribers to subscriber list*/
@@ -96,10 +99,6 @@ ros::NodeHandle Poop::run(){
 
 	/*set to 10 messages per second*/
 	ros::Rate loop_rate(10);
-
-	// initialize type variables to use in publishing
-	nav_msgs::Odometry odom;
-	geometry_msgs::Quaternion odom_quat;
 
 	/*define the while loop here*/
 	while (ros::ok()){

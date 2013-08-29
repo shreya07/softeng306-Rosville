@@ -44,7 +44,7 @@ public:
   ~Poop();
   ros::NodeHandle run();
   void stageOdom_callback (nav_msgs::Odometry msg);
-  void stagecmd_callback (geometry_msgs::Twist msg);
+  void setPoop (geometry_msgs::Twist msg);
   void stageStop_callback (std_msgs::String msg);
   void requestPoop(const std_msgs::String::ConstPtr& request);
 

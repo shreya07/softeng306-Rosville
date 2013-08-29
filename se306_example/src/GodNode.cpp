@@ -90,17 +90,24 @@ int main(int argc, char **argv)
   Weather_publisherTwo = n.advertise<std_msgs::String>("weather/statusTwo", 1000); //To fieldTwo
   Weather_publisherThree = n.advertise<std_msgs::String>("weather/statusThree", 1000); //To fieldThree
   Weather_publisherFour = n.advertise<std_msgs::String>("weather/statusFour", 1000); //To fieldFour
+  poopAdvert = n.advertise<std_msgs::String>("poop", 1000);
 
+  // set count
+  int count = 0;
+  int poopCount = 0;
+
+  // set loop rate
   ros::Rate loop_rate(1);
 
   //a count of how many messages we have sent
-  int randomNum;
+  double randomNum;
 
   //messages
   std_msgs::String statusOne;
   std_msgs::String statusTwo;
   std_msgs::String statusThree;
   std_msgs::String statusFour;
+  std_msgs::String poopInfo;
 
   srand(time(NULL));
 
@@ -112,16 +119,14 @@ int main(int argc, char **argv)
 
   while (ros::ok())
   {
-    randomNum = rand();
+    randomNum = ((rand()%10));
 
-    if (randomNum < 0.4) {
+    if (randomNum < 4) {
       statusOne.data = "Raining";
       statusTwo.data = "Sunny";
-      ROS_INFO("rainy");
     } else {
       statusOne.data = "Sunny";
       statusTwo.data = "Raining";
-      ROS_INFO("sunny");
     }
 
     if (randomNum > 0.5) {
@@ -136,7 +141,15 @@ int main(int argc, char **argv)
     Weather_publisherThree.publish(statusThree);
     Weather_publisherFour.publish(statusFour);
 
+    if (count % 100) {
+      if (poopCount < 5) {
+        poopInfo.data = "Request";
+        poopAdvert.publish(poopInfo);
+        poopCount++;
+      }
+    }
 
+    count++;
     ros::spinOnce();
 
     loop_rate.sleep();
