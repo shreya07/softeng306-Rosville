@@ -155,7 +155,7 @@ void Grass::eatenCallback(const std_msgs::String::ConstPtr& msg) {
     message = robot_name+robot_number+": Stop";
     Eaten_pub.publish(message);
   }
-  ROS_INFO("New height is: %f", this->height);
+  ROS_INFO("GrassOne:%f", this->height);
 }
 
 ros::NodeHandle Grass::run(){
