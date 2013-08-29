@@ -96,10 +96,11 @@ void GhostSheep::StageLaser_callback(sensor_msgs::LaserScan msg)
 	se306_example::IdentityRequest request;
 	//ROS_INFO("distance: %f", distance);
 	if(distance <= 10) {
+		linear_x = 0;
+		angular_z = 0;
 		changeFollow(true);
 		if(!grassDetected) {
-			if(grassPX == -1) {
-			linear_x = 0.0;
+			linear_x = 2.0;
 			angular_z = 0.0;
 			changeFollow(true);
 			RobotNode_cmdvel.linear.x = linear_x;
@@ -127,7 +128,6 @@ void GhostSheep::StageLaser_callback(sensor_msgs::LaserScan msg)
 			//status.data = "stop";
 			//Stop_pub.publish(status);
 			ROS_INFO ("Request sent to x:%f and y%f",request.px,request.py);
-			}
 
 			//ROS_INFO("theta: %f", theta);
 		} else if(grassReached()) {
@@ -146,7 +146,7 @@ void GhostSheep::StageLaser_callback(sensor_msgs::LaserScan msg)
 				counter++;
 			}*/
 		} else {
-			linear_x = 2.0;
+			linear_x = 3.0;
 			angular_z = 0.0;
 			ROS_INFO("move forward");
 		}
@@ -207,9 +207,6 @@ void GhostSheep::identityReply_callBack(se306_example::IdentityReply reply)
 				msg.sender = robot_name;
 				msg.destination = reply.sender;
 				Eat_pub.publish(msg);
-			} else {
-				grassPX = reply.px;
-				grassPY = reply.py;
 			}
 
 		}else if(reply.type.compare("sheep")==0){
