@@ -77,11 +77,11 @@ int main(int argc, char **argv)
     if (randomNum < 4) {
       statusOne.data = "Raining";
       statusTwo.data = "Sunny";
-      ROS_INFO("rainy");
+      //ROS_INFO("rainy");
     } else {
       statusOne.data = "Sunny";
       statusTwo.data = "Raining";
-      ROS_INFO("sunny");
+      //ROS_INFO("sunny");
     }
 
     if (randomNum > 0.5) {

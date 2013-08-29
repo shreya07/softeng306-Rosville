@@ -27,6 +27,12 @@ ros::Publisher GateThree_StageLaser_pub; //To Sheep
 ros::Publisher GateThree_cmd_vel_pub; //To stage
 
     
+    //Publishers for GrassOne
+ros::Publisher GrassOne_StageOdom_pub;//To Sheep
+ros::Publisher GrassOne_StageLaser_pub; //To Sheep
+ros::Publisher GrassOne_cmd_vel_pub; //To stage
+
+    
 //-----[END]Publisher variables
 
 //-----Subscriber callbacks
@@ -47,6 +53,12 @@ void GateTwo_cmd_vel_callback (geometry_msgs::Twist msg){GateTwo_cmd_vel_pub.pub
 void GateThree_StageOdom_callback(nav_msgs::Odometry msg){ GateThree_StageOdom_pub.publish(msg);}
 void GateThree_StageLaser_callback(sensor_msgs::LaserScan msg){GateThree_StageLaser_pub.publish(msg);}
 void GateThree_cmd_vel_callback (geometry_msgs::Twist msg){GateThree_cmd_vel_pub.publish(msg);}
+
+    
+//Callbacks for GrassOne
+void GrassOne_StageOdom_callback(nav_msgs::Odometry msg){ GrassOne_StageOdom_pub.publish(msg);}
+void GrassOne_StageLaser_callback(sensor_msgs::LaserScan msg){GrassOne_StageLaser_pub.publish(msg);}
+void GrassOne_cmd_vel_callback (geometry_msgs::Twist msg){GrassOne_cmd_vel_pub.publish(msg);}
 
     
 //-----[END] Subscriber callbacks
@@ -82,6 +94,12 @@ int main(int argc, char **argv)
     GateThree_cmd_vel_pub=n.advertise<geometry_msgs::Twist>("robot_3/cmd_vel", 1000); //To stage
     
     
+    //Advertisments for GrassOne
+    GrassOne_StageOdom_pub = n.advertise<nav_msgs::Odometry>("GrassOne/odom", 1000); //To GrassOne
+    GrassOne_StageLaser_pub= n.advertise<sensor_msgs::LaserScan>("GrassOne/base_scan", 1000); //To GrassOne
+    GrassOne_cmd_vel_pub=n.advertise<geometry_msgs::Twist>("robot_4/cmd_vel", 1000); //To stage
+    
+    
   ros::Publisher Weather_publisherOne;
   ros::Publisher Weather_publisherTwo;
   ros::Publisher Weather_publisherThree;
@@ -107,6 +125,12 @@ int main(int argc, char **argv)
     ros::Subscriber GateThree_cmd_vel = n.subscribe<geometry_msgs::Twist>("GateThree/cmd_vel", 1000,GateThree_cmd_vel_callback);
     
     
+    //Subscriber for GrassOne
+    ros::Subscriber GrassOne_StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_4/odom", 1000, GrassOne_StageOdom_callback);
+    ros::Subscriber GrassOne_StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_4/base_scan", 1000, GrassOne_StageLaser_callback);
+    ros::Subscriber GrassOne_cmd_vel = n.subscribe<geometry_msgs::Twist>("GrassOne/cmd_vel", 1000,GrassOne_cmd_vel_callback);
+    
+    
 
 
   // set up publishers
@@ -121,7 +145,7 @@ int main(int argc, char **argv)
   int poopCount = 0;
 
   // set loop rate
-  ros::Rate loop_rate(10);
+  ros::Rate loop_rate(1);
 
   //a count of how many messages we have sent
   double randomNum;
@@ -149,11 +173,11 @@ int main(int argc, char **argv)
     if (randomNum < 4) {
       statusOne.data = "Raining";
       statusTwo.data = "Sunny";
-      ROS_INFO("rainy");
+      //ROS_INFO("rainy");
     } else {
       statusOne.data = "Sunny";
       statusTwo.data = "Raining";
-      ROS_INFO("sunny");
+      //ROS_INFO("sunny");
     }
 
     if (randomNum > 0.5) {

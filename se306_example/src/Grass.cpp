@@ -132,7 +132,7 @@ void Grass::grow(double moisture) {
   if (moisture > 0 && soilQual > 0) {
     height = height+((moisture+soilQual))/100;
   } else if (moisture < 20 && height != 0) {
-    height = height-abs((moisture+soilQual))/10;
+    height = height-(moisture+soilQual)/10;
   }
   if (height < 0) {
     height = 0;
@@ -203,7 +203,6 @@ ros::NodeHandle Grass::run(){
 
 
   // INITIALIZE VARIABLES TO PUBLISH
-  std_msgs::String moisture;
   geometry_msgs::Twist angular;
 
   while (ros::ok())
