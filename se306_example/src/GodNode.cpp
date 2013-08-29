@@ -21,6 +21,12 @@ ros::Publisher GhostSheepOne_StageLaser_pub; //To Sheep
 ros::Publisher GhostSheepOne_cmd_vel_pub; //To stage
 
     
+    //Publishers for SheepTwo
+ros::Publisher SheepTwo_StageOdom_pub;//To Sheep
+ros::Publisher SheepTwo_StageLaser_pub; //To Sheep
+ros::Publisher SheepTwo_cmd_vel_pub; //To stage
+
+    
     //Publishers for GrassOne
 ros::Publisher GrassOne_StageOdom_pub;//To Sheep
 ros::Publisher GrassOne_StageLaser_pub; //To Sheep
@@ -41,6 +47,12 @@ void SheepOne_cmd_vel_callback (geometry_msgs::Twist msg){SheepOne_cmd_vel_pub.p
 void GhostSheepOne_StageOdom_callback(nav_msgs::Odometry msg){ GhostSheepOne_StageOdom_pub.publish(msg);}
 void GhostSheepOne_StageLaser_callback(sensor_msgs::LaserScan msg){GhostSheepOne_StageLaser_pub.publish(msg);}
 void GhostSheepOne_cmd_vel_callback (geometry_msgs::Twist msg){GhostSheepOne_cmd_vel_pub.publish(msg);}
+
+    
+//Callbacks for SheepTwo
+void SheepTwo_StageOdom_callback(nav_msgs::Odometry msg){ SheepTwo_StageOdom_pub.publish(msg);}
+void SheepTwo_StageLaser_callback(sensor_msgs::LaserScan msg){SheepTwo_StageLaser_pub.publish(msg);}
+void SheepTwo_cmd_vel_callback (geometry_msgs::Twist msg){SheepTwo_cmd_vel_pub.publish(msg);}
 
     
 //Callbacks for GrassOne
@@ -75,10 +87,16 @@ int main(int argc, char **argv)
     GhostSheepOne_cmd_vel_pub=n.advertise<geometry_msgs::Twist>("robot_2/cmd_vel", 1000); //To stage
     
     
+    //Advertisments for SheepTwo
+    SheepTwo_StageOdom_pub = n.advertise<nav_msgs::Odometry>("SheepTwo/odom", 1000); //To SheepTwo
+    SheepTwo_StageLaser_pub= n.advertise<sensor_msgs::LaserScan>("SheepTwo/base_scan", 1000); //To SheepTwo
+    SheepTwo_cmd_vel_pub=n.advertise<geometry_msgs::Twist>("robot_3/cmd_vel", 1000); //To stage
+    
+    
     //Advertisments for GrassOne
     GrassOne_StageOdom_pub = n.advertise<nav_msgs::Odometry>("GrassOne/odom", 1000); //To GrassOne
     GrassOne_StageLaser_pub= n.advertise<sensor_msgs::LaserScan>("GrassOne/base_scan", 1000); //To GrassOne
-    GrassOne_cmd_vel_pub=n.advertise<geometry_msgs::Twist>("robot_3/cmd_vel", 1000); //To stage
+    GrassOne_cmd_vel_pub=n.advertise<geometry_msgs::Twist>("robot_4/cmd_vel", 1000); //To stage
     
     
 
@@ -97,9 +115,15 @@ int main(int argc, char **argv)
     ros::Subscriber GhostSheepOne_cmd_vel = n.subscribe<geometry_msgs::Twist>("GhostSheepOne/cmd_vel", 1000,GhostSheepOne_cmd_vel_callback);
     
     
+    //Subscriber for SheepTwo
+    ros::Subscriber SheepTwo_StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_3/odom", 1000, SheepTwo_StageOdom_callback);
+    ros::Subscriber SheepTwo_StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_3/base_scan", 1000, SheepTwo_StageLaser_callback);
+    ros::Subscriber SheepTwo_cmd_vel = n.subscribe<geometry_msgs::Twist>("SheepTwo/cmd_vel", 1000,SheepTwo_cmd_vel_callback);
+    
+    
     //Subscriber for GrassOne
-    ros::Subscriber GrassOne_StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_3/odom", 1000, GrassOne_StageOdom_callback);
-    ros::Subscriber GrassOne_StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_3/base_scan", 1000, GrassOne_StageLaser_callback);
+    ros::Subscriber GrassOne_StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_4/odom", 1000, GrassOne_StageOdom_callback);
+    ros::Subscriber GrassOne_StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_4/base_scan", 1000, GrassOne_StageLaser_callback);
     ros::Subscriber GrassOne_cmd_vel = n.subscribe<geometry_msgs::Twist>("GrassOne/cmd_vel", 1000,GrassOne_cmd_vel_callback);
     
     
@@ -120,10 +144,10 @@ int main(int argc, char **argv)
     if (count%5 == 0) {
       if (status.data.compare("Sunny") == 0) {
         status.data = "Raining";
-       // ROS_INFO("rainy");
+        ROS_INFO("rainy");
       } else {
         status.data = "Sunny";
-        //ROS_INFO("sunny");
+        ROS_INFO("sunny");
       }
     }
 
