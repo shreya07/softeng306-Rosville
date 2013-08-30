@@ -39,6 +39,7 @@ void FarmerNew::Teleop_callback(geometry_msgs::Twist msg)
 
 }
 
+
 void FarmerNew::sell_callback(std_msgs::String msg)
 {
   money = money + 5;
@@ -63,6 +64,8 @@ ros::NodeHandle FarmerNew::run()
                                                                  &FarmerNew::stageOdom_callback, this);
   ros::Subscriber Teleop_sub = n.subscribe<geometry_msgs::Twist>("/base_controller/command", 1000,
                                                                  &FarmerNew::Teleop_callback, this);
+  ros::Subscriber sold_sub = n.subscribe<std_msgs::String>("SheepOne/sheepSoldReplyFarmer", 1000,
+                                                                 &FarmerNew::sell_callback, this);
   ros::Publisher RobotNode_stage_pub = n.advertise<geometry_msgs::Twist>(robot_name + "/cmd_vel", 1000);
   ros::Rate loop_rate(10);
 

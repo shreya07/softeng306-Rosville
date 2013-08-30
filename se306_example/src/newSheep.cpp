@@ -300,6 +300,18 @@ void newSheep::grassEaten(std_msgs::String msg) {
   }
 }
 
+void newSheep::sellHandler(std_msgs::String msg) {
+//check if in bounding box
+  std_msgs::String one;
+  if(true) {
+    one.data = "sold";
+    sheepSoldReplyFarmer.publish(one);
+    linear_x =0;
+    angular_z = 0;
+  }
+}
+
+
 
 bool newSheep::doesIntersect(float x, float y) {
   float leftX = px-(width*2);
@@ -342,6 +354,7 @@ ros::NodeHandle newSheep::run(){
   //Stop_pub = n.advertise<std_msgs::String>("SheepOne/stop",1000);
   Eat_pub = n.advertise<se306_example::eatGrass>("/eat", 1000);
   cover_pub = n.advertise<se306_example::cover>("/cover", 1000);
+  sheepSoldReplyFarmer = n.advertise<std_msgs::String>("SheepOne/sheepSoldReplyFarmer",1000);
 
   std::stringstream ss;
 //  ss<<robot_name;
@@ -351,6 +364,7 @@ ros::NodeHandle newSheep::run(){
   ros::Subscriber StageOdo_sub2 = n.subscribe<se306_example::IdentityReply>("/identityReply",1000, &newSheep::identityReply_callBack,this);
   ros::Subscriber StageLaser_sub3 = n.subscribe<sensor_msgs::LaserScan>(robot_name+"/base_scan",1000, &newSheep::StageLaser_callback, this);
   ros::Subscriber stageOdo_sub4 = n.subscribe<std_msgs::String>("/eaten",1000, &newSheep::grassEaten, this);
+  ros::Subscriber sellCmd = n.subscribe<std_msgs::String>("/sellSheep",1000, &newSheep::sellHandler, this);
   //ros::Subscriber stagecmd = n.subscribe<geometry_msgs::Twist>("GhostSheepOne/cmd_vel",1000, &newSheep::ghostcmd, this);
 
   std::list<ros::Subscriber>::iterator it;

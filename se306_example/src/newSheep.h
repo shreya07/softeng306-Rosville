@@ -42,6 +42,7 @@ public:
 	ros::Publisher Stop_pub;
 	ros::Publisher Eat_pub;
 	ros::Publisher cover_pub;
+	ros::Publisher sheepSoldReplyFarmer;
 	bool once;
 	double health;
 	bool replyReceived;
@@ -74,6 +75,7 @@ public:
 	double yawFromQuaternion(double x, double y, double z, double w);
 	void grassEaten(std_msgs::String msg);
 	void grassThings();
+	void sellHandler(std_msgs::String msg);
   //double y;
 };
 
