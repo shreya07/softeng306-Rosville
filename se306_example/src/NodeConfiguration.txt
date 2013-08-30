@@ -4,5 +4,7 @@ robot_3,GateThree
 robot_4,GrassOne
 robot_5,GrassPoisonOne
 robot_6,Farmer
-
+robot_7,SheepOne
+robot_8,SheepTwo
+robot_9,SheepThree
 

@@ -61,7 +61,7 @@ public:
 
 
 	void StageLaser_callback(sensor_msgs::LaserScan msg);
-	newSheep(std::string robot_name, int argc, char **argv, double px, double py,std::string robot_number);
+	newSheep(std::string robot_name, int argc, char **argv);
 	~newSheep();
 	ros::NodeHandle run();
 	void swarmStuff();

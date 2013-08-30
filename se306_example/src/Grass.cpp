@@ -25,7 +25,7 @@
 #include "../msg_gen/cpp/include/se306_example/eatGrass.h"
 #include "../msg_gen/cpp/include/se306_example/cover.h"
 
-Grass::Grass(std::string robot_name, int argc, char **argv,double px,double py, std::string robot_number):Robot(robot_name,argc,argv,px,py,robot_number) {
+Grass::Grass(std::string robot_name, int argc, char **argv):Robot(robot_name,argc,argv) {
   moistCont = 0;
   maxMoistCont = 0;
   height = 5;
@@ -66,7 +66,7 @@ void Grass::identityRequest_callBack(se306_example::IdentityRequest request)
 		bool result = doesIntersect(request.px, request.py);
 		if (result) {
 			reply.height = this->height;
-			reply.sender = robot_name+robot_number;
+			reply.sender = robot_name;
 			reply.sender_number = robot_number;
 			reply.destination = request.sender;
 			reply.type = "Grass";
@@ -152,7 +152,7 @@ void Grass::grow(double moisture) {
 
 
 void Grass::eatenCallback(se306_example::eatGrass msg) {
-	if(msg.destination.compare(robot_name+robot_number)==0) {
+	if(msg.destination.compare(robot_name)==0) {
 		this->height -= 2;
 
 		if(this->height < 0) {
@@ -188,12 +188,15 @@ ros::NodeHandle Grass::run(){
   if(!n.getParam("py",py)){
        ROS_ERROR("px value not set for Grass");
      }
+  if(!n.getParam("robot_number",robot_number)){
+         ROS_ERROR("robot_number  value not set for Grass");
+       }
 
   // LISTEN
   ros::Subscriber receive_rainfall = n.subscribe<std_msgs::String>("weather/status"+field,1000, &Grass::rainfall_callback, this);
   ros::Subscriber requestPos = n.subscribe<se306_example::IdentityRequest>("identityRequest",1000, &Grass::identityRequest_callBack, this);
   ros::Subscriber replyPos = n.subscribe<se306_example::IdentityReply>("identityReply",1000, &Grass::identityReply_callBack,this);
-  ros::Subscriber eatSub = n.subscribe<std_msgs::String>("eat",1000, &Grass::eatenCallback,this);
+  ros::Subscriber eatSub = n.subscribe<se306_example::eatGrass>("eat",1000, &Grass::eatenCallback,this);
 
   // ADD SUBSCRIBERS TO LIST
   std::list<ros::Subscriber>::iterator it;
@@ -209,8 +212,8 @@ ros::NodeHandle Grass::run(){
 
 
   // CREATE MOISTURE AND HEIGHT TOPICS TO PUBLISH TOWARDS
-  Request_pub = n.advertise<se306_example::IdentityRequest>("identityRequest", 1000);
-  Reply_pub = n.advertise<se306_example::IdentityReply>("identityReply", 1000);
+  Request_pub = n.advertise<se306_example::IdentityRequest>("/identityRequest", 1000);
+  Reply_pub = n.advertise<se306_example::IdentityReply>("/identityReply", 1000);
   Eaten_pub = n.advertise<std_msgs::String>("eaten", 1000);
   Cover_pub = n.advertise<se306_example::cover>("Block"+robot_number+"/cover", 1000);
 

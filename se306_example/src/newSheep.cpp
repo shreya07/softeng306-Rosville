@@ -32,7 +32,7 @@
  * if you are unsure of what that means look it up in the link provided
  * http://docs.oracle.com/javase/tutorial/java/IandI/super.html
  *  */
-newSheep::newSheep(std::string robot_name, int argc, char **argv,double px,double py, std::string robot_number):Robot(robot_name,argc,argv,px,py,robot_number)
+newSheep::newSheep(std::string robot_name, int argc, char **argv):Robot(robot_name,argc,argv)
 {
   //can do extra stuff here if you like
   //this-> x = px;
@@ -113,7 +113,7 @@ void newSheep::StageLaser_callback(sensor_msgs::LaserScan msg)
     RobotNode_cmdvel.angular.z = angular_z;
     //RobotNode_stage_pub.publish(RobotNode_cmdvel);
 
-    request.sender = robot_name+robot_number;
+    request.sender = robot_name;
 
     std::list<double> pose = calculateTheta(theta, distance);
     double x = pose.front();
@@ -137,7 +137,7 @@ void newSheep::identityReply_callBack(se306_example::IdentityReply reply)
   ROS_INFO("reply received");
   replyReceived = true;
   ROS_INFO("%s is being returned", reply.type.c_str());
-  if(reply.destination.compare(robot_name+robot_number)==0) {
+  if(reply.destination.compare(robot_name)==0) {
 
 
     if(reply.type.compare("Grass")==0) {
@@ -178,7 +178,7 @@ void newSheep::grassThings() {
 	if(grassReached && !eaten) {
 		linear_x = 0;
 		angular_z = 0;
-		msg.sender = robot_name+robot_number;
+		msg.sender = robot_name;
 		msg.destination = grassName;
 		//ROS_INFO("%s", grassName.c_str());
 		Eat_pub.publish(msg);
@@ -199,14 +199,14 @@ void newSheep::identityRequest_callBack(se306_example::IdentityRequest request)
 {
   //ROS_INFO("Request received by %s,%s",robot_name.c_str(),robot_number.c_str());
   //ROS_INFO("%s",request.abs_cmd_vel_angular_z);
-  if(request.sender.compare(robot_name+robot_number) != 0) {
+  if(request.sender.compare(robot_name) != 0) {
     se306_example::IdentityReply reply;
     bool result = doesIntersect(request.px, request.py);
     //ROS_INFO ("x is %f and y is %f and angle is %f", request.px, request.py, theta);
     if(result) {
       // ROS_INFO("YAY RESULT!");
       // ROS_INFO ("x is %f and y is %f", request.px, request.py);
-      reply.sender = robot_name+robot_number;
+      reply.sender = robot_name;
       reply.destination = request.sender;
       reply.type = "sheep";
       /*this needs to be changed a bit to reflect actual velocity*/
@@ -295,7 +295,7 @@ std::list<double> newSheep::calculateTheta(double theta, double distance)
 
 void newSheep::grassEaten(std_msgs::String msg) {
 
-  if(msg.data.compare(robot_name+robot_number) == 0) {
+  if(msg.data.compare(robot_name) == 0) {
     eaten = true;
   }
 }
@@ -335,22 +335,22 @@ ros::NodeHandle newSheep::run(){
    * But you must add them to the publisherList*/
   //advertise() function will tell ROS that you want to publish on a given topic_
   //to stage
-  RobotNode_stage_pub = n.advertise<geometry_msgs::Twist>(robot_name+robot_number+"/cmd_vel",1000);
+  RobotNode_stage_pub = n.advertise<geometry_msgs::Twist>(robot_name+"/cmd_vel",1000);
   //ros::Publisher RobotNode_stage_pub1 = n.advertise<geometry_msgs::Twist>("grass",1000);
-  Request_pub = n.advertise<se306_example::IdentityRequest>("identityRequest", 1000);
-  Reply_pub = n.advertise<se306_example::IdentityReply>("identityReply", 1000);
-  Stop_pub = n.advertise<std_msgs::String>("SheepOne/stop",1000);
-  Eat_pub = n.advertise<se306_example::eatGrass>("eat", 1000);
-  cover_pub = n.advertise<se306_example::cover>("cover", 1000);
+  Request_pub = n.advertise<se306_example::IdentityRequest>("/identityRequest", 1000);
+  Reply_pub = n.advertise<se306_example::IdentityReply>("/identityReply", 1000);
+  //Stop_pub = n.advertise<std_msgs::String>("SheepOne/stop",1000);
+  Eat_pub = n.advertise<se306_example::eatGrass>("/eat", 1000);
+  cover_pub = n.advertise<se306_example::cover>("/cover", 1000);
 
   std::stringstream ss;
-  ss<<robot_name;
+//  ss<<robot_name;
 
-  ros::Subscriber stageOdo_sub = n.subscribe<nav_msgs::Odometry>(robot_name+robot_number+"/odom",1000, &newSheep::stageOdom_callback, this);
-  ros::Subscriber stageOdo_sub1 = n.subscribe<se306_example::IdentityRequest>("identityRequest",1000, &newSheep::identityRequest_callBack, this);
-  ros::Subscriber StageOdo_sub2 = n.subscribe<se306_example::IdentityReply>("identityReply",1000, &newSheep::identityReply_callBack,this);
-  ros::Subscriber StageLaser_sub3 = n.subscribe<sensor_msgs::LaserScan>(robot_name+robot_number+"/base_scan",1000, &newSheep::StageLaser_callback, this);
-  ros::Subscriber stageOdo_sub4 = n.subscribe<std_msgs::String>("eaten",1000, &newSheep::grassEaten, this);
+  ros::Subscriber stageOdo_sub = n.subscribe<nav_msgs::Odometry>(robot_name+"/odom",1000, &newSheep::stageOdom_callback, this);
+  ros::Subscriber stageOdo_sub1 = n.subscribe<se306_example::IdentityRequest>("/identityRequest",1000, &newSheep::identityRequest_callBack, this);
+  ros::Subscriber StageOdo_sub2 = n.subscribe<se306_example::IdentityReply>("/identityReply",1000, &newSheep::identityReply_callBack,this);
+  ros::Subscriber StageLaser_sub3 = n.subscribe<sensor_msgs::LaserScan>(robot_name+"/base_scan",1000, &newSheep::StageLaser_callback, this);
+  ros::Subscriber stageOdo_sub4 = n.subscribe<std_msgs::String>("/eaten",1000, &newSheep::grassEaten, this);
   //ros::Subscriber stagecmd = n.subscribe<geometry_msgs::Twist>("GhostSheepOne/cmd_vel",1000, &newSheep::ghostcmd, this);
 
   std::list<ros::Subscriber>::iterator it;
@@ -420,5 +420,13 @@ double newSheep::yawFromQuaternion(double x, double y, double z,double w){
   }
   //ROS_INFO("%f",a);
   return a;
+}
+
+
+int main(int argc, char **argv)
+{
+  newSheep robot = newSheep("Sheep",argc,argv);
+  robot.run();
+  return 0;
 }
 

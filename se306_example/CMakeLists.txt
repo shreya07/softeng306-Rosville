@@ -34,7 +34,7 @@ rosbuild_add_executable(Gate src/Gate.cpp src/Robot.cpp)
 rosbuild_add_executable(Grass src/Grass.cpp src/Robot.cpp)
 rosbuild_add_executable(PoisonGrass src/PoisonGrass.cpp src/Robot.cpp)
 rosbuild_add_executable(FarmerOne src/FarmerNew.cpp src/Robot.cpp)
-#rosbuild_add_executable(SheepOne src/Sheep1.cpp src/Robot.cpp)
+rosbuild_add_executable(NewSheep src/newSheep.cpp src/Robot.cpp)
 #rosbuild_add_executable(PoopOne src/Poop.cpp src/Poop1.cpp src/Robot.cpp)
 
  
