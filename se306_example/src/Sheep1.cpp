@@ -13,6 +13,7 @@
 #include <nav_msgs/Odometry.h>
 #include <sensor_msgs/LaserScan.h>
 #include "Custom.h"
+#include "std_msgs/String.h"
 
 #include <sstream>
 #include "math.h"
@@ -30,7 +31,8 @@
  * if you are unsure of what that means look it up in the link provided
  * http://docs.oracle.com/javase/tutorial/java/IandI/super.html
  *  */
-Sheep1::Sheep1(std::string robot_name, int argc, char **argv,double px,double py, std::string robot_number):Robot(robot_name,argc,argv,px,py,robot_number)
+Sheep1::Sheep1(std::string robot_name, int argc, char **argv, double px, double py, std::string robot_number) :
+    Robot(robot_name, argc, argv, px, py, robot_number)
 {
   //can do extra stuff here if you like
   //this-> x = px;

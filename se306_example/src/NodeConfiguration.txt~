@@ -1,0 +1,15 @@
+robot_1,GateOne
+robot_2,GateTwo
+robot_3,GateThree
+robot_4,GrassOne
+robot_5,GrassPoisonOne
+robot_6,Farmer
+
+
+myRobot( pose [ 5 10 0 0 ] name "God" color "blue")
+GateHorizontal( pose [ 5 16.5 0 0 ] name "leftGate" color "blue")
+GateHorizontal( pose [ 25 16.5 0 0 ] name "rightGate" color "blue")
+GateVertical( pose [ 13.5 25 0 0 ] name "GateVertical" color "grey")
+myRobot( pose [ 10 20 0 0 ] name "GrassOne" color "green" bitmap "grass.png")
+myRobot( pose [ 10 25 0 0 ] name "GrassPoisonOne" color "green" bitmap "grass.png")
+myRobot( pose [ 15 20 0 0 ] name "Farmer" color "green")

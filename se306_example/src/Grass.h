@@ -30,7 +30,7 @@
 class Grass:Robot
 	{
 	public:
-		Grass(std::string robot_name, int argc, char **argv, double px, double py,std::string robot_number);
+		Grass(std::string robot_name, int argc, char **argv);
 		~Grass();
 		ros::NodeHandle run();
 		void stageOdom_callback (nav_msgs::Odometry msg);
@@ -56,7 +56,8 @@ class Grass:Robot
                 int width;
                 int maxHeight;
                 int length;
-                std_msgs::String message;
+		std_msgs::String message;
+		std::string field;
 	};
 
 

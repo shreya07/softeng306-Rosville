@@ -1,11 +1,11 @@
 /*
- * Grass.cpp
+ * PoisonGrass.cpp
  *
- *  Created on: Aug 14, 2013
- *      Author: Kirushi Arunthavasothy
+ *  Created on: Aug 26, 2013
+ *      Author: George Chang
  */
 
-#include "Grass.h"
+#include "PoisonGrass.h"
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 #include <geometry_msgs/Twist.h>
@@ -22,10 +22,8 @@
 #include "Robot.h"
 #include "../msg_gen/cpp/include/se306_example/IdentityRequest.h"
 #include "../msg_gen/cpp/include/se306_example/IdentityReply.h"
-#include "../msg_gen/cpp/include/se306_example/eatGrass.h"
-#include "../msg_gen/cpp/include/se306_example/cover.h"
 
-Grass::Grass(std::string robot_name, int argc, char **argv,double px,double py, std::string robot_number):Robot(robot_name,argc,argv,px,py,robot_number) {
+PoisonGrass::PoisonGrass(std::string robot_name, int argc, char **argv):Robot(robot_name,argc,argv) {
   moistCont = 0;
   maxMoistCont = 0;
   height = 5;
@@ -35,19 +33,14 @@ Grass::Grass(std::string robot_name, int argc, char **argv,double px,double py, 
   length = 2;
   soilQual = 0;
   maxSoilQuality = 10;
-  field = "";
-
 }
 
-Grass::~Grass()
+PoisonGrass::~PoisonGrass()
 {
   // TODO Auto-generated destructor stub
 }
-void Grass::stageOdom_callback(nav_msgs::Odometry msg){
-//Empty as it does not move
-}
 
-void Grass::identityReply_callBack(se306_example::IdentityReply reply)
+void PoisonGrass::identityReply_callBack(se306_example::IdentityReply reply)
 {
   // if we are the destination then process
   if (reply.destination.compare(this->robot_name) == 0) {
@@ -56,50 +49,46 @@ void Grass::identityReply_callBack(se306_example::IdentityReply reply)
 
 }
 // response to an object requesting identity details
-void Grass::identityRequest_callBack(se306_example::IdentityRequest request)
+void PoisonGrass::identityRequest_callBack(se306_example::IdentityRequest request)
 {
   // if we are not the sender then process the request
   if (request.sender.compare(this->robot_name) != 0) {
     ROS_INFO("Request received");
     se306_example::IdentityReply reply;
 
-		bool result = doesIntersect(request.px, request.py);
-		if (result) {
-			reply.height = this->height;
-			reply.sender = robot_name+robot_number;
-			reply.sender_number = robot_number;
-			reply.destination = request.sender;
-			reply.type = "Grass";
-			reply.px = px;
-			reply.py = py;
-			Reply_pub.publish(reply);
-			ROS_INFO("reply sent");
-			ROS_INFO("SUCCESS");
-		}
-	}
+    bool result = doesIntersect(request.px, request.py);
+    if (result) {
+      reply.height = this->height;
+      reply.sender = robot_name;
+      reply.destination = request.sender;
+      reply.type = "PoisonGrass";
+      Reply_pub.publish(reply);
+      ROS_INFO("reply sent");
+      ROS_INFO("SUCCESS");
+    }
+  }
 }
 
-bool Grass::doesIntersect(float x, float y) {
-	double leftX = px-(width*2.0);
-	double rightX = px+(width*2.0);
-	double top = py+(length*2.0);
-	double bottom = py-(length*2.0);
-	geometry_msgs::Twist angular;
+bool PoisonGrass::doesIntersect(float x, float y) {
+  double leftX = px-(width/2.0);
+  double rightX = px+(width/2.0);
+  double top = py+(length/2.0);
+  double bottom = py-(length/2.0);
+  geometry_msgs::Twist angular;
 
   bool matchesInX=false;
   bool matchesInY=false;
+  //ROS_INFO("leftX: %f, rightX: %f, top: %f, bottom: %f , currentX:%f, currentY:%f", leftX, rightX, top, bottom,px,py);
   if(leftX <= x && rightX >= x) {
     matchesInX=true;
+    //ROS_INFO("Matching in X direction");
   }
   if(top >= y && bottom <= y) {
     matchesInY=true;
+    //ROS_INFO("Matching in Y direction");
   }
   if (matchesInY && matchesInX) {
     angular.angular.z = 1;
-    ROS_INFO("angular is %f", angular.angular.z);
-    spin.publish(angular);
-  } else {
-    angular.angular.z = 0;
     ROS_INFO("angular is %f", angular.angular.z);
     spin.publish(angular);
   }
@@ -107,13 +96,19 @@ bool Grass::doesIntersect(float x, float y) {
   return matchesInY && matchesInX;
 }
 
+// CALL BACK METHOD TO DELEGATE ITS POSITION
+void PoisonGrass::stageOdom_callback(nav_msgs::Odometry msg){
+  this->px = this->px+msg.pose.pose.position.x;
+  this->py = this->py+msg.pose.pose.position.y;
+}
+
 // CHECKS RAINFALL AND INCREMENTS/DECREMENTS MOISTURE LEVEL
-void Grass::rainfall_callback(const std_msgs::String::ConstPtr& rainfall) {
+void PoisonGrass::rainfall_callback(const std_msgs::String::ConstPtr& rainfall) {
 
   if (rainfall->data.compare("Sunny")==0) {
     moistCont = moistCont - 20;
     soilQual = soilQual - 1;
-  } else if (rainfall->data.compare("Raining")==0) {
+  } else if (rainfall->data.compare("Rainy")==0) {
     moistCont = moistCont + 50;
     soilQual = soilQual + 1;
   }
@@ -131,7 +126,7 @@ void Grass::rainfall_callback(const std_msgs::String::ConstPtr& rainfall) {
 }
 
 // INCREASES AND DECREASES HEIGHT DEPENDING ON MOISTURE
-void Grass::grow(double moisture) {
+void PoisonGrass::grow(double moisture) {
 
   if (moisture > 0 && soilQual > 0) {
     height = height+((moisture+soilQual))/100;
@@ -151,49 +146,39 @@ void Grass::grow(double moisture) {
 }
 
 
-void Grass::eatenCallback(se306_example::eatGrass msg) {
-	if(msg.destination.compare(robot_name+robot_number)==0) {
-		this->height -= 2;
-
-		if(this->height < 0) {
-			this->height = 0;
-		}
-		ROS_INFO("New height is: %f", this->height);
-		if(this->height == 0) {
-			std_msgs::String result;
-			result.data = msg.sender;
-			Eaten_pub.publish(result);
-			se306_example::cover cover;
-			cover.robot_name = "Block"+robot_number;
-			cover.grassPX = px;
-			cover.grassPY = py;
-			Cover_pub.publish(cover);
-			ROS_INFO("Cover sent");
-		}
-	}
+void PoisonGrass::eatenCallback(const std_msgs::String::ConstPtr& msg) {
+  this->height = this->height-5;
+  if (this->height < 0) {
+    this->height = 0;
+  }
+  if (this->height < 5) {
+    message.data = robot_name+": Poison";
+    Eaten_pub.publish(message);
+  }
+//  ROS_INFO("New height is: %f", this->height);
 }
 
-ros::NodeHandle Grass::run(){
+ros::NodeHandle PoisonGrass::run(){
 
   ros::NodeHandle n = Robot::run();
 
-  if(!n.getParam("field", field)){
-    ROS_ERROR("Field value not set for Grass");
-  }
+//  if(!n.getParam("field", field)){
+//     ROS_ERROR("Field value not set for Grass");
+//   }
 
-  if(!n.getParam("px",px)){
-      ROS_ERROR("px value not set for Grass");
-    }
-
-  if(!n.getParam("py",py)){
+   if(!n.getParam("px",px)){
        ROS_ERROR("px value not set for Grass");
      }
 
+   if(!n.getParam("py",py)){
+        ROS_ERROR("px value not set for Grass");
+      }
+
   // LISTEN
-  ros::Subscriber receive_rainfall = n.subscribe<std_msgs::String>("weather/status"+field,1000, &Grass::rainfall_callback, this);
-  ros::Subscriber requestPos = n.subscribe<se306_example::IdentityRequest>("identityRequest",1000, &Grass::identityRequest_callBack, this);
-  ros::Subscriber replyPos = n.subscribe<se306_example::IdentityReply>("identityReply",1000, &Grass::identityReply_callBack,this);
-  ros::Subscriber eatSub = n.subscribe<std_msgs::String>("eat",1000, &Grass::eatenCallback,this);
+  ros::Subscriber receive_rainfall = n.subscribe<std_msgs::String>("weather/status",1000, &PoisonGrass::rainfall_callback, this);
+  ros::Subscriber requestPos = n.subscribe<se306_example::IdentityRequest>("identityRequest",1000, &PoisonGrass::identityRequest_callBack, this);
+  ros::Subscriber replyPos = n.subscribe<se306_example::IdentityReply>("identityReply",1000, &PoisonGrass::identityReply_callBack,this);
+  ros::Subscriber eatSub = n.subscribe<std_msgs::String>(robot_name+"/eat",1000, &PoisonGrass::eatenCallback,this);
 
   // ADD SUBSCRIBERS TO LIST
   std::list<ros::Subscriber>::iterator it;
@@ -211,17 +196,14 @@ ros::NodeHandle Grass::run(){
   // CREATE MOISTURE AND HEIGHT TOPICS TO PUBLISH TOWARDS
   Request_pub = n.advertise<se306_example::IdentityRequest>("identityRequest", 1000);
   Reply_pub = n.advertise<se306_example::IdentityReply>("identityReply", 1000);
-  Eaten_pub = n.advertise<std_msgs::String>("eaten", 1000);
-  Cover_pub = n.advertise<se306_example::cover>("Block"+robot_number+"/cover", 1000);
+  Eaten_pub = n.advertise<std_msgs::String>(robot_name+"/eaten", 1000);
+
 
 
   // ADD PUBLISHERS TO LIST
   std::list<ros::Publisher>::iterator iter;
   iter = pubsList.end();
   pubsList.insert(iter, spin);
-  pubsList.insert(iter, Request_pub);
-  pubsList.insert(iter, Reply_pub);
-  pubsList.insert(iter, Eaten_pub);
 
 
   // SENDING AT 10 MESSAGES A SECOND
@@ -229,10 +211,16 @@ ros::NodeHandle Grass::run(){
 
 
   // INITIALIZE VARIABLES TO PUBLISH
+  std_msgs::String moisture;
   geometry_msgs::Twist angular;
+  //se306_example::Custom grass;
+
+  //  // SET ANGULAR VELOV
+  //  this->angular_z = 0.2;
 
   while (ros::ok())
   {
+	ROS_INFO("PoisonGrassOne:%f", this->height);
     ros::spinOnce();
     loop_rate.sleep();
   }
@@ -241,7 +229,7 @@ ros::NodeHandle Grass::run(){
 
 int main(int argc, char **argv)
 {
-  Grass robot = Grass("Grass",argc,argv);
+  PoisonGrass robot = PoisonGrass("PoisonGrass",argc,argv);
   robot.run();
   return 0;
 }

@@ -1,4 +1,8 @@
-robot_1,newSheepOne
-robot_2,GrassOne
-robot_3,BlockOne
-robot_4,newSheepTwo
+robot_1,GateOne
+robot_2,GateTwo
+robot_3,GateThree
+robot_4,GrassOne
+robot_5,GrassPoisonOne
+robot_6,Farmer
+
+
