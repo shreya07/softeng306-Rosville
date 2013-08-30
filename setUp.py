@@ -13,40 +13,37 @@ def callRoscore():
     terminal1.extend(['-x', 'sh', '-c', '"roscore"'])
     pid1 = subprocess.call(terminal1, stdout=subprocess.PIPE)
     time.sleep(3)
-    print "success1"
+    print "roscore is running..."
     pids.append(pid1)
-    callStage()
+    # terminal3 = ['gnome-terminal']
+    os.system('cd se306_example/src/ && python GodNodeCreator.py')
+    print "Ran GodNodeCreator"
+    # pid3 = subprocess.call(terminal3)
+    # pids.append(pid3)
+    wd = os.getcwd()
+    callStage(wd)
+    callLaunch(wd)
     callTeleop()
 
-def callStage():
+def callStage(wd):
     terminal2 = ['gnome-terminal']
-    terminal2.extend(['-x', 'sh', '-c', 'rosrun stage stageros ~/groovy_workspace/sandbox/world/myworld.world'])
+    terminal2.extend(['-x', 'sh', '-c', 'rosrun stage stageros '+ wd+'/world/myworld.world'])
     pid2 = subprocess.call(terminal2)
     time.sleep(3)
-    print "success2"
+    print "stage is running..."
     pids.append(pid2)
-    callTele()
 
-def callTele():
-    terminal3 = ['gnome-terminal']
-    terminal3.extend(['-x', 'sh', '-c', 'roslaunch pr2_teleop teleop_keyboard.launch'])
-    pid3 = subprocess.call(terminal3)
-    time.sleep(3)
-    print "success3"
-    pids.append(pid3)
-    callLaunch()
-     
-def callLaunch():
+def callLaunch(wd):
     terminal4 = ['gnome-terminal']
-    terminal4.extend(['-x', 'sh', '-c', 'roslaunch ~/groovy_workspace/sandbox/se306_example/nodeLaunch.launch'])
+    terminal4.extend(['-x', 'sh', '-c', 'roslaunch '+ wd+'/se306_example/nodeLaunch.launch'])
     pid4 = subprocess.call(terminal4)
-    pids.append(pid3)
-    print "success4"
+    pids.append(pid4)
+    print "launch file is running..."
 
 def callTeleop():
-    terminal4 = ['gnome-terminal']
-    terminal4.extend(['-x', 'sh', '-c', 'roslaunch pr2_teleop teleop_keyboard.launch'])
-    pid4 = subprocess.call(terminal4)
+    terminal5 = ['gnome-terminal']
+    terminal5.extend(['-x', 'sh', '-c', 'roslaunch pr2_teleop teleop_keyboard.launch'])
+    pid4 = subprocess.call(terminal5)
     pids.append(pid4)
     print "teleop is running.."
 
